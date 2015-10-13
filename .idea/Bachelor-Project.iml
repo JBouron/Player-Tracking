@@ -14,6 +14,7 @@
       <sourceFolder url="file://$MODULE_DIR$/headers/position_t.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/team_t.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/bgsubstractor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/sources/coordinates_translator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/debug.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/features_extractor.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/main.cpp" isTestSource="false" />
