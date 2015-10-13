@@ -44,6 +44,8 @@ namespace tmd{
                         "   Learning rate : " + std::to_string(m_params[m_current_camera][LEARNING_RATE_IDX]);
                 cv::rectangle(*(frame->mask_frame), cv::Point(10, 2), cv::Point(800, 20), cv::Scalar(255, 255, 255), -1);
                 cv::putText(*(frame->mask_frame), infos.c_str(), cv::Point(15, 15), cv::FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(0,0,0));
+                cv::rectangle(*(frame->original_frame), cv::Point(10, 2), cv::Point(800, 20), cv::Scalar(255, 255, 255), -1);
+                cv::putText(*(frame->original_frame), infos.c_str(), cv::Point(15, 15), cv::FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(0,0,0));
                 cv::imshow("Calibration Tool - current frame", *(frame->original_frame));
                 cv::imshow("Calibration Tool - mask frame", *(frame->mask_frame));
 
