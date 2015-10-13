@@ -3,15 +3,16 @@
 #include "../headers/frame_t.h"
 
 namespace tmd{
-    BGSubstractor::BGSubstractor(cv::VideoCapture* input_video, unsigned char camera_index){
+    BGSubstractor::BGSubstractor(cv::VideoCapture* input_video, unsigned char camera_index, float threshold, int history, float learning_rate){
         m_bgs = cv::createBackgroundSubtractorMOG2();
         if (m_bgs == NULL){
             throw std::bad_alloc();
         }
         else{
-            m_bgs->setHistory(TMD_BGS_HISTORY_SIZE);
-            m_bgs->setVarThreshold(TMD_BGS_THRESHOLD);
+            m_bgs->setHistory(history);
+            m_bgs->setVarThreshold(threshold);
             m_bgs->setDetectShadows(TMD_BGS_DETECTS_SHADOWS);
+            m_learning_rate = learning_rate;
         }
         tmd::debug("BGSubstractor", "BGSubstractor", "bgs created.");
 
@@ -52,7 +53,7 @@ namespace tmd{
         *(frame->original_frame) = or_fr.clone();
         frame->frame_index = m_frame_index;
         cv::Mat mask;
-        m_bgs->apply(or_fr, mask, TMD_BGS_LEARNING_RATE);
+        m_bgs->apply(or_fr, mask, m_learning_rate);
         frame->mask_frame = new cv::Mat(mask);
         frame->camera_index = m_camera_index;
 
@@ -61,5 +62,17 @@ namespace tmd{
                 std::to_string(m_frame_index));
 
         return frame;
+    }
+
+    void BGSubstractor::set_threshold_value(float th){
+        m_bgs->setVarThreshold(th);
+    }
+
+    void BGSubstractor::set_history_size(int s){
+        m_bgs->setHistory(s);
+    }
+
+    void BGSubstractor::set_learning_rate(float lr){
+        m_learning_rate = lr;
     }
 }
