@@ -35,10 +35,15 @@ namespace tmd{
         bool done = false;
         int keyboard = 0;
 
-        while (keyboard != TMD_CALIBRATION_TOOL_ESCAPE_CHAR || !done){
+        while (keyboard != TMD_CALIBRATION_TOOL_ESCAPE_CHAR && !done){
             frame_t* frame;
             if (m_bgs[m_current_camera]->has_next_frame()){
                 frame = m_bgs[m_current_camera]->next_frame();
+                std::string infos = "Camera " + std::to_string(m_current_camera) + "    Threshold : " + std::to_string(m_params[m_current_camera][THRESHOLD_IDX]) +
+                        "   History size : " + std::to_string(m_params[m_current_camera][HISTORY_SIZE_IDX])+
+                        "   Learning rate : " + std::to_string(m_params[m_current_camera][LEARNING_RATE_IDX]);
+                cv::rectangle(*(frame->mask_frame), cv::Point(10, 2), cv::Point(600, 20), cv::Scalar(255, 255, 255), -1);
+                cv::putText(*(frame->mask_frame), infos.c_str(), cv::Point(15, 15), cv::FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(0,0,0));
                 cv::imshow("Calibration Tool - current frame", *(frame->original_frame));
                 cv::imshow("Calibration Tool - mask frame", *(frame->mask_frame));
 
