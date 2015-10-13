@@ -9,9 +9,9 @@
 
 namespace tmd{
     /* Class allowing the user to calibrate the BGS for each camera. */
+        typedef enum {THRESHOLD_IDX = 0, HISTORY_SIZE_IDX = 1, LEARNING_RATE_IDX = 2};
     class CalibrationTool{
     public:
-        typedef enum {THRESHOLD_IDX = 0, HISTORY_SIZE_IDX = 1, LEARNING_RATE_IDX = 2};
 
         CalibrationTool(std::string video_folder_path);
         ~CalibrationTool();
@@ -20,6 +20,7 @@ namespace tmd{
         float**retrieve_params();
 
     private:
+        float max(double a, double b);
         std::string m_video_folder;
         cv::VideoCapture* m_videos[8];
         BGSubstractor* m_bgs[8];

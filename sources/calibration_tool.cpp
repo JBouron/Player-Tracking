@@ -44,11 +44,11 @@ namespace tmd{
 
                 keyboard = cv::waitKey(10);
 
-                if ((char) keyboard == 'q') m_params[m_current_camera][THRESHOLD_IDX] = cv::max(0, m_params[m_current_camera][THRESHOLD_IDX] - 10.0);
+                if ((char) keyboard == 'q') m_params[m_current_camera][THRESHOLD_IDX] = max(0.f, m_params[m_current_camera][THRESHOLD_IDX] - 10.0);
                 else if ((char) keyboard == 'w') m_params[m_current_camera][THRESHOLD_IDX] = static_cast<float>(m_params[m_current_camera][THRESHOLD_IDX] + 10.0);
-                else if ((char) keyboard == 'a') m_params[m_current_camera][HISTORY_SIZE_IDX] = cv::max(0, m_params[m_current_camera][HISTORY_SIZE_IDX] - 50);
+                else if ((char) keyboard == 'a') m_params[m_current_camera][HISTORY_SIZE_IDX] = max(0.f, m_params[m_current_camera][HISTORY_SIZE_IDX] - 50);
                 else if ((char) keyboard == 's') m_params[m_current_camera][HISTORY_SIZE_IDX] = m_params[m_current_camera][HISTORY_SIZE_IDX] + 50;
-                else if ((char) keyboard == 'y') m_params[m_current_camera][LEARNING_RATE_IDX] = cv::max(0, m_params[m_current_camera][LEARNING_RATE_IDX] - 0.1);
+                else if ((char) keyboard == 'y') m_params[m_current_camera][LEARNING_RATE_IDX] = max(0.f, m_params[m_current_camera][LEARNING_RATE_IDX] - 0.1);
                 else if ((char) keyboard == 'x') m_params[m_current_camera][LEARNING_RATE_IDX] = static_cast<float>(m_params[m_current_camera][LEARNING_RATE_IDX] + 0.1);
                 else if ((char) keyboard == ' ') m_current_camera ++;
 
@@ -66,5 +66,10 @@ namespace tmd{
 
     float** CalibrationTool::retrieve_params() {
         return (float**) m_params;
+    }
+
+    float CalibrationTool::max(double a, double b){
+        if (a < b) return a;
+        else return b;
     }
 }
