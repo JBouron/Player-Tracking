@@ -57,6 +57,9 @@ namespace tmd{
                 }
             }
         }
+
+        cv::destroyWindow("Calibration Tool - current frame");
+        cv::destroyWindow("Calibration Tool - mask frame");
     }
 
     float** CalibrationTool::retrieve_params() {
