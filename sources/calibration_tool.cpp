@@ -49,6 +49,9 @@ namespace tmd{
                 cv::imshow("Calibration Tool - current frame", *(frame->original_frame));
                 cv::imshow("Calibration Tool - mask frame", *(frame->mask_frame));
 
+                m_bgs[m_current_camera]->set_threshold_value(m_params[m_current_camera][THRESHOLD_IDX]);
+                m_bgs[m_current_camera]->set_history_size(m_params[m_current_camera][HISTORY_SIZE_IDX]);
+                m_bgs[m_current_camera]->set_learning_rate(m_params[m_current_camera][LEARNING_RATE_IDX]);
                 keyboard = cv::waitKey(10);
 
                 if ((char) keyboard == 'q') m_params[m_current_camera][THRESHOLD_IDX] = max(0.f, m_params[m_current_camera][THRESHOLD_IDX] - 10.0);
@@ -58,10 +61,6 @@ namespace tmd{
                 else if ((char) keyboard == 'y') m_params[m_current_camera][LEARNING_RATE_IDX] = max(-1.f, m_params[m_current_camera][LEARNING_RATE_IDX] - 0.1);
                 else if ((char) keyboard == 'x') m_params[m_current_camera][LEARNING_RATE_IDX] = min(m_params[m_current_camera][LEARNING_RATE_IDX] + 0.1, 1.f);
                 else if ((char) keyboard == ' ') m_current_camera ++;
-
-                m_bgs[m_current_camera]->set_threshold_value(m_params[m_current_camera][THRESHOLD_IDX]);
-                m_bgs[m_current_camera]->set_history_size(m_params[m_current_camera][HISTORY_SIZE_IDX]);
-                m_bgs[m_current_camera]->set_learning_rate(m_params[m_current_camera][LEARNING_RATE_IDX]);
 
                 if (m_current_camera >= 8){
                     done = true;
@@ -76,7 +75,14 @@ namespace tmd{
     }
 
     float** CalibrationTool::retrieve_params() {
-        return (float**) m_params;
+        float** params = (float**) calloc(8, sizeof(float*));
+        for (int i = 0; i < 8; i ++){
+            params[i] = (float*) calloc(3, sizeof(float));
+            params[i][0] = m_params[i][0];
+            params[i][1] = m_params[i][1];
+            params[i][2] = m_params[i][2];
+        }
+        return params;
     }
 
     float CalibrationTool::max(double a, double b){
