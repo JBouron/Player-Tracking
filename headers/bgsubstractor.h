@@ -6,9 +6,6 @@
 #include <stdexcept>
 #include "frame_t.h"
 
-#define TMD_BGS_LEARNING_RATE 0.0
-#define TMD_BGS_HISTORY_SIZE 500
-#define TMD_BGS_THRESHOLD 256
 #define TMD_BGS_DETECTS_SHADOWS false
 
 namespace tmd{
@@ -16,11 +13,15 @@ namespace tmd{
 
     class BGSubstractor{
     public:
-        BGSubstractor(cv::VideoCapture* input_video, unsigned char camera_index);
+        BGSubstractor(cv::VideoCapture* input_video, unsigned char camera_index, float threshold = 256, int history = 500, float learning_rate = 0.0);
         ~BGSubstractor();
 
         bool has_next_frame();
         frame_t* next_frame();
+
+        void set_threshold_value(float th);
+        void set_history_size(int s);
+        void set_learning_rate(float lr);
 
     private:
         cv::Ptr<cv::BackgroundSubtractorMOG2> m_bgs;
@@ -28,6 +29,7 @@ namespace tmd{
         unsigned char m_camera_index;
         unsigned int m_frame_index;
         unsigned int m_total_frame_count;
+        float m_learning_rate;
     };
 }
 
