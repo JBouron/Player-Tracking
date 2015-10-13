@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/bgsubstractor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/box_t.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/headers/calibration_tool.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/coordinates_translator.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/debug.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/features_extractor.h" isTestSource="false" />
@@ -14,6 +15,7 @@
       <sourceFolder url="file://$MODULE_DIR$/headers/position_t.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/team_t.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/bgsubstractor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/sources/calibration_tool.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/coordinates_translator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/debug.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/features_extractor.cpp" isTestSource="false" />

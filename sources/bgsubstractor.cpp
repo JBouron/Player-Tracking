@@ -3,7 +3,7 @@
 #include "../headers/frame_t.h"
 
 namespace tmd{
-    BGSubstractor::BGSubstractor(cv::VideoCapture* input_video, unsigned char camera_index, float threshold, float history, float learning_rate){
+    BGSubstractor::BGSubstractor(cv::VideoCapture* input_video, unsigned char camera_index, float threshold, int history, float learning_rate){
         m_bgs = cv::createBackgroundSubtractorMOG2();
         if (m_bgs == NULL){
             throw std::bad_alloc();
@@ -62,5 +62,17 @@ namespace tmd{
                 std::to_string(m_frame_index));
 
         return frame;
+    }
+
+    void BGSubstractor::set_threshold_value(float th){
+        m_bgs->setVarThreshold(th);
+    }
+
+    void BGSubstractor::set_history_size(int s){
+        m_bgs->setHistory(s);
+    }
+
+    void BGSubstractor::set_learning_rate(float lr){
+        m_learning_rate = lr;
     }
 }
