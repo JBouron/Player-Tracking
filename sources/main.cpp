@@ -23,6 +23,7 @@
 #include "../headers/bgsubstractor.h"
 #include "../headers/frame_t.h"
 #include "../headers/debug.h"
+#include "../headers/calibration_tool.h"
 
 using namespace cv;
 using namespace std;
@@ -33,8 +34,11 @@ VideoCapture* load_video(const char* const file_name){
 
 int main(int argc, char* argv[])
 {
+    tmd::CalibrationTool cal("/home/jbouron/Videos/");
+    cal.calibrate();
+
     //create GUI windows
-    namedWindow("Frame");
+    /*namedWindow("Frame");
     namedWindow("FG Mask MOG 2");
     VideoCapture* capture = new VideoCapture("/home/jbouron/Videos/ace_0.mp4");
     tmd::BGSubstractor bgs(capture, 0);
@@ -47,7 +51,7 @@ int main(int argc, char* argv[])
         cv::waitKey(1);
     }
     tmd::debug("End");
-
+*/
     //destroy GUI windows
     destroyAllWindows();
     return EXIT_SUCCESS;
