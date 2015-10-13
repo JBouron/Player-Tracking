@@ -39,8 +39,8 @@ namespace tmd{
             frame_t* frame;
             if (m_bgs[m_current_camera]->has_next_frame()){
                 frame = m_bgs[m_current_camera]->next_frame();
-                cv::imshow("Calibration Tool - current frame", frame->original_frame);
-                cv::imshow("Calibration Tool - mask frame", frame->mask_frame);
+                cv::imshow("Calibration Tool - current frame", *(frame->original_frame));
+                cv::imshow("Calibration Tool - mask frame", *(frame->mask_frame));
 
                 keyboard = cv::waitKey(10);
 
@@ -55,6 +55,8 @@ namespace tmd{
                 if (m_current_camera >= 8){
                     done = true;
                 }
+
+                free(frame);
             }
         }
 
