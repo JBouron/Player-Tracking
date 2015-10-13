@@ -57,6 +57,10 @@ namespace tmd{
                 else if ((char) keyboard == 'x') m_params[m_current_camera][LEARNING_RATE_IDX] = min(m_params[m_current_camera][LEARNING_RATE_IDX] + 0.1, 1.f);
                 else if ((char) keyboard == ' ') m_current_camera ++;
 
+                m_bgs[m_current_camera]->set_threshold_value(m_params[m_current_camera][THRESHOLD_IDX]);
+                m_bgs[m_current_camera]->set_history_size(m_params[m_current_camera][HISTORY_SIZE_IDX]);
+                m_bgs[m_current_camera]->set_learning_rate(m_params[m_current_camera][LEARNING_RATE_IDX]);
+
                 if (m_current_camera >= 8){
                     done = true;
                 }
