@@ -36,7 +36,12 @@ int main(int argc, char* argv[])
 {
     tmd::CalibrationTool cal("/home/jbouron/Videos/");
     cal.calibrate();
-
+    float** params = cal.retrieve_params();
+    for (int i = 0; i < 8; i ++){
+        tmd::debug("camera " + std::to_string(i) + "   Th = " + std::to_string(params[i][0]) + "   HS = " + std::to_string(params[i][1]) + "   lr = " + std::to_string(params[i][2]));
+        free(params[i]);
+    }
+    free(params);
     //create GUI windows
     /*namedWindow("Frame");
     namedWindow("FG Mask MOG 2");
