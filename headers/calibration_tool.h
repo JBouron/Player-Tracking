@@ -1,0 +1,31 @@
+#ifndef BACHELOR_PROJECT_CALIBRATION_TOOL_H
+#define BACHELOR_PROJECT_CALIBRATION_TOOL_H
+
+#include <string>
+#include <opencv2/videoio.hpp>
+#include "bgsubstractor.h"
+
+#define TMD_CALIBRATION_TOOL_ESCAPE_CHAR 27 // ESC to quit the calibration tool.
+
+namespace tmd{
+    /* Class allowing the user to calibrate the BGS for each camera. */
+    class CalibrationTool{
+    public:
+        typedef enum {THRESHOLD_IDX = 0, HISTORY_SIZE_IDX = 1, LEARNING_RATE_IDX = 2};
+
+        CalibrationTool(std::string video_folder_path);
+        ~CalibrationTool();
+
+        void calibrate();
+        float**retrieve_params();
+
+    private:
+        std::string m_video_folder;
+        cv::VideoCapture* m_videos[8];
+        BGSubstractor* m_bgs[8];
+        unsigned int m_current_camera;
+        float m_params[8][3];
+    };
+}
+
+#endif //BACHELOR_PROJECT_CALIBRATION_TOOL_H
