@@ -21,6 +21,7 @@ namespace tmd{
 
     private:
         float max(double a, double b);
+        float min(double a, double b);
         std::string m_video_folder;
         cv::VideoCapture* m_videos[8];
         BGSubstractor* m_bgs[8];
