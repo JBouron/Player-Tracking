@@ -42,7 +42,7 @@ namespace tmd{
                 std::string infos = "Camera " + std::to_string(m_current_camera) + "    Threshold : " + std::to_string(m_params[m_current_camera][THRESHOLD_IDX]) +
                         "   History size : " + std::to_string(m_params[m_current_camera][HISTORY_SIZE_IDX])+
                         "   Learning rate : " + std::to_string(m_params[m_current_camera][LEARNING_RATE_IDX]);
-                cv::rectangle(*(frame->mask_frame), cv::Point(10, 2), cv::Point(600, 20), cv::Scalar(255, 255, 255), -1);
+                cv::rectangle(*(frame->mask_frame), cv::Point(10, 2), cv::Point(800, 20), cv::Scalar(255, 255, 255), -1);
                 cv::putText(*(frame->mask_frame), infos.c_str(), cv::Point(15, 15), cv::FONT_HERSHEY_SIMPLEX, 0.5 , cv::Scalar(0,0,0));
                 cv::imshow("Calibration Tool - current frame", *(frame->original_frame));
                 cv::imshow("Calibration Tool - mask frame", *(frame->mask_frame));
@@ -53,8 +53,8 @@ namespace tmd{
                 else if ((char) keyboard == 'w') m_params[m_current_camera][THRESHOLD_IDX] = static_cast<float>(m_params[m_current_camera][THRESHOLD_IDX] + 10.0);
                 else if ((char) keyboard == 'a') m_params[m_current_camera][HISTORY_SIZE_IDX] = max(0.f, m_params[m_current_camera][HISTORY_SIZE_IDX] - 50);
                 else if ((char) keyboard == 's') m_params[m_current_camera][HISTORY_SIZE_IDX] = m_params[m_current_camera][HISTORY_SIZE_IDX] + 50;
-                else if ((char) keyboard == 'y') m_params[m_current_camera][LEARNING_RATE_IDX] = max(0.f, m_params[m_current_camera][LEARNING_RATE_IDX] - 0.1);
-                else if ((char) keyboard == 'x') m_params[m_current_camera][LEARNING_RATE_IDX] = static_cast<float>(m_params[m_current_camera][LEARNING_RATE_IDX] + 0.1);
+                else if ((char) keyboard == 'y') m_params[m_current_camera][LEARNING_RATE_IDX] = max(-1.f, m_params[m_current_camera][LEARNING_RATE_IDX] - 0.1);
+                else if ((char) keyboard == 'x') m_params[m_current_camera][LEARNING_RATE_IDX] = min(m_params[m_current_camera][LEARNING_RATE_IDX] + 0.1, 1.f);
                 else if ((char) keyboard == ' ') m_current_camera ++;
 
                 if (m_current_camera >= 8){
@@ -74,6 +74,11 @@ namespace tmd{
     }
 
     float CalibrationTool::max(double a, double b){
+        if (a > b) return a;
+        else return b;
+    }
+
+    float CalibrationTool::min(double a, double b){
         if (a < b) return a;
         else return b;
     }
