@@ -9,6 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/headers/coordinates_translator.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/debug.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/features_extractor.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/headers/features_t.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/frame_t.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/player_extractor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/player_t.h" isTestSource="false" />

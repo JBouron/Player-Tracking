@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     }
     free(params);
     //create GUI windows
-    /*namedWindow("Frame");
+    namedWindow("Frame");
     namedWindow("FG Mask MOG 2");
     VideoCapture* capture = new VideoCapture("/home/jbouron/Videos/ace_0.mp4");
     tmd::BGSubstractor bgs(capture, 0);
@@ -52,11 +52,15 @@ int main(int argc, char* argv[])
         tmd::frame_t* frame = bgs.next_frame();
         imshow("Frame", *frame->original_frame);
         imshow("FG Mask MOG 2", *frame->mask_frame);
+        frame->original_frame->release();
+        frame->mask_frame->release();
+        free(frame->original_frame);
+        free(frame->mask_frame);
         free(frame);
         cv::waitKey(1);
     }
     tmd::debug("End");
-*/
+
     //destroy GUI windows
     destroyAllWindows();
     return EXIT_SUCCESS;
