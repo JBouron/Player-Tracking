@@ -11,6 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/headers/features_extractor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/features_t.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/frame_t.h" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/headers/log_parser.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/player_extractor.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/player_t.h" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/headers/position_t.h" isTestSource="false" />
@@ -20,6 +21,7 @@
       <sourceFolder url="file://$MODULE_DIR$/sources/coordinates_translator.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/debug.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/features_extractor.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/sources/log_parser.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/main.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sources/player_extractor.cpp" isTestSource="false" />
     </content>
