@@ -5,6 +5,7 @@
 #include "position_t.h"
 #include "team_t.h"
 #include "box_t.h"
+#include "features_t.h"
 
 namespace tmd{
     /* Structure representing a player. */
@@ -18,7 +19,7 @@ namespace tmd{
         tmd::team_t team;           // Team of the player (TBD by the TeamDecider).
         tmd::box_t box;             // Box of the player.
         float likelihood;           // Likelihood of the team membership.
-        /** TODO : features of the player **/
+        features_t features;
     }player_t;
 }
 

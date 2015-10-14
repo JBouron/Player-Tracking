@@ -50,7 +50,7 @@ namespace tmd{
                 cv::imshow("Calibration Tool - mask frame", *(frame->mask_frame));
 
                 m_bgs[m_current_camera]->set_threshold_value(m_params[m_current_camera][THRESHOLD_IDX]);
-                m_bgs[m_current_camera]->set_history_size(m_params[m_current_camera][HISTORY_SIZE_IDX]);
+                m_bgs[m_current_camera]->set_history_size(static_cast<int> (m_params[m_current_camera][HISTORY_SIZE_IDX]));
                 m_bgs[m_current_camera]->set_learning_rate(m_params[m_current_camera][LEARNING_RATE_IDX]);
                 keyboard = cv::waitKey(10);
 
@@ -66,6 +66,10 @@ namespace tmd{
                     done = true;
                 }
 
+                frame->original_frame->release();
+                frame->mask_frame->release();
+                free(frame->original_frame);
+                free(frame->mask_frame);
                 free(frame);
             }
         }
