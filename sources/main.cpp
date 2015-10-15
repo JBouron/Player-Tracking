@@ -24,6 +24,7 @@
 #include "../headers/frame_t.h"
 #include "../headers/debug.h"
 #include "../headers/calibration_tool.h"
+#include "../headers/log_parser.h"
 
 using namespace cv;
 using namespace std;
@@ -34,7 +35,18 @@ VideoCapture* load_video(const char* const file_name){
 
 int main(int argc, char* argv[])
 {
-    tmd::CalibrationTool cal("/home/jbouron/Videos/");
+    tmd::LogParser p("/home/jbouron/detections_20151014_154036_player.txt");
+    int keyboard = 0;
+        vector<int> pos = p.get_next_frame_positions();
+        for (auto it = pos.begin(); it < pos.end(); it ++){
+            tmd::debug("Pos, frame " + std::to_string(p.get_current_frame_index()) + " : " + to_string(*it));
+        }
+    tmd::debug("------------");
+    pos = p.get_next_frame_positions();
+    for (auto it = pos.begin(); it < pos.end(); it ++){
+        tmd::debug("Pos, frame " + std::to_string(p.get_current_frame_index()) + " : " + to_string(*it));
+    }
+    /*tmd::CalibrationTool cal("/home/jbouron/Videos/");
     cal.calibrate();
     float** params = cal.retrieve_params();
     for (int i = 0; i < 8; i ++){
@@ -58,7 +70,7 @@ int main(int argc, char* argv[])
         free(frame->mask_frame);
         free(frame);
         cv::waitKey(1);
-    }
+    }*/
     tmd::debug("End");
 
     //destroy GUI windows
