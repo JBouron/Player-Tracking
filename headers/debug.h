@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 
+#define TMD_DEBUG_ENABLE_DEBUG false
+
 namespace tmd{
     void debug(std::string message, bool line_return = true);
 

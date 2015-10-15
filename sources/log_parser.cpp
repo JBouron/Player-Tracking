@@ -35,7 +35,7 @@ namespace tmd{
             if (m_log.eof()){
                 break;
             }
-
+            std::streampos last_tellg = m_log.tellg();
             getline(m_log, line);
             tmd::debug("LogParser", "get_next_frame_positions", "current_log_frame = " + std::to_string(current_log_frame) + "  line = " + line);
             char* ptr = strtok((char*) line.c_str(), " ");
@@ -43,10 +43,7 @@ namespace tmd{
             ptr = strtok(NULL, " ");
             if (ptr != NULL) strcpy(grid_index, ptr); else throw std::runtime_error("Error, invalid log format : " + line);
             ptr = strtok(NULL, " ");
-            if (ptr != NULL) strcpy(player_pos_x, ptr); else throw std::runtime_error("Error, invalid log format : " + line);
-            ptr = strtok(NULL, " ");
-            if (ptr != NULL) strcpy(player_pos_y, ptr); else throw std::runtime_error("Error, invalid log format : " + line);
-            ptr = strtok(NULL, " ");
+
             tmd::debug("LogParser", "get_next_frame_positions", "frame_idx = " + std::string(frame_idx) + "    grid_index = " + std::string(grid_index));
             std::stringstream strs;
             strs << frame_idx;
@@ -57,7 +54,12 @@ namespace tmd{
             int cell;
             strs >> cell;
             tmd::debug("LogParser", "get_next_frame_positions", "cell = " + std::to_string(cell));
-            pos.push_back(cell);
+            if (current_log_frame != m_current_frame){
+                pos.push_back(cell);
+            }
+            else{
+                m_log.seekg(last_tellg);
+            }
         }
         return pos;
     }
