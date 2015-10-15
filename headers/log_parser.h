@@ -13,10 +13,9 @@ namespace tmd{
         LogParser(std::string log_path);
         ~LogParser();
 
-        std::vector<tmd::position_t> get_next_frame_positions();
-        std::vector<tmd::position_t> get_positions_from_frame(unsigned int frame);
+        std::vector<int> get_next_frame_positions();
 
-        unsigned int get_current_frame();
+        unsigned int get_current_frame_index();
 
     private:
         std::ifstream m_log;
