@@ -60,7 +60,7 @@ void bgs_demo(){
 }
 
 int main(int argc, char* argv[]) {
-    bgs_demo();
+    calibration_demo();
     destroyAllWindows();
     return EXIT_SUCCESS;
 }
