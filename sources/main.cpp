@@ -28,13 +28,8 @@
 using namespace cv;
 using namespace std;
 
-VideoCapture* load_video(const char* const file_name){
-    return new VideoCapture(file_name);
-}
-
-int main(int argc, char* argv[])
-{
-    tmd::CalibrationTool cal("/home/jbouron/Videos/");
+void calibration_demo(){
+    tmd::CalibrationTool cal("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/videos/");
     cal.calibrate();
     float** params = cal.retrieve_params();
     for (int i = 0; i < 8; i ++){
@@ -42,11 +37,13 @@ int main(int argc, char* argv[])
         free(params[i]);
     }
     free(params);
-    //create GUI windows
+}
+
+void bgs_demo(){
     namedWindow("Frame");
     namedWindow("FG Mask MOG 2");
-    VideoCapture* capture = new VideoCapture("/home/jbouron/Videos/ace_0.mp4");
-    tmd::BGSubstractor bgs(capture, 0);
+    VideoCapture* capture = new VideoCapture("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/videos/ace_1.mp4");
+    tmd::BGSubstractor bgs(capture, 1);
     while (bgs.has_next_frame()){
         tmd::debug("New iteration");
         tmd::frame_t* frame = bgs.next_frame();
@@ -60,8 +57,10 @@ int main(int argc, char* argv[])
         cv::waitKey(1);
     }
     tmd::debug("End");
+}
 
-    //destroy GUI windows
+int main(int argc, char* argv[]) {
+    bgs_demo();
     destroyAllWindows();
     return EXIT_SUCCESS;
 }
