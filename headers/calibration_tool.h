@@ -2,7 +2,7 @@
 #define BACHELOR_PROJECT_CALIBRATION_TOOL_H
 
 #include <string>
-#include <opencv2/videoio.hpp>
+#include <opencv2/core/core.hpp>
 #include "bgsubstractor.h"
 
 #define TMD_CALIBRATION_TOOL_ESCAPE_CHAR 27 // ESC to quit the calibration tool.

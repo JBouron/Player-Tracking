@@ -1,11 +1,11 @@
 #ifndef TEAM_MEMBERSHIP_DETECTOR_FRAME_T_H
 #define TEAM_MEMBERSHIP_DETECTOR_FRAME_T_H
 
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/videoio.hpp"
-#include <opencv2/highgui.hpp>
-#include <opencv2/video.hpp>
+#include <opencv2/core/core.hpp>
+#include "opencv2/core/core.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/video/background_segm.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 namespace tmd {
 

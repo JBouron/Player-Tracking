@@ -1,6 +1,7 @@
 #ifndef TEAM_MEMBERSHIP_DETECTOR_PLAYER_T_H
 #define TEAM_MEMBERSHIP_DETECTOR_PLAYER_T_H
 
+#include <opencv2/core/core.hpp>
 #include <opencv2/core/mat.hpp>
 #include "position_t.h"
 #include "team_t.h"

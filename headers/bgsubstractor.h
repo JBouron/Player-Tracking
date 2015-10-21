@@ -1,9 +1,10 @@
 #ifndef TEAM_MEMBERSHIP_DETECTOR_BGSUBSTRACTOR_H
 #define TEAM_MEMBERSHIP_DETECTOR_BGSUBSTRACTOR_H
 
-#include <opencv2/videoio.hpp>
+//#include <opencv2/videoio.hpp>
 #include <exception>
 #include <stdexcept>
+#include <opencv2/highgui/highgui.hpp>
 #include "frame_t.h"
 
 #define TMD_BGS_DETECTS_SHADOWS false
