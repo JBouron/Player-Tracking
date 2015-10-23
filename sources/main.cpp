@@ -5,6 +5,9 @@
 #include "../headers/heuristic_feature_extractor.h"
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
+#include "../headers/frame_t.h"
+#include "../headers/debug.h"
+#include "../headers/bgsubstractor.h"
 
 #if defined(WIN32) || defined(_WIN32)
 #include <io.h>
@@ -112,10 +115,27 @@ void heuristic_features_extractor_tests() {
         waitKey(0);
     }
 }
+void bgs_demo(){
+    namedWindow("Frame");
+    namedWindow("FG Mask MOG 2");
+    VideoCapture* capture = new VideoCapture("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/videos/ace_1.mp4");
+    tmd::BGSubstractor bgs(capture, 1);
+    while (bgs.has_next_frame()){
+        tmd::debug("New iteration");
+        tmd::frame_t* frame = bgs.next_frame();
+        imshow("Frame", frame->original_frame);
+        imshow("FG Mask MOG 2", frame->mask_frame);
+        frame->original_frame.release();
+        frame->mask_frame.release();
+        free(frame);
+        cv::waitKey(1);
+    }
+        tmd::debug("End");
+}
 
 int main(int argc, char* argv[])
 {
-    heuristic_features_extractor_tests();
+    bgs_demo();
     return EXIT_SUCCESS;
     help();
     string images_folder, models_folder;
