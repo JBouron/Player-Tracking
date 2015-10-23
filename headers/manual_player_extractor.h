@@ -1,0 +1,19 @@
+#ifndef BACHELOR_PROJECT_MANUAL_PLAYER_EXTRACTOR_H
+#define BACHELOR_PROJECT_MANUAL_PLAYER_EXTRACTOR_H
+
+#include "player_extractor.h"
+
+namespace tmd{
+    class ManualPlayerExtractor : public PlayerExtractor{
+    public:
+        virtual std::vector<player_t*> extract_player_from_frame(frame_t* frame);
+
+        static bool mBoxComplete;
+        static bool mFirstClick;
+        static std::vector<tmd::box_t*> mBoxes;
+    private:
+        static void onMouseClick(int event, int x, int y, int f, void* d);
+    };
+}
+
+#endif //BACHELOR_PROJECT_MANUAL_PLAYER_EXTRACTOR_H
