@@ -117,15 +117,16 @@ void heuristic_features_extractor_tests() {
 
 void manual_player_extractor_test(){
     tmd::frame_t frame;
+    (frame.original_frame) = new cv::Mat();
     *(frame.original_frame) = (imread(
-            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/test_image.jpg"));
+            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/TEASER-Basketball-bomb.jpg"));
     tmd::ManualPlayerExtractor pe;
     pe.extract_player_from_frame(&frame);
 }
 
 int main(int argc, char* argv[])
 {
-    heuristic_features_extractor_tests();
+    manual_player_extractor_test();
     return EXIT_SUCCESS;
     help();
     string images_folder, models_folder;
