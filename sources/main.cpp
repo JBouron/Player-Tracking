@@ -5,6 +5,8 @@
 #include "../headers/heuristic_feature_extractor.h"
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
+#include "../headers/manual_player_extractor.h"
+#include "../headers/frame_t.h"
 
 #if defined(WIN32) || defined(_WIN32)
 #include <io.h>
@@ -111,6 +113,14 @@ void heuristic_features_extractor_tests() {
         imshow("Strips", p.features.strips[i]);
         waitKey(0);
     }
+}
+
+void manual_player_extractor_test(){
+    tmd::frame_t frame;
+    *(frame.original_frame) = (imread(
+            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/test_image.jpg"));
+    tmd::ManualPlayerExtractor pe;
+    pe.extract_player_from_frame(&frame);
 }
 
 int main(int argc, char* argv[])
