@@ -138,7 +138,6 @@ void bgs_demo(){
 
 void manual_player_extractor_test(){
     tmd::frame_t frame;
-    (frame.original_frame) = new cv::Mat();
     (frame.original_frame) = (imread(
             "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/TEASER-Basketball-bomb.jpg"));
     tmd::ManualPlayerExtractor pe;
@@ -155,10 +154,7 @@ void manual_player_extractor_test(){
     }
 }
 
-int main(int argc, char* argv[])
-{
-    manual_player_extractor_test();
-    return EXIT_SUCCESS;
+int main(int argc, char* argv[]) {
     help();
     string images_folder, models_folder;
     float overlapThreshold = 0.2f;
@@ -167,6 +163,7 @@ int main(int argc, char* argv[])
     {
         images_folder = argv[1];
         models_folder = argv[2];
+
         if( argc > 3 ) overlapThreshold = (float)atof(argv[3]);
         if( overlapThreshold < 0 || overlapThreshold > 1)
         {

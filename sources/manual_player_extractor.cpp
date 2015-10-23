@@ -24,7 +24,7 @@ namespace tmd{
                 if (mBoxes.size() == 0) max_idx = 0; // size_t should not be -1.
                 else max_idx = mBoxes.size() - 1;
             }
-            image = frame->original_frame->clone();
+            image = frame->original_frame.clone();
             for (size_t i = 0; i < max_idx; i ++){
                 cv::rectangle(image, mBoxes[i], cv::Scalar(255, 0, 0));
             }
@@ -34,7 +34,7 @@ namespace tmd{
         std::vector<player_t*> players;
         for (size_t i = 0 ; i < mBoxes.size() ; i ++){
             players.push_back(new player_t);
-            players[i]->original_image = (*frame->original_frame)(mBoxes[i]);
+            players[i]->original_image = (frame->original_frame)(mBoxes[i]);
             //players[i]->mask_image = (*frame->mask_frame)(mBoxes[i]);
             players[i]->frame_index = frame->frame_index;
         }
