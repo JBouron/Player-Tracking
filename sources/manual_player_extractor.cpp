@@ -6,7 +6,7 @@
 namespace tmd{
         bool ManualPlayerExtractor::mFirstClick = true;
         bool ManualPlayerExtractor::mBoxComplete = false;
-        std::vector<tmd::box_t*> ManualPlayerExtractor::mBoxes;
+        std::vector<cv::Rect> ManualPlayerExtractor::mBoxes;
 
     std::vector<player_t*> ManualPlayerExtractor::extract_player_from_frame(
             frame_t *frame) {
@@ -25,7 +25,7 @@ namespace tmd{
             }
             image = frame->original_frame->clone();
             for (size_t i = 0; i < max_idx; i ++){
-                cv::rectangle(image, cv::Point(mBoxes[i]->pos.x, mBoxes[i]->pos.y), cv::Point(mBoxes[i]->pos.x + mBoxes[i]->size.x, mBoxes[i]->pos.y + mBoxes[i]->size.y), cv::Scalar(255, 0, 0));
+                cv::rectangle(image, mBoxes[i], cv::Scalar(255, 0, 0));
             }
             cv::imshow("Manual player extraction", image);
             keyboard = cv::waitKey(15);
@@ -37,37 +37,36 @@ namespace tmd{
         if  ( event == cv::EVENT_LBUTTONDOWN ) {
             if (len == 0 || mBoxComplete){
                 len ++;
-                mBoxes.push_back((box_t*) malloc(sizeof(box_t)));
+                mBoxes.push_back(cv::Rect(0, 0, 0, 0));
             }
 
-            box_t* b = mBoxes[len-1];
             tmd::debug("ManualPlayerExtractor", "onMouseClick", "len = " + std::to_string(len));
 
             if (mFirstClick){
                 tmd::debug("ManualPlayerExtractor", "onMouseClick", "First click : " + std::to_string(x) + "  "  + std::to_string(y));
-                b->pos.x = x;
-                b->pos.y = y;
+                mBoxes[len-1].x = x;
+                mBoxes[len-1].y = y;
                 mBoxComplete = false;
             }
             else{
-                int dx = x - b->pos.x;
-                int dy = y - b->pos.y;
+                int dx = x - mBoxes[len-1].x;
+                int dy = y - mBoxes[len-1].y;
                 tmd::debug("ManualPlayerExtractor", "onMouseClick", "Second click : " + std::to_string(x) + "  "  + std::to_string(y) + "  " + std::to_string(dx) + "  "  + std::to_string(dy));
 
                 if (dx < 0){
-                    b->pos.x = x;
-                    b->size.x = -dx;
+                    mBoxes[len-1].x = x;
+                    mBoxes[len-1].width = -dx;
                 }
                 else{
-                    b->size.x = dx;
+                    mBoxes[len-1].width = dx;
                 }
 
                 if (dy < 0){
-                    b->pos.y = y;
-                    b->size.y = -dy;
+                    mBoxes[len-1].y = y;
+                    mBoxes[len-1].height = -dy;
                 }
                 else{
-                    b->size.y = dy;
+                    mBoxes[len-1].height = dy;
                 }
                 mBoxComplete = true;
             }
