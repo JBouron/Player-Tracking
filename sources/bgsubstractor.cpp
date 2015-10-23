@@ -42,15 +42,11 @@ namespace tmd{
         if (!this->has_next_frame()){
             throw std::runtime_error("Error in BGSubstractor::next_frame() : no frame left.");
         }
-        frame_t* frame = (frame_t*) (malloc(sizeof(frame_t)));
-        cv::Mat or_fr;
-        m_input_video->read(or_fr);
-        frame->original_frame = new cv::Mat();
-        *(frame->original_frame) = or_fr.clone();
+        frame_t* frame = new frame_t;
+        m_input_video->read(frame->original_frame);
         frame->frame_index = m_frame_index;
         cv::Mat mask;
-        m_bgs->operator()(or_fr, mask, m_learning_rate);
-        frame->mask_frame = new cv::Mat(mask);
+        m_bgs->operator()(frame->original_frame, frame->mask_frame, m_learning_rate);
         frame->camera_index = m_camera_index;
 
         m_frame_index ++;
