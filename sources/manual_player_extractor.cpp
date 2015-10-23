@@ -2,6 +2,7 @@
 #include "../headers/box_t.h"
 #include "../headers/frame_t.h"
 #include "../headers/debug.h"
+#include "../headers/player_t.h"
 
 namespace tmd{
         bool ManualPlayerExtractor::mFirstClick = true;
@@ -30,6 +31,14 @@ namespace tmd{
             cv::imshow("Manual player extraction", image);
             keyboard = cv::waitKey(15);
         }
+        std::vector<player_t*> players;
+        for (size_t i = 0 ; i < mBoxes.size() ; i ++){
+            players.push_back(new player_t);
+            players[i]->original_image = (*frame->original_frame)(mBoxes[i]);
+            //players[i]->mask_image = (*frame->mask_frame)(mBoxes[i]);
+            players[i]->frame_index = frame->frame_index;
+        }
+        return players;
     }
 
     void ManualPlayerExtractor::onMouseClick(int event, int x, int y, int f, void* d){

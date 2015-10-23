@@ -121,7 +121,17 @@ void manual_player_extractor_test(){
     *(frame.original_frame) = (imread(
             "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/TEASER-Basketball-bomb.jpg"));
     tmd::ManualPlayerExtractor pe;
-    pe.extract_player_from_frame(&frame);
+    std::vector<tmd::player_t*> v = pe.extract_player_from_frame(&frame);
+    tmd::HeuristicFeaturesExtractor d;
+    d.extract_features_from_players(v);
+    namedWindow("Features");
+    for (size_t i = 0 ; i < v.size(); i ++){
+        std::vector<cv::Mat> strips = v[i]->features.strips;
+        for (size_t j = 0 ; j < strips.size() ; j ++){
+            cv::imshow("Features", strips[j]);
+            cv::waitKey(0);
+        }
+    }
 }
 
 int main(int argc, char* argv[])
