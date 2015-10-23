@@ -10,7 +10,7 @@ namespace tmd{
 
         static bool mBoxComplete;
         static bool mFirstClick;
-        static std::vector<tmd::box_t*> mBoxes;
+        static std::vector<cv::Rect> mBoxes;
     private:
         static void onMouseClick(int event, int x, int y, int f, void* d);
     };
