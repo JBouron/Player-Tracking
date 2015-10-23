@@ -2,10 +2,9 @@
 #define BACHELOR_PROJECT_FEATURES_T_H
 
 namespace tmd{
-    /* Structure holsing the features for one player. */
+    /* Structure holding the features for one player. */
     typedef struct{
-        float h;    // hue
-        float s;    // saturation
+        std::vector<cv::Mat> strips;
     }features_t;
 }
 

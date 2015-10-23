@@ -11,9 +11,8 @@ namespace tmd{
 
     class FeaturesExtractor{
     public:
-        static void extract_features_from_players(std::vector<player_t*> players);
-    private:
-        static void extract_features(player_t* player);
+        virtual void extract_features_from_players(std::vector<player_t*> players) = 0;
+        virtual void extract_features(player_t* player) = 0;
     };
 }
 
