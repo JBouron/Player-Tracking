@@ -5,9 +5,9 @@
 #include "features_extractor.h"
 #include <vector>
 
-#define TMD_RESIZE_WIDTH 200
+#define TMD_RESIZE_WIDTH 100
 #define TMD_RESIZE_HEIGHT 200
-#define TMD_STRIP_WIDTH 100
+#define TMD_STRIP_WIDTH 10
 
 namespace tmd{
     class HeuristicFeaturesExtractor : public FeaturesExtractor {
