@@ -10,8 +10,7 @@ namespace tmd{
      * corresponding player.
      */
     typedef struct{
-        position_t pos;     // Position of the box on the frame.
-        position_t size;    // Size of the box in pixels (x = width, y = height).
+        cv::Rect rect;
         team_t color;       /* Color of the box, each team has a different color
                                      to differentiate them. */
     }box_t;

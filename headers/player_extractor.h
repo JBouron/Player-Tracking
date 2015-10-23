@@ -22,7 +22,7 @@ namespace tmd{
 
     class PlayerExtractor{
     public:
-        static std::vector<player_t*> extract_player_from_frame(frame_t* frame);
+        virtual std::vector<player_t*> extract_player_from_frame(frame_t* frame) = 0;
     };
 }
 
