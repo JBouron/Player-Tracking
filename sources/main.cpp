@@ -103,9 +103,9 @@ static void readDirectory( const string& directoryName, vector<string>& filename
 void heuristic_features_extractor_tests() {
     tmd::player_t p;
     p.original_image = (imread(
-            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/TEASER-Basketball-bomb.jpg"));
-    tmd::HeuristicFeaturesExtractor* d = new tmd::HeuristicFeaturesExtractor;
-            d->extract_features(&p);
+            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/test_image.jpg"));
+    tmd::HeuristicFeaturesExtractor d;
+            d.extract_features(&p);
     cv::namedWindow("Strips");
     for (int i = 0; i < p.features.strips.size(); i ++){
         imshow("Strips", p.features.strips[i]);
