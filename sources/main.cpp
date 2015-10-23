@@ -2,6 +2,9 @@
 #include "opencv2/objdetect/objdetect.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/contrib/contrib.hpp"
+#include "../headers/heuristic_feature_extractor.h"
+#include "../headers/player_t.h"
+#include "../headers/features_t.h"
 
 #if defined(WIN32) || defined(_WIN32)
 #include <io.h>
@@ -35,7 +38,6 @@ static void detectAndDrawObjects( Mat& image, LatentSvmDetector& detector, const
     TickMeter tm;
     tm.start();
     detector.detect( image, detections, overlapThreshold, numThreads);
-    detector.
     tm.stop();
 
     cout << "Detection time = " << tm.getTimeSec() << " sec" << endl;
@@ -98,10 +100,24 @@ static void readDirectory( const string& directoryName, vector<string>& filename
     sort( filenames.begin(), filenames.end() );
 }
 
+void heuristic_features_extractor_tests() {
+    tmd::player_t p;
+    p.original_image = (imread(
+            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/TEASER-Basketball-bomb.jpg"));
+    tmd::HeuristicFeaturesExtractor* d = new tmd::HeuristicFeaturesExtractor;
+            d->extract_features(&p);
+    cv::namedWindow("Strips");
+    for (int i = 0; i < p.features.strips.size(); i ++){
+        imshow("Strips", p.features.strips[i]);
+        waitKey(0);
+    }
+}
+
 int main(int argc, char* argv[])
 {
+    heuristic_features_extractor_tests();
+    return EXIT_SUCCESS;
     help();
-
     string images_folder, models_folder;
     float overlapThreshold = 0.2f;
     int numThreads = -1;
