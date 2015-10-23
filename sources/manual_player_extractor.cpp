@@ -1,6 +1,7 @@
 #include "../headers/manual_player_extractor.h"
 #include "../headers/box_t.h"
 #include "../headers/frame_t.h"
+#include "../headers/debug.h"
 
 namespace tmd{
         bool ManualPlayerExtractor::mFirstClick = true;
@@ -18,10 +19,13 @@ namespace tmd{
         while ((char) keyboard != 32){ // Wait space to got ot next frame
             size_t max_idx;
             if (mBoxComplete) max_idx = mBoxes.size();
-            else max_idx = mBoxes.size() - 1;
+            else{
+                if (mBoxes.size() == 0) max_idx = 0; // size_t should not be -1.
+                else max_idx = mBoxes.size() - 1;
+            }
             image = frame->original_frame->clone();
             for (size_t i = 0; i < max_idx; i ++){
-                cv::rectangle(image, cv::Point(mBoxes[i]->pos.x, mBoxes[i]->pos.y), cv::Point(mBoxes[i]->size.x, mBoxes[i]->size.y), cv::Scalar(255, 0, 0));
+                cv::rectangle(image, cv::Point(mBoxes[i]->pos.x, mBoxes[i]->pos.y), cv::Point(mBoxes[i]->pos.x + mBoxes[i]->size.x, mBoxes[i]->pos.y + mBoxes[i]->size.y), cv::Scalar(255, 0, 0));
             }
             cv::imshow("Manual player extraction", image);
             keyboard = cv::waitKey(15);
@@ -37,15 +41,18 @@ namespace tmd{
             }
 
             box_t* b = mBoxes[len-1];
+            tmd::debug("ManualPlayerExtractor", "onMouseClick", "len = " + std::to_string(len));
 
             if (mFirstClick){
+                tmd::debug("ManualPlayerExtractor", "onMouseClick", "First click : " + std::to_string(x) + "  "  + std::to_string(y));
                 b->pos.x = x;
                 b->pos.y = y;
                 mBoxComplete = false;
             }
             else{
-                int dx = b->pos.x - x;
-                int dy = b->pos.y - y;
+                int dx = x - b->pos.x;
+                int dy = y - b->pos.y;
+                tmd::debug("ManualPlayerExtractor", "onMouseClick", "Second click : " + std::to_string(x) + "  "  + std::to_string(y) + "  " + std::to_string(dx) + "  "  + std::to_string(dy));
 
                 if (dx < 0){
                     b->pos.x = x;
