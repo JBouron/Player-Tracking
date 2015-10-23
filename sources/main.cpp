@@ -8,6 +8,9 @@
 #include "../headers/frame_t.h"
 #include "../headers/debug.h"
 #include "../headers/bgsubstractor.h"
+#include "../headers/manual_player_extractor.h"
+#include "../headers/frame_t.h"
+
 
 #if defined(WIN32) || defined(_WIN32)
 #include <io.h>
@@ -133,9 +136,28 @@ void bgs_demo(){
         tmd::debug("End");
 }
 
+void manual_player_extractor_test(){
+    tmd::frame_t frame;
+    (frame.original_frame) = new cv::Mat();
+    (frame.original_frame) = (imread(
+            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/TEASER-Basketball-bomb.jpg"));
+    tmd::ManualPlayerExtractor pe;
+    std::vector<tmd::player_t*> v = pe.extract_player_from_frame(&frame);
+    tmd::HeuristicFeaturesExtractor d;
+    d.extract_features_from_players(v);
+    namedWindow("Features");
+    for (size_t i = 0 ; i < v.size(); i ++){
+        std::vector<cv::Mat> strips = v[i]->features.strips;
+        for (size_t j = 0 ; j < strips.size() ; j ++){
+            cv::imshow("Features", strips[j]);
+            cv::waitKey(0);
+        }
+    }
+}
+
 int main(int argc, char* argv[])
 {
-    bgs_demo();
+    manual_player_extractor_test();
     return EXIT_SUCCESS;
     help();
     string images_folder, models_folder;
