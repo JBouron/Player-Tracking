@@ -1,11 +1,6 @@
-
 #include "../headers/heuristic_feature_extractor.h"
 #include "opencv2/imgproc/imgproc.hpp"
-#include "../headers/player_t.h"
 #include "../headers/debug.h"
-
-#include <opencv2/core/core.hpp>
-#include <opencv2/core/mat.hpp>
 
 namespace tmd{
     void HeuristicFeaturesExtractor::extract_features_from_players(std::vector<player_t*> players){
