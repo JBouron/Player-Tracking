@@ -1,0 +1,38 @@
+#ifndef BACHELOR_PROJECT_FEATURE_COMPARATOR_H
+#define BACHELOR_PROJECT_FEATURE_COMPARATOR_H
+
+
+#include "features_t.h"
+
+namespace tmd{
+    /* Class responsible of comparing features. */
+
+    class FeatureComparator{
+    public:
+        FeatureComparator(cv::Mat data, int clusterCount, cv::Mat labels, cv::TermCriteria criteria, int attempts,
+                          int flags, cv::Mat centers);
+        ~FeatureComparator();
+        void runClustering();
+        void addSampleToData(cv::Mat sample);
+        cv::Mat getClosestCenter(cv::Mat sample);
+        cv::Mat getClosestCenter(features_t feature, int i);
+        void addPlayerFeatures(features_t feature, int i);
+        void setTermCriteria(cv::TermCriteria criteria);
+        void setAttempts(int attempts);
+        void setFlags(int flags);
+
+
+    private:
+        cv::Mat getMatForFeature(features_t feature, int i);
+
+        cv::Mat m_data;
+        int m_clusterCount;
+        cv::Mat m_labels;
+        cv::TermCriteria m_termCriteria;
+        int m_attempts;
+        int m_flags;
+        cv::Mat m_centers;
+    };
+}
+
+#endif //BACHELOR_PROJECT_FEATURE_COMPARATOR_H
