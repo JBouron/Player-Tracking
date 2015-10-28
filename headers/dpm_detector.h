@@ -25,16 +25,6 @@ namespace tmd{
         void testOnImage(IplImage* image);
 
     private:
-        /* private structure holding part boxes infos */
-        typedef struct{
-            std::vector<cv::Rect> boxes;
-            int kPartFilters; // Number of part filters.
-            CvPoint** part_displacement; // Position of the parts.
-            int* levels; // levels of each parts.
-            int kPoint; // Number of points.
-            float* scores; // scores for each parts.
-        }part_boxes_t;
-
         /* Private methods, those are custom redefinitions of the ones coming
          * from openCV.
          */
@@ -43,15 +33,15 @@ namespace tmd{
                                        int sizeX, int sizeY,
                                        CvPoint **oppositePoints);
 
-        int detectBestPartBoxes(part_boxes_t* parts, IplImage *image,
+        int detectBestPartBoxes(std::vector<cv::Rect>& parts, IplImage *image,
                                       const CvLSVMFilterObject **filters,
                                       int n, CvPoint **partsDisplacement,
                                       int *levels, int kPoints, float *scores);
 
 
-        part_boxes_t* getPartBoxesForImage(IplImage* image);
+        std::vector<cv::Rect> getPartBoxesForImage(IplImage* image);
 
-        int fillPartStruct(part_boxes_t* parts, IplImage *image,
+        int fillPartStruct(std::vector<cv::Rect>& parts, IplImage *image,
                            const CvLSVMFeaturePyramid *H,
                            const CvLSVMFilterObject **filters,
                            int kComponents,
