@@ -192,6 +192,7 @@ int min_y_filters(CvLatentSvmDetector* detector){
     return min;
 }
 
+//DONE
 static int estimateBoxes(CvPoint *points, int *levels, int kPoints,
                          int sizeX, int sizeY, CvPoint **oppositePoints)
 {
@@ -208,6 +209,7 @@ static int estimateBoxes(CvPoint *points, int *levels, int kPoints,
     return LATENT_SVM_OK;
 }
 
+//DONE
 int getMaxFilterDims(const CvLSVMFilterObject **filters, int kComponents,
                      const int *kPartFilters,
                      unsigned int *maxXBorder, unsigned int *maxYBorder)
@@ -256,6 +258,7 @@ int getMaxFilterDims(const CvLSVMFilterObject **filters, int kComponents,
 // RESULT
 // Error status
 */
+//DONE
 int CustomshowPartFilterBoxes(IplImage *image,
                         const CvLSVMFilterObject **filters,
                         int n, CvPoint **partsDisplacement,
@@ -301,7 +304,7 @@ int CustomshowPartFilterBoxes(IplImage *image,
     return LATENT_SVM_OK;
 }
 
-
+//DONE
 int CustomsearchObjectThresholdSomeComponents(IplImage* image, const CvLSVMFeaturePyramid *H,
                                         const CvLSVMFilterObject **filters,
                                         int kComponents, const int *kPartFilters,
@@ -425,6 +428,7 @@ int CustomsearchObjectThresholdSomeComponents(IplImage* image, const CvLSVMFeatu
     return LATENT_SVM_OK;
 }
 
+//DONE
 static void sort(int n, const float* x, int* indices)
 {
     int i, j;
@@ -443,6 +447,7 @@ static void sort(int n, const float* x, int* indices)
         }
 }
 
+//DONE
 int nonMaximumSuppression(int numBoxes, const CvPoint *points,
                           const CvPoint *oppositePoints, const float *score,
                           float overlapThreshold,
@@ -521,7 +526,7 @@ int nonMaximumSuppression(int numBoxes, const CvPoint *points,
     return LATENT_SVM_OK;
 }
 
-
+//DONE
 CvSeq* CustomcvLatentSvmDetectObjects(IplImage* image,
                                 CvLatentSvmDetector* detector,
                                 CvMemStorage* storage,
@@ -638,7 +643,7 @@ void show_part_boxes(IplImage* image, CvLatentSvmDetector* detector){
 void lsvm_c(){
     CvLatentSvmDetector* d = cvLoadLatentSvmDetector("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml");
     CvMemStorage* memStorage = cvCreateMemStorage(0);
-    IplImage* imageTOPKEK = cvLoadImage("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img5.jpg");
+    IplImage* imageTOPKEK = cvLoadImage("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img3.jpg");
     CvSeq* seq = NULL;
     tmd::debug("score threshold = "  + std::to_string(d->score_threshold));
     //show_root_boxes(imageTOPKEK, d, 0);
