@@ -12,6 +12,7 @@
 #include "../headers/frame_t.h"
 
 #include "/home/jbouron/openCV-2.4.11/opencv-2.4.11/modules/objdetect/src/_latentsvm.h"
+#include "../headers/dpm_detector.h"
 
 
 #if defined(WIN32) || defined(_WIN32)
@@ -191,7 +192,7 @@ int min_y_filters(CvLatentSvmDetector* detector){
     }
     return min;
 }
-
+/*
 //DONE
 static int estimateBoxes(CvPoint *points, int *levels, int kPoints,
                          int sizeX, int sizeY, CvPoint **oppositePoints)
@@ -233,31 +234,7 @@ int getMaxFilterDims(const CvLSVMFilterObject **filters, int kComponents,
     return LATENT_SVM_OK;
 }
 
-/*
-// Drawing part filter boxes
-//
-// API
-// int showPartFilterBoxes(const IplImage *image,
-                           const filterObject *filter,
-                           CvPoint *points, int *levels, int kPoints,
-                           CvScalar color, int thickness,
-                           int line_type, int shift);
-// INPUT
-// image             - initial image
-// filters           - a set of part filters
-// n                 - number of part filters
-// partsDisplacement - a set of points
-// levels            - levels of feature pyramid
-// kPoints           - number of foot filter positions
-// color             - line color for each box
-// thickness         - line thickness
-// line_type         - line type
-// shift             - shift
-// OUTPUT
-// window contained initial image and filter boxes
-// RESULT
-// Error status
-*/
+
 //DONE
 int CustomshowPartFilterBoxes(IplImage *image,
                         const CvLSVMFilterObject **filters,
@@ -329,7 +306,7 @@ int CustomsearchObjectThresholdSomeComponents(IplImage* image, const CvLSVMFeatu
     partsDisplacementArr = (CvPoint ***)malloc(sizeof(CvPoint **) * kComponents);
 
     // Getting maximum filter dimensions
-    /*error = */getMaxFilterDims(filters, kComponents, kPartFilters, &maxXBorder, &maxYBorder);
+    getMaxFilterDims(filters, kComponents, kPartFilters, &maxXBorder, &maxYBorder);
     componentIndex = 0;
     *kPoints = 0;
     // For each component perform searching
@@ -341,19 +318,7 @@ int CustomsearchObjectThresholdSomeComponents(IplImage* image, const CvLSVMFeatu
                                           b[i], maxXBorder, maxYBorder, scoreThreshold,
                                           &(pointsArr[i]), &(levelsArr[i]), &(kPointsArr[i]),
                                           &(scoreArr[i]), &(partsDisplacementArr[i]), numThreads);
-        /*CvScalar color;
-        color.val[0] = 255; color.val[1] = 255; color.val[2] = 0; color.val[3] = 255;
-        const int thickness = 1;
-        const int line_type = 8; // 8 connected line.
-        const int shift = 0;
-        bool draw = true;
 
-        tmd::debug("New draw");
-        if (draw) CustomshowPartFilterBoxes(image, filters,
-                                            kPartFilters[i], partsDisplacementArr[i],
-                                levelsArr[i], kPointsArr[i],
-                                color, thickness,
-                                line_type, shift, scoreArr[i]);*/
 
 
 
@@ -382,7 +347,7 @@ int CustomsearchObjectThresholdSomeComponents(IplImage* image, const CvLSVMFeatu
     bool draw = true;
 
     tmd::debug("New draw");
-    if (draw) CustomshowPartFilterBoxes(image, filters,
+    if (draw) CustomShowPartFilterBoxes(image, filters,
                                         kPartFilters[i_max], partsDisplacementArr[i_max],
                                         levelsArr[i_max], kPointsArr[i_max],
                                         color, thickness,
@@ -554,7 +519,7 @@ CvSeq* CustomcvLatentSvmDetectObjects(IplImage* image,
     // Create feature pyramid with nullable border
     H = createFeaturePyramidWithBorder(image, maxXBorder, maxYBorder);
     // Search object
-    error = CustomsearchObjectThresholdSomeComponents(image, H, (const CvLSVMFilterObject**)(detector->filters),
+    error = CustomSearchObjectThresholdSomeComponents(image, H, (const CvLSVMFilterObject**)(detector->filters),
                                                 detector->num_components, detector->num_part_filters, detector->b, detector->score_threshold,
                                                 &points, &oppPoints, &score, &kPoints, numThreads);
     if (error != LATENT_SVM_OK)
@@ -595,6 +560,12 @@ CvSeq* CustomcvLatentSvmDetectObjects(IplImage* image,
     free(scoreOut);
 
     return result_seq;
+}*/
+
+void test_dpm_class(){
+    tmd::DPMDetector d("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml", 0.5f, 1);
+    IplImage* image = cvLoadImage("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img3.jpg");
+    d.testOnImage(image);
 }
 
 
@@ -647,7 +618,7 @@ void lsvm_c(){
     CvSeq* seq = NULL;
     tmd::debug("score threshold = "  + std::to_string(d->score_threshold));
     //show_root_boxes(imageTOPKEK, d, 0);
-    seq = CustomcvLatentSvmDetectObjects(imageTOPKEK, d, memStorage, 0.5f, 1);
+    //seq = CustomcvLatentSvmDetectObjects(imageTOPKEK, d, memStorage, 0.5f, 1);
 
     CvObjectDetection* obj = new CvObjectDetection;
 
@@ -673,7 +644,7 @@ void lsvm_c(){
 }
 
 int main(int argc, char* argv[]) {
-    lsvm_c();
+    test_dpm_class();
     return 0;
 
 }
