@@ -18,13 +18,23 @@ namespace tmd{
 
     class DPMDetector{
     public :
-        DPMDetector(std::string model_file, float overlap_threshold, int numthread);
+        DPMDetector(std::string model_file);
         ~DPMDetector();
 
         void extractTorso(tmd::player_t* player);
         void testOnImage(IplImage* image);
 
     private:
+        /* private structure holding part boxes infos */
+        typedef struct{
+            std::vector<cv::Rect> boxes;
+            int kPartFilters; // Number of part filters.
+            CvPoint** part_displacement; // Position of the parts.
+            int* levels; // levels of each parts.
+            int kPoint; // Number of points.
+            float* scores; // scores for each parts.
+        }part_boxes_t;
+
         /* Private methods, those are custom redefinitions of the ones coming
          * from openCV.
          */
@@ -32,40 +42,30 @@ namespace tmd{
                                        int kPoints,
                                        int sizeX, int sizeY,
                                        CvPoint **oppositePoints);
-        /*int getMaxFilterDims(const CvLSVMFilterObject **filters, int kComponents,
-                             const int *kPartFilters,
-                             unsigned int *maxXBorder, unsigned int *maxYBorder);*/
-        int CustomShowPartFilterBoxes(IplImage *image,
+
+        int detectBestPartBoxes(part_boxes_t* parts, IplImage *image,
                                       const CvLSVMFilterObject **filters,
                                       int n, CvPoint **partsDisplacement,
-                                      int *levels, int kPoints,
-                                      CvScalar color, int thickness,
-                                      int line_type, int shift, float *scores);
-        int CustomSearchObjectThresholdSomeComponents(IplImage *image,
-                                                      const CvLSVMFeaturePyramid *H,
-                                                      const CvLSVMFilterObject **filters,
-                                                      int kComponents,
-                                                      const int *kPartFilters,
-                                                      const float *b,
-                                                      float scoreThreshold,
-                                                      CvPoint **points,
-                                                      CvPoint **oppPoints,
-                                                      float **score,
-                                                      int *kPoints,
-                                                      int numThreads);
-        /*int nonMaximumSuppression(int numBoxes, const CvPoint *points,
-                                  const CvPoint *oppositePoints, const float *score,
-                                  float overlapThreshold,
-                                  int *numBoxesOut, CvPoint **pointsOut,
-                                  CvPoint **oppositePointsOut, float **scoreOut);*/
-        CvSeq* CustomcvLatentSvmDetectObjects(IplImage* image,
-                                              CvLatentSvmDetector* detector,
-                                              CvMemStorage* storage,
-                                              float overlap_threshold, int numThreads);
+                                      int *levels, int kPoints, float *scores);
+
+
+        part_boxes_t* getPartBoxesForImage(IplImage* image);
+
+        int fillPartStruct(part_boxes_t* parts, IplImage *image,
+                           const CvLSVMFeaturePyramid *H,
+                           const CvLSVMFilterObject **filters,
+                           int kComponents,
+                           const int *kPartFilters,
+                           const float *b,
+                           float scoreThreshold,
+                           CvPoint **points,
+                           CvPoint **oppPoints,
+                           float **score,
+                           int *kPoints,
+                           int numThreads);
+
 
         CvLatentSvmDetector* m_detector;
-        CvMemStorage* m_memory_storage;
-        float m_overlap_threshold;
         int m_numthread;
     };
 }
