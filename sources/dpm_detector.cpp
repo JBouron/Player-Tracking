@@ -32,18 +32,18 @@ namespace tmd{
 
     void DPMDetector::testOnImage(IplImage* image){
         //CustomcvLatentSvmDetectObjects(image, m_detector, m_memory_storage, m_overlap_threshold, m_numthread);
-        part_boxes_t* parts = getPartBoxesForImage(image);
+        std::vector<cv::Rect> parts = getPartBoxesForImage(image);
         CvScalar color;
         color.val[0] = 255; color.val[1] = 0; color.val[2] = 255; color.val[3] = 255;
         const int thickness = 1;
         const int line_type = 8; // 8 connected line.
         const int shift = 0;
-        for (int i = 0 ; i < parts->boxes.size() ; i ++){
+        for (int i = 0 ; i < parts.size() ; i ++){
             CvRect r;
-            r.x = parts->boxes[i].x;
-            r.y = parts->boxes[i].y;
-            r.width = parts->boxes[i].width;
-            r.height = parts->boxes[i].height;
+            r.x = parts[i].x;
+            r.y = parts[i].y;
+            r.width = parts[i].width;
+            r.height = parts[i].height;
             cvRectangleR(image, r, color, thickness, line_type, shift);
         }
         cvShowImage("Result", image);
@@ -92,7 +92,7 @@ namespace tmd{
 // RESULT
 // Error status
 */
-    int DPMDetector::detectBestPartBoxes(part_boxes_t* parts, IplImage *image,
+    int DPMDetector::detectBestPartBoxes(std::vector<cv::Rect>& parts, IplImage *image,
                                                const CvLSVMFilterObject **filters,
                                                int n,
                                                CvPoint **partsDisplacement,
@@ -120,7 +120,7 @@ namespace tmd{
 
                 if (levels[i]  == max_level  && scores[i] == max_score_for_level) {
                     cv::Rect r(partsDisplacement[i][j], oppositePoint);
-                    parts->boxes.push_back(r);
+                    parts.push_back(r);
                 }
             }
         }
@@ -129,7 +129,7 @@ namespace tmd{
     }
 
 
-    tmd::DPMDetector::part_boxes_t* DPMDetector::getPartBoxesForImage(IplImage* image){
+    std::vector<cv::Rect> DPMDetector::getPartBoxesForImage(IplImage* image){
         CvPoint*** partsDisplacementArr = NULL;
         CvLSVMFeaturePyramid *H = 0;
         CvPoint *points = 0, *oppPoints = 0;
@@ -152,7 +152,7 @@ namespace tmd{
         // Create feature pyramid with nullable border
         H = createFeaturePyramidWithBorder(image, maxXBorder, maxYBorder);
         // Search object
-        part_boxes_t* parts = new part_boxes_t;
+        std::vector<cv::Rect> parts;
         error = fillPartStruct(parts, image, H,
                                                           (const CvLSVMFilterObject **) (m_detector->filters),
                                                           m_detector->num_components,
@@ -164,7 +164,8 @@ namespace tmd{
                                                           m_numthread);
         if (error != LATENT_SVM_OK)
         {
-            return NULL;
+            parts.clear();
+            return parts;
         }
 
         if(image->nChannels == 3)
@@ -227,7 +228,7 @@ namespace tmd{
     }
 
 
-    int DPMDetector::fillPartStruct(part_boxes_t* parts, IplImage *image,
+    int DPMDetector::fillPartStruct(std::vector<cv::Rect>& parts, IplImage *image,
                        const CvLSVMFeaturePyramid *H,
                        const CvLSVMFilterObject **filters,
                        int kComponents,
