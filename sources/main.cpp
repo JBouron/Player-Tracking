@@ -563,8 +563,8 @@ CvSeq* CustomcvLatentSvmDetectObjects(IplImage* image,
 }*/
 
 void test_dpm_class(){
-    tmd::DPMDetector d("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml", 0.5f, 1);
-    IplImage* image = cvLoadImage("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img3.jpg");
+    tmd::DPMDetector d("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml");
+    IplImage* image = cvLoadImage("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img1.jpg");
     d.testOnImage(image);
 }
 
@@ -614,7 +614,7 @@ void show_part_boxes(IplImage* image, CvLatentSvmDetector* detector){
 void lsvm_c(){
     CvLatentSvmDetector* d = cvLoadLatentSvmDetector("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml");
     CvMemStorage* memStorage = cvCreateMemStorage(0);
-    IplImage* imageTOPKEK = cvLoadImage("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img3.jpg");
+    IplImage* imageTOPKEK = cvLoadImage("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img4.jpg");
     CvSeq* seq = NULL;
     tmd::debug("score threshold = "  + std::to_string(d->score_threshold));
     //show_root_boxes(imageTOPKEK, d, 0);
