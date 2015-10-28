@@ -6,8 +6,14 @@
 #include "../headers/debug.h"
 
 namespace tmd{
-    DPMDetector::DPMDetector(std::string model_file){
+    DPMDetector::DPMDetector(std::string model_file, float overlap_threshold, int numthread){
+        if (numthread < 1){
+            throw std::invalid_argument("Error in DPMDetector : numthread < 1");
+        }
+        m_overlap_threshold = overlap_threshold;
+        m_numthread = numthread;
         m_detector = cvLoadLatentSvmDetector(model_file.c_str());
+        m_memory_storage = cvCreateMemStorage(0);
         if (m_detector == NULL){
             throw std::invalid_argument("Error in DPMDetector : couldn't create"
                                                 " the detector.");
@@ -18,7 +24,7 @@ namespace tmd{
         cvReleaseLatentSvmDetector(&m_detector);
     }
 
-    void extractTorso(tmd::player_t* player){
+    void DPMDetector::extractTorso(tmd::player_t* player){
         if (player == NULL){
             throw std::invalid_argument("Error in DPMDetector : NULL pointer in"
                                                 " extractTorso method.");
@@ -27,8 +33,14 @@ namespace tmd{
         // TODO : extract torso and update features of the player.
     }
 
-    static int DPMDetector::CustomestimateBoxes(CvPoint *points, int *levels, int kPoints,
-                             int sizeX, int sizeY, CvPoint **oppositePoints)
+    void DPMDetector::testOnImage(IplImage* image){
+        CustomcvLatentSvmDetectObjects(image, m_detector, m_memory_storage, m_overlap_threshold, m_numthread);
+    }
+
+    int DPMDetector::CustomEstimateBoxes(CvPoint *points, int *levels,
+                                         int kPoints,
+                                         int sizeX, int sizeY,
+                                         CvPoint **oppositePoints)
     {
         int i;
         float step;
@@ -43,12 +55,14 @@ namespace tmd{
         return LATENT_SVM_OK;
     }
 
-    int DPMDetector::CustomshowPartFilterBoxes(IplImage *image,
-                                  const CvLSVMFilterObject **filters,
-                                  int n, CvPoint **partsDisplacement,
-                                  int *levels, int kPoints,
-                                  CvScalar color, int thickness,
-                                  int line_type, int shift, float* scores){
+    int DPMDetector::CustomShowPartFilterBoxes(IplImage *image,
+                                               const CvLSVMFilterObject **filters,
+                                               int n,
+                                               CvPoint **partsDisplacement,
+                                               int *levels, int kPoints,
+                                               CvScalar color, int thickness,
+                                               int line_type, int shift,
+                                               float *scores){
         int i, j;
         float step;
         CvPoint oppositePoint;
@@ -87,13 +101,18 @@ namespace tmd{
         return LATENT_SVM_OK;
     }
 
-    int DPMDetector::CustomsearchObjectThresholdSomeComponents(IplImage* image, const CvLSVMFeaturePyramid *H,
-                                                  const CvLSVMFilterObject **filters,
-                                                  int kComponents, const int *kPartFilters,
-                                                  const float *b, float scoreThreshold,
-                                                  CvPoint **points, CvPoint **oppPoints,
-                                                  float **score, int *kPoints,
-                                                  int numThreads){
+    int DPMDetector::CustomSearchObjectThresholdSomeComponents(IplImage *image,
+                                                               const CvLSVMFeaturePyramid *H,
+                                                               const CvLSVMFilterObject **filters,
+                                                               int kComponents,
+                                                               const int *kPartFilters,
+                                                               const float *b,
+                                                               float scoreThreshold,
+                                                               CvPoint **points,
+                                                               CvPoint **oppPoints,
+                                                               float **score,
+                                                               int *kPoints,
+                                                               int numThreads){
         //int error = 0;
         int i, j, s, f, componentIndex;
         unsigned int maxXBorder, maxYBorder;
@@ -130,7 +149,7 @@ namespace tmd{
             bool draw = true;
 
             tmd::debug("New draw");
-            if (draw) CustomshowPartFilterBoxes(image, filters,
+            if (draw) CustomShowPartFilterBoxes(image, filters,
                                                 kPartFilters[i], partsDisplacementArr[i],
                                     levelsArr[i], kPointsArr[i],
                                     color, thickness,
@@ -149,8 +168,10 @@ namespace tmd{
                 free(partsDisplacementArr);
                 return LATENT_SVM_SEARCH_OBJECT_FAILED;
             }
-            CustomestimateBoxes(pointsArr[i], levelsArr[i], kPointsArr[i],
-                          filters[componentIndex]->sizeX, filters[componentIndex]->sizeY, &(oppPointsArr[i]));
+            CustomEstimateBoxes(pointsArr[i], levelsArr[i], kPointsArr[i],
+                                filters[componentIndex]->sizeX,
+                                filters[componentIndex]->sizeY,
+                                &(oppPointsArr[i]));
             componentIndex += (kPartFilters[i] + 1);
             *kPoints += kPointsArr[i];
         }
@@ -163,11 +184,13 @@ namespace tmd{
         bool draw = true;
 
         tmd::debug("New draw");
-        if (draw) CustomshowPartFilterBoxes(image, filters,
-                                            kPartFilters[i_max], partsDisplacementArr[i_max],
-                                            levelsArr[i_max], kPointsArr[i_max],
-                                            color, thickness,
-                                            line_type, shift, scoreArr[i_max]);
+        if (draw)
+            CustomShowPartFilterBoxes(image, filters,
+                                      kPartFilters[i_max],
+                                      partsDisplacementArr[i_max],
+                                      levelsArr[i_max], kPointsArr[i_max],
+                                      color, thickness,
+                                      line_type, shift, scoreArr[i_max]);
 
         *points = (CvPoint *)malloc(sizeof(CvPoint) * (*kPoints));
         *oppPoints = (CvPoint *)malloc(sizeof(CvPoint) * (*kPoints));
@@ -235,9 +258,15 @@ namespace tmd{
         // Create feature pyramid with nullable border
         H = createFeaturePyramidWithBorder(image, maxXBorder, maxYBorder);
         // Search object
-        error = CustomsearchObjectThresholdSomeComponents(image, H, (const CvLSVMFilterObject**)(detector->filters),
-                                                          detector->num_components, detector->num_part_filters, detector->b, detector->score_threshold,
-                                                          &points, &oppPoints, &score, &kPoints, numThreads);
+        error = CustomSearchObjectThresholdSomeComponents(image, H,
+                                                          (const CvLSVMFilterObject **) (detector->filters),
+                                                          detector->num_components,
+                                                          detector->num_part_filters,
+                                                          detector->b,
+                                                          detector->score_threshold,
+                                                          &points, &oppPoints,
+                                                          &score, &kPoints,
+                                                          numThreads);
         if (error != LATENT_SVM_OK)
         {
             return NULL;
