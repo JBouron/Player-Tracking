@@ -11,12 +11,19 @@ namespace tmd{
 
     std::vector<player_t*> ManualPlayerExtractor::extract_player_from_frame(
             frame_t *frame) {
+        std::vector<tmd::player_t*> v;
+        for (int i = 0 ; i < 3 ; i ++){
+            v.push_back(new tmd::player_t);
+            v[i]->original_image = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img" + std::to_string(i+1) +".jpg");
+        }
+
         mFirstClick = true;
         mBoxComplete = false;
-        cv::namedWindow("Manual player extraction");
-        cv::setMouseCallback("Manual player extraction", onMouseClick, NULL);
+        /*cv::namedWindow("Manual player extraction");
+        cv::setMouseCallback("Manual player extraction", onMouseClick, NULL);*/
         int keyboard = 0;
         cv::Mat image;
+            image = frame->original_frame.clone();
         while ((char) keyboard != 32){ // Wait space to got ot next frame
             size_t max_idx;
             if (mBoxComplete) max_idx = mBoxes.size();
@@ -24,21 +31,26 @@ namespace tmd{
                 if (mBoxes.size() == 0) max_idx = 0; // size_t should not be -1.
                 else max_idx = mBoxes.size() - 1;
             }
-            image = frame->original_frame.clone();
             for (size_t i = 0; i < max_idx; i ++){
                 cv::rectangle(image, mBoxes[i], cv::Scalar(255, 0, 0));
             }
-            cv::imshow("Manual player extraction", image);
+            //cv::imshow("Manual player extraction", image);
             keyboard = cv::waitKey(15);
+            keyboard = 32;
         }
-        std::vector<player_t*> players;
+        //cv::destroyAllWindows();
+       /* std::vector<player_t*> players;
         for (size_t i = 0 ; i < mBoxes.size() ; i ++){
+            tmd::debug("boxes");
+            cv::Mat cpy = frame->original_frame.clone();
             players.push_back(new player_t);
-            players[i]->original_image = (frame->original_frame)(mBoxes[i]);
+            //players[i]->original_image = cpy(mBoxes[i]);
+            players[i]->original_image = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img1.jpg");
             //players[i]->mask_image = (*frame->mask_frame)(mBoxes[i]);
             players[i]->frame_index = frame->frame_index;
-        }
-        return players;
+        }*/
+        return v;
+        //return players;
     }
 
     void ManualPlayerExtractor::onMouseClick(int event, int x, int y, int f, void* d){

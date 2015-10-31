@@ -8,14 +8,17 @@
 #include "../headers/features_t.h"
 
 namespace tmd{
-    DPMDetector::DPMDetector(std::string model_file){
+    DPMDetector::DPMDetector(std::string model_file, int numthreads){
         m_detector = cvLoadLatentSvmDetector(model_file.c_str());
-
-
         if (m_detector == NULL){
             throw std::invalid_argument("Error in DPMDetector : couldn't create"
                                                 " the detector.");
         }
+        if (numthreads < 1){
+            throw std::invalid_argument("Error in DPMDetector : numthreads must"
+                                                "be >= 1");
+        }
+        m_numthreads = 0;
         tmd::debug("DPMDetector", "DPMDetector", "Detector ready.");
     }
 
@@ -112,7 +115,6 @@ namespace tmd{
         return LATENT_SVM_OK;
     }
 
-
     std::vector<cv::Rect> DPMDetector::getPartBoxesForImage(IplImage* image){
         CvLSVMFeaturePyramid *H = 0;
         CvPoint *points = 0, *oppPoints = 0;
@@ -133,7 +135,9 @@ namespace tmd{
         getMaxFilterDims((const CvLSVMFilterObject**)(m_detector->filters), m_detector->num_components,
                          m_detector->num_part_filters, &maxXBorder, &maxYBorder);
         // Create feature pyramid with nullable border
+        tmd::debug("DPMDetector", "getPartBoxesForImage", "create featurePyramid.");
         H = createFeaturePyramidWithBorder(image, maxXBorder, maxYBorder);
+        tmd::debug("DPMDetector", "getPartBoxesForImage", "done.");
         // Search object
         std::vector<cv::Rect> parts;
         error = preparePartDetection(parts, image, H,
@@ -163,10 +167,11 @@ namespace tmd{
         return parts;
     }
 
+
     /**
      * Redefinition of searchObjectThreshold from openCV.
-     * This version is the exact same, but allow us to avoid a SEGV when trying
-     * to call searchObjectThreshold. (Maybe a bug from openCV).
+     * This version is the exact same, but without the multi-threading support
+     * which would return an error.
      */
     int customSearchObjectThreshold(const CvLSVMFeaturePyramid *H,
                                     const CvLSVMFilterObject **all_F, int n,
@@ -179,28 +184,14 @@ namespace tmd{
                                     int numThreads)
     {
         int opResult;
-
-
-        // Matching
-#ifdef HAVE_TBB
-        if (numThreads <= 0)
-    {
-        opResult = LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT;
-        return opResult;
-    }
-    opResult = tbbThresholdFunctionalScore(all_F, n, H, b, maxXBorder, maxYBorder,
-                                           scoreThreshold, numThreads, score,
-                                           points, levels, kPoints,
-                                           partsDisplacement);
-#else
+        tmd::debug("DPMDetector", "customSearchObjectThreshold", "call thresholdFunctionalScore()");
         opResult = thresholdFunctionalScore(all_F, n, H, b,
                                             maxXBorder, maxYBorder,
                                             scoreThreshold,
                                             score, points, levels,
                                             kPoints, partsDisplacement);
+        tmd::debug("DPMDetector", "customSearchObjectThreshold", "done.");
 
-        (void)numThreads;
-#endif
         if (opResult != LATENT_SVM_OK)
         {
             return LATENT_SVM_SEARCH_OBJECT_FAILED;
@@ -276,6 +267,10 @@ namespace tmd{
                 free(kPointsArr);
                 free(levelsArr);
                 free(partsDisplacementArr);
+                tmd::debug("DPMDetector", "preparePartDetection", "searchObjectThreshold finished with error.");
+                if (error == LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT){
+                    tmd::debug("DPMDetector", "preparePartDetection", "error is LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT.");
+                }
                 return LATENT_SVM_SEARCH_OBJECT_FAILED;
             }
             customEstimateBoxes(pointsArr[i], levelsArr[i], kPointsArr[i],
