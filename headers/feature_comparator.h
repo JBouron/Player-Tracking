@@ -21,7 +21,8 @@ namespace tmd{
         void setTermCriteria(cv::TermCriteria criteria);
         void setAttempts(int attempts);
         void setFlags(int flags);
-
+        void writeCentersToFile();
+        cv::Mat readCentersFromFile();
 
     private:
         cv::Mat getMatForPlayerFeature(player_t *player, int i);
