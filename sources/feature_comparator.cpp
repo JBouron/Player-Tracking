@@ -5,6 +5,7 @@
 #include "../headers/box_t.h"
 
 
+
 using namespace cv;
 
 namespace tmd{
@@ -97,4 +98,5 @@ namespace tmd{
         meanAsMat.at<double>(0, 2) = meanChannel3;
         return meanAsMat;
     }
+
 }

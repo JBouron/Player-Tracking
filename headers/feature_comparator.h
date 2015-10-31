@@ -33,8 +33,7 @@ namespace tmd{
         int m_attempts;
         int m_flags;
         cv::Mat m_centers;
-
-    };
+   };
 }
 
 #endif //BACHELOR_PROJECT_FEATURE_COMPARATOR_H
