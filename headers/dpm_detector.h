@@ -22,7 +22,6 @@ namespace tmd{
         ~DPMDetector();
 
         void extractTorso(tmd::player_t* player);
-        void testOnImage(IplImage* image);
 
     private:
         /* Private methods, those are custom redefinitions of the ones coming
