@@ -4,6 +4,8 @@
 #include <opencv2/imgproc/imgproc_c.h>
 #include "../headers/dpm_detector.h"
 #include "../headers/debug.h"
+#include "../headers/player_t.h"
+#include "../headers/features_t.h"
 
 namespace tmd{
     DPMDetector::DPMDetector(std::string model_file){
@@ -18,36 +20,16 @@ namespace tmd{
     }
 
     DPMDetector::~DPMDetector() {
-        cvReleaseLatentSvmDetector(&m_detector);
+        cvReleaseLatentSvmDetector(&m_detector); // Bug in CLion.
     }
 
     void DPMDetector::extractTorso(tmd::player_t* player){
-        if (player == NULL){
+        if (player == NULL) {
             throw std::invalid_argument("Error in DPMDetector : NULL pointer in"
                                                 " extractTorso method.");
         }
-
-        // TODO : extract torso and update features of the player.
-    }
-
-    void DPMDetector::testOnImage(IplImage* image){
-        //CustomcvLatentSvmDetectObjects(image, m_detector, m_memory_storage, m_overlap_threshold, m_numthread);
-        std::vector<cv::Rect> parts = getPartBoxesForImage(image);
-        CvScalar color;
-        color.val[0] = 255; color.val[1] = 0; color.val[2] = 255; color.val[3] = 255;
-        const int thickness = 1;
-        const int line_type = 8; // 8 connected line.
-        const int shift = 0;
-        for (int i = 0 ; i < parts.size() ; i ++){
-            CvRect r;
-            r.x = parts[i].x;
-            r.y = parts[i].y;
-            r.width = parts[i].width;
-            r.height = parts[i].height;
-            cvRectangleR(image, r, color, thickness, line_type, shift);
-        }
-        cvShowImage("Result", image);
-        cv::waitKey(0);
+        IplImage playerImage = player->original_image; // Bug in CLion.
+        player->features.body_parts = getPartBoxesForImage(&playerImage);
     }
 
     int DPMDetector::CustomEstimateBoxes(CvPoint *points, int *levels,
@@ -130,7 +112,6 @@ namespace tmd{
 
 
     std::vector<cv::Rect> DPMDetector::getPartBoxesForImage(IplImage* image){
-        CvPoint*** partsDisplacementArr = NULL;
         CvLSVMFeaturePyramid *H = 0;
         CvPoint *points = 0, *oppPoints = 0;
         int kPoints = 0;
@@ -154,14 +135,14 @@ namespace tmd{
         // Search object
         std::vector<cv::Rect> parts;
         error = fillPartStruct(parts, image, H,
-                                                          (const CvLSVMFilterObject **) (m_detector->filters),
-                                                          m_detector->num_components,
-                                                          m_detector->num_part_filters,
-                                                          m_detector->b,
-                                                          m_detector->score_threshold,
-                                                          &points, &oppPoints,
-                                                          &score, &kPoints,
-                                                          m_numthread);
+                              (const CvLSVMFilterObject **) (m_detector->filters),
+                              m_detector->num_components,
+                              m_detector->num_part_filters,
+                              m_detector->b,
+                              m_detector->score_threshold,
+                              &points, &oppPoints,
+                              &score, &kPoints,
+                              m_numthread);
         if (error != LATENT_SVM_OK)
         {
             parts.clear();
@@ -289,19 +270,10 @@ namespace tmd{
             *kPoints += kPointsArr[i];
         }
 
-        CvScalar color;
-        color.val[0] = 255; color.val[1] = 255; color.val[2] = 0; color.val[3] = 255;
-        const int thickness = 1;
-        const int line_type = 8; // 8 connected line.
-        const int shift = 0;
-        bool draw = true;
-
-        tmd::debug("New draw");
-        if (draw)
-            detectBestPartBoxes(parts, image, filters,
-                                      kPartFilters[i_max],
-                                      partsDisplacementArr[i_max],
-                                      levelsArr[i_max], kPointsArr[i_max], scoreArr[i_max]);
+        detectBestPartBoxes(parts, image, filters,
+                          kPartFilters[i_max],
+                          partsDisplacementArr[i_max],
+                          levelsArr[i_max], kPointsArr[i_max], scoreArr[i_max]);
 
         // Release allocated memory
         for (i = 0; i < kComponents; i++)

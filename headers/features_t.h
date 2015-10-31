@@ -4,7 +4,7 @@
 namespace tmd{
     /* Structure holding the features for one player. */
     typedef struct{
-        std::vector<cv::Mat> strips;
+        std::vector<cv::Rect> body_parts;
     }features_t;
 }
 

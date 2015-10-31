@@ -35,10 +35,10 @@ void heuristic_features_extractor_tests() {
     tmd::HeuristicFeaturesExtractor d;
             d.extract_features(&p);
     cv::namedWindow("Strips");
-    for (int i = 0; i < p.features.strips.size(); i ++){
+/*    for (int i = 0; i < p.features.strips.size(); i ++){
         imshow("Strips", p.features.strips[i]);
         waitKey(0);
-    }
+    }*/
 }
 void bgs_demo(){
     namedWindow("Frame");
@@ -66,21 +66,45 @@ void manual_player_extractor_test(){
     std::vector<tmd::player_t*> v = pe.extract_player_from_frame(&frame);
     tmd::HeuristicFeaturesExtractor d;
     d.extract_features_from_players(v);
-    namedWindow("Features");
+    /*namedWindow("Features");
     for (size_t i = 0 ; i < v.size(); i ++){
         std::vector<cv::Mat> strips = v[i]->features.strips;
         for (size_t j = 0 ; j < strips.size() ; j ++){
             cv::imshow("Features", strips[j]);
             cv::waitKey(0);
         }
+    }*/
+    tmd::DPMDetector dpmDetector("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml");
+    for (size_t i = 0 ; i < v.size() ; i ++){
+        dpmDetector.extractTorso(v[i]);
     }
 }
 
 
 void test_dpm_class(){
     tmd::DPMDetector d("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml");
-    IplImage* image = cvLoadImage("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img5.jpg");
-    d.testOnImage(image);
+    cv::Mat playerImage = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img5.jpg");
+    tmd::player_t* player = new tmd::player_t;
+    player->original_image = playerImage;
+    d.extractTorso(player);
+    std::vector<cv::Rect> parts = player->features.body_parts;
+    cv::Mat image = player->original_image;
+    CvScalar color;
+    color.val[0] = 255; color.val[1] = 0; color.val[2] = 255; color.val[3] = 255;
+    const int thickness = 1;
+    const int line_type = 8; // 8 connected line.
+    const int shift = 0;
+    for (int i = 0 ; i < parts.size() ; i ++){
+        CvRect r;
+        r.x = parts[i].x;
+        r.y = parts[i].y;
+        r.width = parts[i].width;
+        r.height = parts[i].height;
+        cv::rectangle(image, r, color, thickness, line_type, shift);
+    }
+    cv::imshow("Result", image);
+    cv::waitKey(0);
+    delete player;
 }
 
 int main(int argc, char* argv[]) {
