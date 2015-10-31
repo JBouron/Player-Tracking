@@ -94,8 +94,12 @@ void manual_player_comparator_test() {
             cv::imshow("Features", strips[j]);
             cv::waitKey(0);
         }*/
-    }
 
+    }
+}
+
+int main(int argc, char* argv[]) {
+    return 0;
 }
 
 std::vector<tmd::player_t *> get_vector() {
@@ -144,7 +148,3 @@ void test_dpm_class() {
     }
 }
 
-int main(int argc, char *argv[]) {
-    manual_player_extractor_test();
-    return 0;
-}
