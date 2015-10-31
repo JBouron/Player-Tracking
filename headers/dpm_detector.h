@@ -3,8 +3,8 @@
 
 #include <string>
 #include <opencv2/objdetect/objdetect.hpp>
-#include "../../../../../openCV-2.4.11/opencv-2.4.11/modules/objdetect/src/_latentsvm.h"
-#include "../../../../../openCV-2.4.11/opencv-2.4.11/modules/objdetect/src/_lsvm_matching.h"
+#include "/home/nicolas/Applications/opencv-2.4.11/modules/objdetect/src/_latentsvm.h"
+#include "/home/nicolas/Applications/opencv-2.4.11/modules/objdetect/src/_lsvm_matching.h"
 #include "player_t.h"
 
 namespace tmd{

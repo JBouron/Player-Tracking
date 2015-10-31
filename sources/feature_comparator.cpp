@@ -1,6 +1,9 @@
 #include <opencv2/core/core.hpp>
 #include "../headers/feature_comparator.h"
 #include "../headers/features_t.h"
+#include "../headers/player_t.h"
+#include "../headers/box_t.h"
+
 
 using namespace cv;
 
@@ -57,41 +60,13 @@ namespace tmd{
         return m_centers.at<Mat>(minIndex);
     }
 
-    cv::Mat FeatureComparator::getClosestCenter(features_t feature, int i) {
-        if (feature.strips[i].channels() != 3) {
-            throw std::invalid_argument("Feature strips don't have 3 channels !");
-        }
-        Scalar stripMean = mean(feature.strips[i]);
-        //ASSUMING 3 CHANNEL STRIP
-        double meanChannel1 = stripMean[0];
-        double meanChannel2 = stripMean[1];
-        double meanChannel3 = stripMean[2];
-        Mat meanAsMat(1, 3, CV_64F);
-        meanAsMat.at<double>(0, 0) = meanChannel1;
-        meanAsMat.at<double>(0, 1) = meanChannel2;
-        meanAsMat.at<double>(0, 2) = meanChannel3;
-        return getClosestCenter(meanAsMat);
+    cv::Mat FeatureComparator::getClosestCenter(player_t *player, int i) {
+        return getClosestCenter(getMatForPlayerFeature(player, i));
     }
 
-    void FeatureComparator::addPlayerFeatures(features_t feature, int i) {
-        if(feature.strips[i].channels() != 3){
-            throw std::invalid_argument("Feature strips don't have 3 channels !");
-        }
-        Mat meanAsMat = getMatForFeature(feature,i);
+    void FeatureComparator::addPlayerFeatures(player_t *player, int i) {
+        Mat meanAsMat = getMatForPlayerFeature(player,i);
         addSampleToData(meanAsMat);
-    }
-
-    cv::Mat FeatureComparator::getMatForFeature(features_t feature, int i) {
-        Scalar stripMean = mean(feature.strips[i]);
-        //ASSUMING 3 CHANNEL STRIP
-        double meanChannel1 = stripMean[0];
-        double meanChannel2 = stripMean[1];
-        double meanChannel3 = stripMean[2];
-        Mat meanAsMat(1, 3, CV_64F);
-        meanAsMat.at<double>(0, 0) = meanChannel1;
-        meanAsMat.at<double>(0, 1) = meanChannel2;
-        meanAsMat.at<double>(0, 2) = meanChannel3;
-        return meanAsMat;
     }
 
     void FeatureComparator::setTermCriteria(cv::TermCriteria criteria) {
@@ -104,5 +79,22 @@ namespace tmd{
 
     void FeatureComparator::setFlags(int flags) {
         m_flags = flags;
+    }
+
+    cv::Mat FeatureComparator::getMatForPlayerFeature(player_t *player, int i) {
+        Rect rect = player->features.body_parts[i];
+        Mat dpmPartMask = player->mask_image(rect);
+        Mat dpmPart = player->original_image(rect);
+
+        Scalar stripMean = mean(dpmPart, dpmPartMask);
+        //ASSUMING 3 CHANNEL STRIP
+        double meanChannel1 = stripMean[0];
+        double meanChannel2 = stripMean[1];
+        double meanChannel3 = stripMean[2];
+        Mat meanAsMat(1, 3, CV_64F);
+        meanAsMat.at<double>(0, 0) = meanChannel1;
+        meanAsMat.at<double>(0, 1) = meanChannel2;
+        meanAsMat.at<double>(0, 2) = meanChannel3;
+        return meanAsMat;
     }
 }

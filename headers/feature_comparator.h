@@ -3,6 +3,7 @@
 
 
 #include "features_t.h"
+#include "player_t.h"
 
 namespace tmd{
     /* Class responsible of comparing features. */
@@ -15,15 +16,15 @@ namespace tmd{
         void runClustering();
         void addSampleToData(cv::Mat sample);
         cv::Mat getClosestCenter(cv::Mat sample);
-        cv::Mat getClosestCenter(features_t feature, int i);
-        void addPlayerFeatures(features_t feature, int i);
+        cv::Mat getClosestCenter(player_t *player, int i);
+        void addPlayerFeatures(player_t *player, int i);
         void setTermCriteria(cv::TermCriteria criteria);
         void setAttempts(int attempts);
         void setFlags(int flags);
 
 
     private:
-        cv::Mat getMatForFeature(features_t feature, int i);
+        cv::Mat getMatForPlayerFeature(player_t *player, int i);
 
         cv::Mat m_data;
         int m_clusterCount;
@@ -32,6 +33,7 @@ namespace tmd{
         int m_attempts;
         int m_flags;
         cv::Mat m_centers;
+
     };
 }
 

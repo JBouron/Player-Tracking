@@ -11,7 +11,6 @@
 #include "../headers/manual_player_extractor.h"
 #include "../headers/frame_t.h"
 
-#include "/home/jbouron/openCV-2.4.11/opencv-2.4.11/modules/objdetect/src/_latentsvm.h"
 #include "../headers/dpm_detector.h"
 
 
@@ -31,7 +30,7 @@ using namespace cv;
 void heuristic_features_extractor_tests() {
     tmd::player_t p;
     p.original_image = (imread(
-            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/test_image.jpg"));
+            "/home/nicolas/Desktop/23102.jpg"));
     tmd::HeuristicFeaturesExtractor d;
     d.extract_features(&p);
     cv::namedWindow("Strips");
@@ -90,11 +89,11 @@ void manual_player_comparator_test() {
     d.extract_features_from_players(v);
     namedWindow("Features");
     for (size_t i = 0; i < v.size(); i++) {
-        std::vector<cv::Mat> strips = v[i]->features.strips;
+        /*std::vector<cv::Mat> strips = v[i]->features.strips;
         for (size_t j = 0; j < strips.size(); j++) {
             cv::imshow("Features", strips[j]);
             cv::waitKey(0);
-        }
+        }*/
     }
 
 }
@@ -118,19 +117,20 @@ void manual_player_extractor_test() {
             "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img1.jpg"));
     tmd::ManualPlayerExtractor pe = tmd::ManualPlayerExtractor();
     std::vector<tmd::player_t *> v = pe.extract_player_from_frame(&frame);
-    //std::vector<tmd::player_t*> v = get_vector();
+   // std::vector<tmd::player_t*> v = get_vector();
+    /*
+       tmd::DPMDetector dpmDetector(
+               "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml",
+               4);
 
-    tmd::DPMDetector dpmDetector(
-            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml",
-            4);
-    for (size_t i = 0; i < v.size(); i++) {
-        dpmDetector.extractBodyParts(v[i]);
-        show_body_parts(v[i]->original_image, v[i]->features.body_parts);
-    }
+       for (size_t i = 0; i < v.size(); i++) {
+           dpmDetector.extractBodyParts(v[i]);
+           show_body_parts(v[i]->original_image, v[i]->features.body_parts);
+       }*/
 }
 
 void test_dpm_class() {
-    tmd::DPMDetector d("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml", 4);
+    tmd::DPMDetector d("/home/nicolas/Documents/EPFL/Projet/Code/Bachelor-Project/res/xmls/person.xml", 4);
     std::vector<tmd::player_t *> v = get_vector();
 
 
