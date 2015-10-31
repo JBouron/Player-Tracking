@@ -1,9 +1,8 @@
 #include <opencv2/core/core.hpp>
 #include "../headers/feature_comparator.h"
-#include "../headers/features_t.h"
-#include "../headers/player_t.h"
-#include "../headers/box_t.h"
-
+#include <iostream>
+#include <fstream>
+#include <bits/stream_iterator.h>
 
 
 using namespace cv;
@@ -99,4 +98,48 @@ namespace tmd{
         return meanAsMat;
     }
 
+    void FeatureComparator::writeCentersToFile() {
+        std::ofstream clustersFile ("clusterCenters.txt");
+        if (clustersFile.is_open())
+        {
+            for(int i = 0; i < m_centers.rows; i++)
+            {
+                for(int j = 0; j < m_centers.cols; j++)
+                {
+                    if(j < m_centers.cols -1)
+                    {
+                        clustersFile << m_centers.at(i,j) << " ";
+                    }
+                    else{
+                        clustersFile << m_centers.at(i,j);
+                    }
+
+                }
+                clustersFile <<"\n";
+            }
+            clustersFile.close();
+        }
+    }
+
+    Mat FeatureComparator::readCentersFromFile() {
+        std::ofstream clustersFile ("clusterCenters.txt");
+        Mat toReturn;
+        if(clustersFile.is_open())
+        {
+            string line;
+            while(getline(clustersFile, line))
+            {
+                std::stringstream ss(line);
+                std::istream_iterator<std::string> begin(ss);
+                std::istream_iterator<std::string> end;
+                std::vector<std::string> vstrings(begin, end);
+                std::vector<double> doubleVector(vstrings.size());
+                std::transform(vstrings.begin(), vstrings.end(), doubleVector.begin(), [](const std::string& val)
+                {
+                    return std::stod(val);
+                });
+                toReturn.push_back(doubleVector);
+            }
+        }
+    }
 }
