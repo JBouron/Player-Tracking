@@ -28,7 +28,7 @@ namespace tmd{
         tmd::debug("HeuristicFeaturesExtractor", "extract_features", "imax = " + std::to_string(TMD_RESIZE_HEIGHT / TMD_STRIP_WIDTH));
         for (int i = 0; i < TMD_RESIZE_HEIGHT / TMD_STRIP_WIDTH; i ++) {
             cv::Rect cropArea(0, i * TMD_STRIP_WIDTH, TMD_RESIZE_WIDTH, TMD_STRIP_WIDTH);
-            player->features.strips.push_back(playerImageResized(cropArea));
+            //player->features.strips.push_back(playerImageResized(cropArea));
         }
     }
 }
