@@ -18,44 +18,73 @@ namespace tmd{
 
     class DPMDetector{
     public :
+        /**
+         * Constructor of the class taking the file path containing the xml
+         * file for the person model.
+         */
         DPMDetector(std::string model_file);
         ~DPMDetector();
 
+        /**
+         * Extract the body parts of the player given in parameter.
+         * Store the body part in the feature struct of the player.
+         */
         void extractBodyParts(tmd::player_t *player);
 
     private:
         /* Private methods, those are custom redefinitions of the ones coming
          * from openCV.
          */
-        static int CustomEstimateBoxes(CvPoint *points, int *levels,
+
+        /**
+         * Estimate the position of each filter.
+         * This method is exactly the same as the estimateBoxes function
+         * from openCV, but is here because estimateBoxes has no prototype
+         * thus it was not possible to reuse it.
+         */
+        static int customEstimateBoxes(CvPoint *points, int *levels,
                                        int kPoints,
                                        int sizeX, int sizeY,
                                        CvPoint **oppositePoints);
 
+        /**
+         * Detect the best part boxes based on their level and their score.
+         * It is a modified version of showPartBoxes from openCV.
+         */
         int detectBestPartBoxes(std::vector<cv::Rect>& parts, IplImage *image,
                                       const CvLSVMFilterObject **filters,
                                       int n, CvPoint **partsDisplacement,
                                       int *levels, int kPoints, float *scores);
 
-
+        /**
+         * Extract the part boxes for a given image.
+         * Returns a vector containing the position of each part.
+         */
         std::vector<cv::Rect> getPartBoxesForImage(IplImage* image);
 
-        int fillPartStruct(std::vector<cv::Rect>& parts, IplImage *image,
-                           const CvLSVMFeaturePyramid *H,
-                           const CvLSVMFilterObject **filters,
-                           int kComponents,
-                           const int *kPartFilters,
-                           const float *b,
-                           float scoreThreshold,
-                           CvPoint **points,
-                           CvPoint **oppPoints,
-                           float **score,
-                           int *kPoints,
-                           int numThreads);
+        /**
+         * prepare the detector to detect the person and place the filters/parts
+         * boxes accordingly.
+         * This is a custom version of the CvLatentSvmDetect function, where
+         * the 'detection' part (drawing candidates and sort them) has been
+         * removed.
+         */
+        int preparePartDetection(std::vector<cv::Rect> &parts, IplImage *image,
+                                 const CvLSVMFeaturePyramid *H,
+                                 const CvLSVMFilterObject **filters,
+                                 int kComponents,
+                                 const int *kPartFilters,
+                                 const float *b,
+                                 float scoreThreshold,
+                                 CvPoint **points,
+                                 CvPoint **oppPoints,
+                                 float **score,
+                                 int *kPoints,
+                                 int numThreads);
 
 
         CvLatentSvmDetector* m_detector;
-        int m_numthread;
+        int m_numthreads;
     };
 }
 

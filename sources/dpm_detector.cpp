@@ -28,11 +28,11 @@ namespace tmd{
             throw std::invalid_argument("Error in DPMDetector : NULL pointer in"
                                                 " extractBodyParts method.");
         }
-        IplImage playerImage = player->original_image; // Bug in CLion.
+        IplImage playerImage = player->original_image; // Bug in CLion, ignore it.
         player->features.body_parts = getPartBoxesForImage(&playerImage);
     }
 
-    int DPMDetector::CustomEstimateBoxes(CvPoint *points, int *levels,
+    int DPMDetector::customEstimateBoxes(CvPoint *points, int *levels,
                                          int kPoints,
                                          int sizeX, int sizeY,
                                          CvPoint **oppositePoints)
@@ -49,31 +49,33 @@ namespace tmd{
         }
         return LATENT_SVM_OK;
     }
-/*
-// Drawing part filter boxes
-//
-// API
-// int showPartFilterBoxes(const IplImage *image,
-                           const filterObject *filter,
-                           CvPoint *points, int *levels, int kPoints,
-                           CvScalar color, int thickness,
-                           int line_type, int shift);
-// INPUT
-// image             - initial image
-// filters           - a set of part filters
-// n                 - number of part filters
-// partsDisplacement - a set of points
-// levels            - levels of feature pyramid
-// kPoints           - number of foot filter positions
-// color             - line color for each box
-// thickness         - line thickness
-// line_type         - line type
-// shift             - shift
-// OUTPUT
-// window contained initial image and filter boxes
-// RESULT
-// Error status
-*/
+    /*
+    // Drawing part filter boxes
+    //
+    // API
+    // int showPartFilterBoxes(const IplImage *image,
+                               const filterObject *filter,
+                               CvPoint *points, int *levels, int kPoints,
+                               CvScalar color, int thickness,
+                               int line_type, int shift);
+    // INPUT
+    // image             - initial image
+    // filters           - a set of part filters
+    // n                 - number of part filters
+    // partsDisplacement - a set of points
+    // levels            - levels of feature pyramid
+    // kPoints           - number of foot filter positions
+    // color             - line color for each box
+    // thickness         - line thickness
+    // line_type         - line type
+    // shift             - shift
+    // OUTPUT
+    // parts             - reference on a vector ready to contain positions of
+                                // all body parts.
+    // window contained initial image and filter boxes
+    // RESULT
+    // Error status
+    */
     int DPMDetector::detectBestPartBoxes(std::vector<cv::Rect>& parts, IplImage *image,
                                                const CvLSVMFilterObject **filters,
                                                int n,
@@ -134,15 +136,15 @@ namespace tmd{
         H = createFeaturePyramidWithBorder(image, maxXBorder, maxYBorder);
         // Search object
         std::vector<cv::Rect> parts;
-        error = fillPartStruct(parts, image, H,
-                              (const CvLSVMFilterObject **) (m_detector->filters),
-                              m_detector->num_components,
-                              m_detector->num_part_filters,
-                              m_detector->b,
-                              m_detector->score_threshold,
-                              &points, &oppPoints,
-                              &score, &kPoints,
-                              m_numthread);
+        error = preparePartDetection(parts, image, H,
+                                     (const CvLSVMFilterObject **) (m_detector->filters),
+                                     m_detector->num_components,
+                                     m_detector->num_part_filters,
+                                     m_detector->b,
+                                     m_detector->score_threshold,
+                                     &points, &oppPoints,
+                                     &score, &kPoints,
+                                     m_numthreads);
         if (error != LATENT_SVM_OK)
         {
             parts.clear();
@@ -161,14 +163,20 @@ namespace tmd{
         return parts;
     }
 
-    int CustomsearchObjectThreshold(const CvLSVMFeaturePyramid *H,
-                              const CvLSVMFilterObject **all_F, int n,
-                              float b,
-                              int maxXBorder, int maxYBorder,
-                              float scoreThreshold,
-                              CvPoint **points, int **levels, int *kPoints,
-                              float **score, CvPoint ***partsDisplacement,
-                              int numThreads)
+    /**
+     * Redefinition of searchObjectThreshold from openCV.
+     * This version is the exact same, but allow us to avoid a SEGV when trying
+     * to call searchObjectThreshold. (Maybe a bug from openCV).
+     */
+    int customSearchObjectThreshold(const CvLSVMFeaturePyramid *H,
+                                    const CvLSVMFilterObject **all_F, int n,
+                                    float b,
+                                    int maxXBorder, int maxYBorder,
+                                    float scoreThreshold,
+                                    CvPoint **points, int **levels,
+                                    int *kPoints,
+                                    float **score, CvPoint ***partsDisplacement,
+                                    int numThreads)
     {
         int opResult;
 
@@ -209,19 +217,20 @@ namespace tmd{
     }
 
 
-    int DPMDetector::fillPartStruct(std::vector<cv::Rect>& parts, IplImage *image,
-                       const CvLSVMFeaturePyramid *H,
-                       const CvLSVMFilterObject **filters,
-                       int kComponents,
-                       const int *kPartFilters,
-                       const float *b,
-                       float scoreThreshold,
-                       CvPoint **points,
-                       CvPoint **oppPoints,
-                       float **score,
-                       int *kPoints,
-                       int numThreads){
-        tmd::debug("DPMDetector", "fillPartStruct", "Entering method.");
+    int DPMDetector::preparePartDetection(std::vector<cv::Rect> &parts,
+                                          IplImage *image,
+                                          const CvLSVMFeaturePyramid *H,
+                                          const CvLSVMFilterObject **filters,
+                                          int kComponents,
+                                          const int *kPartFilters,
+                                          const float *b,
+                                          float scoreThreshold,
+                                          CvPoint **points,
+                                          CvPoint **oppPoints,
+                                          float **score,
+                                          int *kPoints,
+                                          int numThreads){
+        tmd::debug("DPMDetector", "preparePartDetection", "Entering method.");
         //int error = 0;
         int i, j, s, f, componentIndex;
         unsigned int maxXBorder, maxYBorder;
@@ -245,12 +254,19 @@ namespace tmd{
         int i_max = kComponents - 1;
         for (i = 0; i < kComponents; i++)
         {
-            tmd::debug("DPMDetector", "fillPartStruct", "Call searchObjectThreshold");
-            int error = CustomsearchObjectThreshold(H, &(filters[componentIndex]), kPartFilters[i],
-                                              b[i], maxXBorder, maxYBorder, scoreThreshold,
-                                              &(pointsArr[i]), &(levelsArr[i]), &(kPointsArr[i]),
-                                              &(scoreArr[i]), &(partsDisplacementArr[i]), numThreads);
-            tmd::debug("DPMDetector", "fillPartStruct", "searchObjectThreshold finished.");
+            tmd::debug("DPMDetector", "preparePartDetection", "Call searchObjectThreshold");
+            int error = customSearchObjectThreshold(H,
+                                                    &(filters[componentIndex]),
+                                                    kPartFilters[i],
+                                                    b[i], maxXBorder,
+                                                    maxYBorder, scoreThreshold,
+                                                    &(pointsArr[i]),
+                                                    &(levelsArr[i]),
+                                                    &(kPointsArr[i]),
+                                                    &(scoreArr[i]),
+                                                    &(partsDisplacementArr[i]),
+                                                    numThreads);
+            tmd::debug("DPMDetector", "preparePartDetection", "searchObjectThreshold finished.");
             if (error != LATENT_SVM_OK)
             {
                 // Release allocated memory
@@ -262,7 +278,7 @@ namespace tmd{
                 free(partsDisplacementArr);
                 return LATENT_SVM_SEARCH_OBJECT_FAILED;
             }
-            CustomEstimateBoxes(pointsArr[i], levelsArr[i], kPointsArr[i],
+            customEstimateBoxes(pointsArr[i], levelsArr[i], kPointsArr[i],
                                 filters[componentIndex]->sizeX,
                                 filters[componentIndex]->sizeY,
                                 &(oppPointsArr[i]));
@@ -294,7 +310,7 @@ namespace tmd{
         free(kPointsArr);
         free(levelsArr);
         free(partsDisplacementArr);
-        tmd::debug("DPMDetector", "fillPartStruct", "Exiting fillPartStruct method.");
+        tmd::debug("DPMDetector", "preparePartDetection", "Exiting preparePartDetection method.");
         return LATENT_SVM_OK;
     }
 }
