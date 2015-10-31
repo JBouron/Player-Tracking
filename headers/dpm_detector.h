@@ -22,7 +22,7 @@ namespace tmd{
          * Constructor of the class taking the file path containing the xml
          * file for the person model.
          */
-        DPMDetector(std::string model_file);
+        DPMDetector(std::string model_file, int numthreads);
         ~DPMDetector();
 
         /**
