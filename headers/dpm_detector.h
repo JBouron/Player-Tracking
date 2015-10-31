@@ -21,7 +21,7 @@ namespace tmd{
         DPMDetector(std::string model_file);
         ~DPMDetector();
 
-        void extractTorso(tmd::player_t* player);
+        void extractBodyParts(tmd::player_t *player);
 
     private:
         /* Private methods, those are custom redefinitions of the ones coming

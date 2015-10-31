@@ -76,7 +76,7 @@ void manual_player_extractor_test(){
     }*/
     tmd::DPMDetector dpmDetector("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml");
     for (size_t i = 0 ; i < v.size() ; i ++){
-        dpmDetector.extractTorso(v[i]);
+        dpmDetector.extractBodyParts(v[i]);
     }
 }
 
@@ -86,7 +86,7 @@ void test_dpm_class(){
     cv::Mat playerImage = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img5.jpg");
     tmd::player_t* player = new tmd::player_t;
     player->original_image = playerImage;
-    d.extractTorso(player);
+    d.extractBodyParts(player);
     std::vector<cv::Rect> parts = player->features.body_parts;
     cv::Mat image = player->original_image;
     CvScalar color;

@@ -23,10 +23,10 @@ namespace tmd{
         cvReleaseLatentSvmDetector(&m_detector); // Bug in CLion.
     }
 
-    void DPMDetector::extractTorso(tmd::player_t* player){
+    void DPMDetector::extractBodyParts(tmd::player_t *player){
         if (player == NULL) {
             throw std::invalid_argument("Error in DPMDetector : NULL pointer in"
-                                                " extractTorso method.");
+                                                " extractBodyParts method.");
         }
         IplImage playerImage = player->original_image; // Bug in CLion.
         player->features.body_parts = getPartBoxesForImage(&playerImage);
