@@ -18,11 +18,11 @@
 #if defined(WIN32) || defined(_WIN32)
 #include <io.h>
 #else
+
 #include <dirent.h>
 #include <opencv2/imgproc/imgproc_c.h>
 
 #endif
-
 
 
 using namespace std;
@@ -33,13 +33,14 @@ void heuristic_features_extractor_tests() {
     p.original_image = (imread(
             "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/test_image.jpg"));
     tmd::HeuristicFeaturesExtractor d;
-            d.extract_features(&p);
+    d.extract_features(&p);
     cv::namedWindow("Strips");
 /*    for (int i = 0; i < p.features.strips.size(); i ++){
         imshow("Strips", p.features.strips[i]);
         waitKey(0);
     }*/
 }
+
 void bgs_demo() {
     namedWindow("Frame");
     namedWindow("FG Mask MOG 2");
@@ -59,70 +60,91 @@ void bgs_demo() {
     tmd::debug("End");
 }
 
-void show_body_parts(cv::Mat image, std::vector<cv::Rect> parts){
+void show_body_parts(cv::Mat image, std::vector<cv::Rect> parts) {
     CvScalar color;
-    color.val[0] = 255; color.val[1] = 0; color.val[2] = 255; color.val[3] = 255;
+    color.val[0] = 255;
+    color.val[1] = 0;
+    color.val[2] = 255;
+    color.val[3] = 255;
     const int thickness = 1;
     const int line_type = 8; // 8 connected line.
     const int shift = 0;
-    for (int i = 0 ; i < parts.size() ; i ++){
+    for (int i = 0; i < parts.size(); i++) {
         CvRect r;
         r.x = parts[i].x;
         r.y = parts[i].y;
         r.width = parts[i].width;
         r.height = parts[i].height;
         cv::rectangle(image, r, color, thickness, line_type, shift);
+        cv::imshow("Result", image);
+        cv::waitKey(0);
     }
-    cv::imshow("Result", image);
-    cv::waitKey(0);
+}
 
+void manual_player_comparator_test() {
+    tmd::frame_t frame;
+    (frame.original_frame) = (imread("/home/nicolas/Desktop/23102.jpg"));
+    tmd::ManualPlayerExtractor pe;
+    std::vector<tmd::player_t *> v = pe.extract_player_from_frame(&frame);
+    tmd::HeuristicFeaturesExtractor d;
+    d.extract_features_from_players(v);
+    namedWindow("Features");
+    for (size_t i = 0; i < v.size(); i++) {
+        std::vector<cv::Mat> strips = v[i]->features.strips;
+        for (size_t j = 0; j < strips.size(); j++) {
+            cv::imshow("Features", strips[j]);
+            cv::waitKey(0);
+        }
+    }
 
 }
 
-
-std::vector<tmd::player_t*> get_vector(){
-    std::vector<tmd::player_t*> v;
-    for (int i = 0 ; i < 3 ; i ++){
+std::vector<tmd::player_t *> get_vector() {
+    std::vector<tmd::player_t *> v;
+    for (int i = 0; i < 3; i++) {
         v.push_back(new tmd::player_t);
-        v[i]->original_image = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img" + std::to_string(i+1) +".jpg");
+        v[i]->original_image = cv::imread(
+                "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img" +
+                std::to_string(i + 1) +
+                ".jpg");
     }
     return v;
+
 }
 
-
-void manual_player_extractor_test(){
+void manual_player_extractor_test() {
     tmd::frame_t frame;
     (frame.original_frame) = (imread(
             "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img1.jpg"));
     tmd::ManualPlayerExtractor pe = tmd::ManualPlayerExtractor();
-    std::vector<tmd::player_t*> v = pe.extract_player_from_frame(&frame);
+    std::vector<tmd::player_t *> v = pe.extract_player_from_frame(&frame);
     //std::vector<tmd::player_t*> v = get_vector();
 
-    tmd::DPMDetector dpmDetector("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml", 4);
-    for (size_t i = 0 ; i < v.size() ; i ++){
+    tmd::DPMDetector dpmDetector(
+            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml",
+            4);
+    for (size_t i = 0; i < v.size(); i++) {
         dpmDetector.extractBodyParts(v[i]);
         show_body_parts(v[i]->original_image, v[i]->features.body_parts);
     }
 }
 
-void test_dpm_class(){
+void test_dpm_class() {
     tmd::DPMDetector d("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml", 4);
-    std::vector<tmd::player_t*> v = get_vector();
+    std::vector<tmd::player_t *> v = get_vector();
 
 
-
-    for (int i = 0 ; i < 3 ; i ++){
+    for (int i = 0; i < 3; i++) {
         d.extractBodyParts(v[i]);
         show_body_parts(v[i]->original_image, v[i]->features.body_parts);
     }
 
-    for (int i = 0 ; i < 3 ; i ++){
+    for (int i = 0; i < 3; i++) {
         delete v[i];
     }
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     manual_player_extractor_test();
     return 0;
-
 }
