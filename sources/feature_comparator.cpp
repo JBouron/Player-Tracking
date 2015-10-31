@@ -45,16 +45,16 @@ namespace tmd{
             distances.push_back(norm(m_centers.row(i), sample, NORM_L2));
         }
 
-        double min =  distances.at(0);
+        double min = distances.at<double>(0);
         int minIndex = 0;
         for(int i = 1; i < distances.rows; i ++){
-            if(distances.at(i) < min){
-                min = distances.at(i);
+            if(distances.at<double>(i) < min){
+                min = distances.at<double>(i,0);
                 minIndex = i;
             }
         }
 
-        return m_centers.at(minIndex);
+        return m_centers.at<Mat>(minIndex);
     }
 
     cv::Mat FeatureComparator::getClosestCenter(features_t feature, int i) {
@@ -67,9 +67,9 @@ namespace tmd{
         double meanChannel2 = stripMean[1];
         double meanChannel3 = stripMean[2];
         Mat meanAsMat(1, 3, CV_64F);
-        meanAsMat.at(0, 0) = meanChannel1;
-        meanAsMat.at(0, 1) = meanChannel2;
-        meanAsMat.at(0, 2) = meanChannel3;
+        meanAsMat.at<double>(0, 0) = meanChannel1;
+        meanAsMat.at<double>(0, 1) = meanChannel2;
+        meanAsMat.at<double>(0, 2) = meanChannel3;
         return getClosestCenter(meanAsMat);
     }
 
@@ -79,7 +79,6 @@ namespace tmd{
         }
         Mat meanAsMat = getMatForFeature(feature,i);
         addSampleToData(meanAsMat);
-
     }
 
     cv::Mat FeatureComparator::getMatForFeature(features_t feature, int i) {
@@ -89,9 +88,9 @@ namespace tmd{
         double meanChannel2 = stripMean[1];
         double meanChannel3 = stripMean[2];
         Mat meanAsMat(1, 3, CV_64F);
-        meanAsMat.at(0, 0) = meanChannel1;
-        meanAsMat.at(0, 1) = meanChannel2;
-        meanAsMat.at(0, 2) = meanChannel3;
+        meanAsMat.at<double>(0, 0) = meanChannel1;
+        meanAsMat.at<double>(0, 1) = meanChannel2;
+        meanAsMat.at<double>(0, 2) = meanChannel3;
         return meanAsMat;
     }
 
