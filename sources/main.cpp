@@ -95,7 +95,6 @@ std::vector<tmd::player_t *> get_vector() {
 }
 
 void manual_player_comparator_test() {
-
     tmd::DPMDetector d("/home/nicolas/Documents/EPFL/Projet/Code/Bachelor-Project/res/xmls/person.xml", 4);
     std::vector<tmd::player_t *> v = get_vector();
     Mat data(0,3,CV_32F), labels;
@@ -147,7 +146,6 @@ void test_dpm_class() {
 }
 
 int main(int argc, char* argv[]) {
-
     manual_player_comparator_test();
     return 0;
 }

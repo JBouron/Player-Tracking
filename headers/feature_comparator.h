@@ -25,7 +25,7 @@ namespace tmd{
 
     private:
         cv::Mat getMatForPlayerFeature(player_t *player, int i);
-        std::vector<double> getDoublesFromString(std::string inputString);
+        std::vector<float> getFloatsFromString(std::string inputString);
 
         cv::Mat m_data;
         int m_clusterCount;
