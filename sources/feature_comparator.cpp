@@ -4,7 +4,6 @@
 #include <fstream>
 #include <bits/stream_iterator.h>
 
-
 using namespace cv;
 
 namespace tmd{
@@ -42,7 +41,7 @@ namespace tmd{
             throw std::invalid_argument("Sample doesn't have the same amount of dimensions as the data !");
         }
 
-        Mat distances(m_centers.rows, 1, CV_64F);
+        Mat distances(m_centers.rows, 1, CV_32F);
 
         for(int i = 0; i < m_centers.rows; i ++){
             distances.push_back(norm(m_centers.row(i), sample, NORM_L2));
@@ -83,15 +82,16 @@ namespace tmd{
 
     cv::Mat FeatureComparator::getMatForPlayerFeature(player_t *player, int i) {
         Rect rect = player->features.body_parts[i];
-        Mat dpmPartMask = player->mask_image(rect);
+        //Mat dpmPartMask = player->mask_image(rect);
         Mat dpmPart = player->original_image(rect);
 
-        Scalar stripMean = mean(dpmPart, dpmPartMask);
+        //Scalar stripMean = mean(dpmPart, dpmPartMask);
+        Scalar stripMean = mean(dpmPart);
         //ASSUMING 3 CHANNEL STRIP
         double meanChannel1 = stripMean[0];
         double meanChannel2 = stripMean[1];
         double meanChannel3 = stripMean[2];
-        Mat meanAsMat(1, 3, CV_64F);
+        Mat meanAsMat(1, 3, CV_32F);
         meanAsMat.at<double>(0, 0) = meanChannel1;
         meanAsMat.at<double>(0, 1) = meanChannel2;
         meanAsMat.at<double>(0, 2) = meanChannel3;
@@ -99,19 +99,20 @@ namespace tmd{
     }
 
     void FeatureComparator::writeCentersToFile() {
-        std::ofstream clustersFile ("clusterCenters.txt");
+        std::ofstream clustersFile ("/home/nicolas/Desktop/clusterCenters.txt");
         if (clustersFile.is_open())
         {
             for(int i = 0; i < m_centers.rows; i++)
             {
                 for(int j = 0; j < m_centers.cols; j++)
                 {
+                    Mat row = m_centers.row(i);
                     if(j < m_centers.cols -1)
                     {
-                        clustersFile << m_centers.at(i,j) << " ";
+                        clustersFile << row.at<double>(i) << " ";
                     }
                     else{
-                        clustersFile << m_centers.at(i,j);
+                        clustersFile << row.at<double>(j);
                     }
 
                 }
@@ -122,24 +123,30 @@ namespace tmd{
     }
 
     Mat FeatureComparator::readCentersFromFile() {
-        std::ofstream clustersFile ("clusterCenters.txt");
+        std::ifstream clustersFile ("clusterCenters.txt");
         Mat toReturn;
         if(clustersFile.is_open())
         {
             string line;
             while(getline(clustersFile, line))
             {
-                std::stringstream ss(line);
-                std::istream_iterator<std::string> begin(ss);
-                std::istream_iterator<std::string> end;
-                std::vector<std::string> vstrings(begin, end);
-                std::vector<double> doubleVector(vstrings.size());
-                std::transform(vstrings.begin(), vstrings.end(), doubleVector.begin(), [](const std::string& val)
-                {
-                    return std::stod(val);
-                });
+                vector<double> doubleVector = getDoublesFromString(line);
                 toReturn.push_back(doubleVector);
             }
         }
+    }
+
+
+    std::vector<double> FeatureComparator::getDoublesFromString(std::string inputString) {
+        std::stringstream ss(inputString);
+        std::istream_iterator<std::string> begin(ss);
+        std::istream_iterator<std::string> end;
+        std::vector<std::string> vstrings(begin, end);
+        std::vector<double> doubleVector(vstrings.size());
+        std::transform(vstrings.begin(), vstrings.end(), doubleVector.begin(), [](const std::string& val)
+        {
+            return std::stod(val);
+        });
+        return doubleVector;
     }
 }

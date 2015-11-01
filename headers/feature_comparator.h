@@ -1,7 +1,6 @@
 #ifndef BACHELOR_PROJECT_FEATURE_COMPARATOR_H
 #define BACHELOR_PROJECT_FEATURE_COMPARATOR_H
 
-
 #include "features_t.h"
 #include "player_t.h"
 
@@ -26,6 +25,7 @@ namespace tmd{
 
     private:
         cv::Mat getMatForPlayerFeature(player_t *player, int i);
+        std::vector<double> getDoublesFromString(std::string inputString);
 
         cv::Mat m_data;
         int m_clusterCount;
