@@ -10,7 +10,7 @@
 #include "../headers/bgsubstractor.h"
 #include "../headers/manual_player_extractor.h"
 #include "../headers/frame_t.h"
-
+#include "../headers/feature_comparator.h"
 #include "../headers/dpm_detector.h"
 
 
@@ -20,6 +20,7 @@
 
 #include <dirent.h>
 #include <opencv2/imgproc/imgproc_c.h>
+#include <fstream>
 
 #endif
 
@@ -80,39 +81,36 @@ void show_body_parts(cv::Mat image, std::vector<cv::Rect> parts) {
     }
 }
 
-void manual_player_comparator_test() {
-    tmd::frame_t frame;
-    (frame.original_frame) = (imread("/home/nicolas/Desktop/23102.jpg"));
-    tmd::ManualPlayerExtractor pe;
-    std::vector<tmd::player_t *> v = pe.extract_player_from_frame(&frame);
-    tmd::HeuristicFeaturesExtractor d;
-    d.extract_features_from_players(v);
-    namedWindow("Features");
-    for (size_t i = 0; i < v.size(); i++) {
-        /*std::vector<cv::Mat> strips = v[i]->features.strips;
-        for (size_t j = 0; j < strips.size(); j++) {
-            cv::imshow("Features", strips[j]);
-            cv::waitKey(0);
-        }*/
-
-    }
-}
-
-int main(int argc, char* argv[]) {
-    return 0;
-}
-
 std::vector<tmd::player_t *> get_vector() {
     std::vector<tmd::player_t *> v;
     for (int i = 0; i < 3; i++) {
         v.push_back(new tmd::player_t);
         v[i]->original_image = cv::imread(
-                "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img" +
+                "/home/nicolas/Desktop/img" +
                 std::to_string(i + 1) +
                 ".jpg");
     }
     return v;
 
+}
+
+void manual_player_comparator_test() {
+
+    tmd::DPMDetector d("/home/nicolas/Documents/EPFL/Projet/Code/Bachelor-Project/res/xmls/person.xml", 4);
+    std::vector<tmd::player_t *> v = get_vector();
+    Mat data(0,3,CV_32F), labels;
+    Mat centers;
+    tmd::FeatureComparator comparator(data, 2, labels, TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0), 3,
+            KMEANS_PP_CENTERS, centers);
+
+    for(int i = 0; i < v.size(); i ++){
+        d.extractBodyParts(v[i]);
+        comparator.addPlayerFeatures(v[i], 1);
+    }
+
+    comparator.runClustering();
+    comparator.writeCentersToFile();
+    comparator.~FeatureComparator();
 }
 
 void manual_player_extractor_test() {
@@ -146,5 +144,11 @@ void test_dpm_class() {
     for (int i = 0; i < 3; i++) {
         delete v[i];
     }
+}
+
+int main(int argc, char* argv[]) {
+
+    manual_player_comparator_test();
+    return 0;
 }
 
