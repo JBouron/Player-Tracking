@@ -47,11 +47,11 @@ namespace tmd{
             distances.push_back(norm(m_centers.row(i), sample, NORM_L2));
         }
 
-        double min = distances.at<double>(0);
+        float min = distances.at<float>(0);
         int minIndex = 0;
         for(int i = 1; i < distances.rows; i ++){
-            if(distances.at<double>(i) < min){
-                min = distances.at<double>(i,0);
+            if(distances.at<float>(i) < min){
+                min = distances.at<float>(i,0);
                 minIndex = i;
             }
         }
@@ -88,13 +88,13 @@ namespace tmd{
         //Scalar stripMean = mean(dpmPart, dpmPartMask);
         Scalar stripMean = mean(dpmPart);
         //ASSUMING 3 CHANNEL STRIP
-        double meanChannel1 = stripMean[0];
-        double meanChannel2 = stripMean[1];
-        double meanChannel3 = stripMean[2];
+        float meanChannel1 = stripMean[0];
+        float meanChannel2 = stripMean[1];
+        float meanChannel3 = stripMean[2];
         Mat meanAsMat(1, 3, CV_32F);
-        meanAsMat.at<double>(0, 0) = meanChannel1;
-        meanAsMat.at<double>(0, 1) = meanChannel2;
-        meanAsMat.at<double>(0, 2) = meanChannel3;
+        meanAsMat.at<float>(0, 0) = meanChannel1;
+        meanAsMat.at<float>(0, 1) = meanChannel2;
+        meanAsMat.at<float>(0, 2) = meanChannel3;
         return meanAsMat;
     }
 
@@ -109,10 +109,10 @@ namespace tmd{
                     Mat row = m_centers.row(i);
                     if(j < m_centers.cols -1)
                     {
-                        clustersFile << row.at<double>(i) << " ";
+                        clustersFile << row.at<float>(i) << " ";
                     }
                     else{
-                        clustersFile << row.at<double>(j);
+                        clustersFile << row.at<float>(j);
                     }
 
                 }
@@ -130,23 +130,23 @@ namespace tmd{
             string line;
             while(getline(clustersFile, line))
             {
-                vector<double> doubleVector = getDoublesFromString(line);
-                toReturn.push_back(doubleVector);
+                vector<float> floatVector = getFloatsFromString(line);
+                toReturn.push_back(floatVector);
             }
         }
     }
 
 
-    std::vector<double> FeatureComparator::getDoublesFromString(std::string inputString) {
+    std::vector<float> FeatureComparator::getFloatsFromString(std::string inputString) {
         std::stringstream ss(inputString);
         std::istream_iterator<std::string> begin(ss);
         std::istream_iterator<std::string> end;
         std::vector<std::string> vstrings(begin, end);
-        std::vector<double> doubleVector(vstrings.size());
-        std::transform(vstrings.begin(), vstrings.end(), doubleVector.begin(), [](const std::string& val)
+        std::vector<float> floatVector(vstrings.size());
+        std::transform(vstrings.begin(), vstrings.end(), floatVector.begin(), [](const std::string& val)
         {
-            return std::stod(val);
+            return std::stof(val);
         });
-        return doubleVector;
+        return floatVector;
     }
 }
