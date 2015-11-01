@@ -26,6 +26,7 @@ namespace tmd{
     }
 
     void FeatureComparator::runClustering() {
+        m_labels = m_data;
         kmeans(m_data, m_clusterCount,m_labels, m_termCriteria, m_attempts, m_flags, m_centers);
     }
 
@@ -85,16 +86,19 @@ namespace tmd{
         //Mat dpmPartMask = player->mask_image(rect);
         Mat dpmPart = player->original_image(rect);
 
+
         //Scalar stripMean = mean(dpmPart, dpmPartMask);
         Scalar stripMean = mean(dpmPart);
         //ASSUMING 3 CHANNEL STRIP
-        float meanChannel1 = stripMean[0];
-        float meanChannel2 = stripMean[1];
-        float meanChannel3 = stripMean[2];
+        double meanChannel1 = stripMean[0];
+        double meanChannel2 = stripMean[1];
+        double meanChannel3 = stripMean[2];
+
         Mat meanAsMat(1, 3, CV_32F);
-        meanAsMat.at<float>(0, 0) = meanChannel1;
-        meanAsMat.at<float>(0, 1) = meanChannel2;
-        meanAsMat.at<float>(0, 2) = meanChannel3;
+        meanAsMat.at<float>(0, 0) = (float) meanChannel1;
+        meanAsMat.at<float>(0, 1) = (float) meanChannel2;
+        meanAsMat.at<float>(0, 2) = (float) meanChannel3;
+
         return meanAsMat;
     }
 
@@ -109,7 +113,7 @@ namespace tmd{
                     Mat row = m_centers.row(i);
                     if(j < m_centers.cols -1)
                     {
-                        clustersFile << row.at<float>(i) << " ";
+                        clustersFile << row.at<float>(j) << " ";
                     }
                     else{
                         clustersFile << row.at<float>(j);
@@ -123,7 +127,7 @@ namespace tmd{
     }
 
     Mat FeatureComparator::readCentersFromFile() {
-        std::ifstream clustersFile ("clusterCenters.txt");
+        std::ifstream clustersFile ("/home/nicolas/Desktop/clusterCenters.txt");
         Mat toReturn;
         if(clustersFile.is_open())
         {
@@ -131,9 +135,11 @@ namespace tmd{
             while(getline(clustersFile, line))
             {
                 vector<float> floatVector = getFloatsFromString(line);
-                toReturn.push_back(floatVector);
+                toReturn.push_back(Mat(floatVector));
             }
+            clustersFile.close();
         }
+        return toReturn;
     }
 
 
