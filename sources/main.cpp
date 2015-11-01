@@ -3,15 +3,13 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/contrib/contrib.hpp"
 #include "../headers/heuristic_feature_extractor.h"
-#include "../headers/player_t.h"
-#include "../headers/features_t.h"
 #include "../headers/frame_t.h"
 #include "../headers/debug.h"
 #include "../headers/bgsubstractor.h"
 #include "../headers/manual_player_extractor.h"
-#include "../headers/frame_t.h"
 #include "../headers/feature_comparator.h"
 #include "../headers/dpm_detector.h"
+#include "../headers/player_t.h"
 
 
 #if defined(WIN32) || defined(_WIN32)
@@ -88,7 +86,7 @@ std::vector<tmd::player_t *> get_vector() {
         v[i]->original_image = cv::imread(
                 "/home/nicolas/Desktop/img" +
                 std::to_string(i + 1) +
-                ".jpg");
+                ".jpg", CV_LOAD_IMAGE_UNCHANGED);
     }
     return v;
 
@@ -99,7 +97,7 @@ void manual_player_comparator_test() {
     std::vector<tmd::player_t *> v = get_vector();
     Mat data(0,3,CV_32F), labels;
     Mat centers;
-    tmd::FeatureComparator comparator(data, 2, labels, TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0), 3,
+    tmd::FeatureComparator comparator(data, 3, labels, TermCriteria(CV_TERMCRIT_EPS+CV_TERMCRIT_ITER, 10, 1.0), 3,
             KMEANS_PP_CENTERS, centers);
 
     for(int i = 0; i < v.size(); i ++){
@@ -109,6 +107,7 @@ void manual_player_comparator_test() {
 
     comparator.runClustering();
     comparator.writeCentersToFile();
+    Mat readCenters = comparator.readCentersFromFile();
     comparator.~FeatureComparator();
 }
 
