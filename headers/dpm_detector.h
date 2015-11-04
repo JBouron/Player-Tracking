@@ -7,6 +7,9 @@
 #include "../../../../../openCV-2.4.11/opencv-2.4.11/modules/objdetect/src/_lsvm_matching.h"
 #include "player_t.h"
 
+/* Number of threads used during the DPM extraction. */
+#define TMD_DPM_DETECTOR_NUMTHREADS 4
+
 namespace tmd{
     /**
      * Class representing a DPM detector using the LatentSVM algorithm.
@@ -22,7 +25,7 @@ namespace tmd{
          * Constructor of the class taking the file path containing the xml
          * file for the person model.
          */
-        DPMDetector(std::string model_file, int numthreads);
+        DPMDetector(std::string model_file);
         ~DPMDetector();
 
         /**
