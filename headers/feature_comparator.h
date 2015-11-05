@@ -1,7 +1,6 @@
 #ifndef BACHELOR_PROJECT_FEATURE_COMPARATOR_H
 #define BACHELOR_PROJECT_FEATURE_COMPARATOR_H
 
-
 #include "features_t.h"
 #include "player_t.h"
 
@@ -21,10 +20,12 @@ namespace tmd{
         void setTermCriteria(cv::TermCriteria criteria);
         void setAttempts(int attempts);
         void setFlags(int flags);
-
+        void writeCentersToFile();
+        cv::Mat readCentersFromFile();
 
     private:
         cv::Mat getMatForPlayerFeature(player_t *player, int i);
+        std::vector<float> getFloatsFromString(std::string inputString);
 
         cv::Mat m_data;
         int m_clusterCount;
