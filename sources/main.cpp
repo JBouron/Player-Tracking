@@ -2,7 +2,6 @@
 #include "opencv2/objdetect/objdetect.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/contrib/contrib.hpp"
-#include "../headers/heuristic_feature_extractor.h"
 #include "../headers/frame_t.h"
 #include "../headers/debug.h"
 #include "../headers/bgsubstractor.h"
