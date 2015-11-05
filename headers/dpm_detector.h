@@ -3,9 +3,13 @@
 
 #include <string>
 #include <opencv2/objdetect/objdetect.hpp>
-#include "/home/nicolas/Applications/opencv-2.4.11/modules/objdetect/src/_latentsvm.h"
-#include "/home/nicolas/Applications/opencv-2.4.11/modules/objdetect/src/_lsvm_matching.h"
+/* TODO : FIND A WORKAROUND FOR THE NEXT 2 INCLUDES ... */
+#include "../../../../../openCV-2.4.11/opencv-2.4.11/modules/objdetect/src/_latentsvm.h"
+#include "../../../../../openCV-2.4.11/opencv-2.4.11/modules/objdetect/src/_lsvm_matching.h"
 #include "player_t.h"
+
+/* Number of threads used during the DPM extraction. */
+#define TMD_DPM_DETECTOR_NUMTHREADS 4
 
 namespace tmd{
     /**
@@ -22,7 +26,7 @@ namespace tmd{
          * Constructor of the class taking the file path containing the xml
          * file for the person model.
          */
-        DPMDetector(std::string model_file, int numthreads);
+        DPMDetector(std::string model_file);
         ~DPMDetector();
 
         /**
@@ -82,8 +86,9 @@ namespace tmd{
                                  int *kPoints,
                                  int numThreads);
 
-
+        /* Instance of the LatentSvmDetector used to extract parts. */
         CvLatentSvmDetector* m_detector;
+        /* Number of threads used during the process. */
         int m_numthreads;
     };
 }
