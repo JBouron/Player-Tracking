@@ -21,6 +21,11 @@ namespace tmd {
         FeaturesExtractor(std::string model_file);
 
         /**
+         * Destructor of the feature extractor.
+         */
+        ~FeaturesExtractor();
+
+        /**
          * Extract the features from a list of players by updating their
          * feature field.
          * inputs :
@@ -36,7 +41,7 @@ namespace tmd {
         void extractFeatures(player_t *player);
 
     private:
-        tmd::DPMDetector m_detector;
+        tmd::DPMDetector *m_detector;
 
         /**
          * Helper method to extract the body part of a player.
