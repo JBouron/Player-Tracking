@@ -8,18 +8,16 @@
 #include "../headers/features_t.h"
 
 namespace tmd{
-    DPMDetector::DPMDetector(std::string model_file, int numthreads){
+    DPMDetector::DPMDetector(std::string model_file){
         m_detector = cvLoadLatentSvmDetector(model_file.c_str());
         if (m_detector == NULL){
             throw std::invalid_argument("Error in DPMDetector : couldn't create"
                                                 " the detector.");
         }
-        if (numthreads < 1){
-            throw std::invalid_argument("Error in DPMDetector : numthreads must"
-                                                "be >= 1");
-        }
-        m_numthreads = 0;
-        tmd::debug("DPMDetector", "DPMDetector", "Detector ready.");
+        m_numthreads = TMD_DPM_DETECTOR_NUMTHREADS;
+        int root_size_x = m_detector->filters[0]->sizeX;
+        int root_size_y = m_detector->filters[0]->sizeY;
+        tmd::debug("DPMDetector", "DPMDetector", "Detector loaded, root filter size = (" + std::to_string(root_size_x) + ", " + std::to_string(root_size_y) + ").");
     }
 
     DPMDetector::~DPMDetector() {

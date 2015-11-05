@@ -36,19 +36,18 @@ namespace tmd{
             }
             //cv::imshow("Manual player extraction", image);
             keyboard = cv::waitKey(15);
-            keyboard = 32;
         }
         //cv::destroyAllWindows();
-       /* std::vector<player_t*> players;
+        std::vector<player_t*> players;
         for (size_t i = 0 ; i < mBoxes.size() ; i ++){
             tmd::debug("boxes");
             cv::Mat cpy = frame->original_frame.clone();
             players.push_back(new player_t);
-            //players[i]->original_image = cpy(mBoxes[i]);
-            players[i]->original_image = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img1.jpg");
+            players[i]->original_image = cpy(mBoxes[i]);
+            cv::imwrite("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/player" + std::to_string(i) +".jpg", players[i]->original_image);
             //players[i]->mask_image = (*frame->mask_frame)(mBoxes[i]);
             players[i]->frame_index = frame->frame_index;
-        }*/
+        }
         return v;
         //return players;
     }

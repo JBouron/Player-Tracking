@@ -7,9 +7,9 @@
 #define TMD_DEBUG_ENABLE_DEBUG true
 
 namespace tmd{
-    void debug(std::string message, bool line_return = true);
+    inline void debug(std::string message, bool line_return = true);
 
-    void debug(std::string class_name, std::string method_name,
+    inline void debug(std::string class_name, std::string method_name,
                std::string message, bool line_return = true);
 }
 
