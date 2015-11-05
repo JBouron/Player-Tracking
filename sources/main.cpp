@@ -43,20 +43,17 @@ void show_body_parts(cv::Mat image, std::vector<cv::Rect> parts) {
         r.width = parts[i].width;
         r.height = parts[i].height;
         cv::rectangle(image, r, color, thickness, line_type, shift);
-        cv::imshow("Result", image);
-        cv::waitKey(0);
     }
+    cv::imshow("Result", image);
+    cv::waitKey(0);
 }
 
 
 std::vector<tmd::player_t *> get_vector() {
     std::vector<tmd::player_t *> v;
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 5; i++) {
         v.push_back(new tmd::player_t);
-        v[i]->original_image = cv::imread(
-                "/home/nicolas/Desktop/img" +
-                std::to_string(i + 1) +
-                ".jpg", CV_LOAD_IMAGE_UNCHANGED);
+        v[i]->original_image = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/player" + std::to_string(i) +  ".jpg");
     }
     return v;
 
@@ -81,33 +78,15 @@ void manual_player_comparator_test() {
     comparator.~FeatureComparator();
 }
 
-void manual_player_extractor_test() {
-    tmd::frame_t frame;
-    (frame.original_frame) = (imread(
-            "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img1.jpg"));
-    tmd::ManualPlayerExtractor pe = tmd::ManualPlayerExtractor();
-    std::vector<tmd::player_t *> v = pe.extract_player_from_frame(&frame);
-   // std::vector<tmd::player_t*> v = get_vector();
-    /*
-       tmd::DPMDetector dpmDetector(
-               "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml",
-               4);
-
-       for (size_t i = 0; i < v.size(); i++) {
-           dpmDetector.extractBodyParts(v[i]);
-           show_body_parts(v[i]->original_image, v[i]->features.body_parts);
-       }*/
-}
-
-
 void test_dpm_class(){
     tmd::DPMDetector d("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/xmls/person.xml");
     std::vector<tmd::player_t*> v = get_vector();
 
     int64 start = cvGetTickCount();
-    for (int i = 0 ; i < 4 ; i ++){
+    for (int i = 0 ; i < v.size() ; i ++){
+        tmd::debug("player " + std::to_string(i));
         d.extractBodyParts(v[i]);
-        //show_body_parts(v[i]->original_image, v[i]->features.body_parts);
+        show_body_parts(v[i]->original_image, v[i]->features.body_parts);
     }
     int64 finish = cvGetTickCount();
     printf("total time = %.3f\n", (float)(finish - start) / (float)(cvGetTickFrequency() * 1000000.0));
@@ -115,6 +94,7 @@ void test_dpm_class(){
 }
 
 int main(int argc, char* argv[]) {
+    test_dpm_class();
     return EXIT_SUCCESS;
 }
 
