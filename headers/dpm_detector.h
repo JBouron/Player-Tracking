@@ -3,9 +3,8 @@
 
 #include <string>
 #include <opencv2/objdetect/objdetect.hpp>
-/* TODO : FIND A WORKAROUND FOR THE NEXT 2 INCLUDES ... */
-#include "../../../../../openCV-2.4.11/opencv-2.4.11/modules/objdetect/src/_latentsvm.h"
-#include "../../../../../openCV-2.4.11/opencv-2.4.11/modules/objdetect/src/_lsvm_matching.h"
+#include "../headers/openCV/_latentsvm.h"
+#include "../headers/openCV/_lsvm_matching.h"
 #include "player_t.h"
 
 /* Number of threads used during the DPM extraction. */
