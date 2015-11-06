@@ -2,17 +2,86 @@
 #define TEAM_MEMBERSHIP_DETECTOR_FEATURES_EXTRACTOR_H
 
 #include <vector>
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 #include "player_t.h"
+#include "dpm_detector.h"
 
-namespace tmd{
+/** Defines of the different threshold values used to create colors
+ * histograms for the players.
+ */
+#define TMD_FEATURE_EXTRACTOR_TH_RED_LOW        300
+#define TMD_FEATURE_EXTRACTOR_TH_RED_HIGH       60
+#define TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW      100
+#define TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH     140
+#define TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW 0.5f
+#define TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW      0.5f
+
+namespace tmd {
     /* This class is responsible to extract the features from the players,
      * and update their feature member in the player_t struct.
      */
 
-    class FeaturesExtractor{
+    class FeaturesExtractor {
     public:
-        virtual void extract_features_from_players(std::vector<player_t*> players) = 0;
-        virtual void extract_features(player_t* player) = 0;
+        /**
+         * Default constructor of the FeatureExtractor.
+         * inputs :
+         *      - model_file : path to the model file, given to the
+         *      DPMDetector when crated.
+         */
+        FeaturesExtractor(std::string model_file);
+
+        /**
+         * Destructor of the feature extractor.
+         */
+        ~FeaturesExtractor();
+
+        /**
+         * Extract the features from a list of players by updating their
+         * feature field.
+         * inputs :
+         *      - players : the list of players.
+         */
+        void extractFeaturesFromPlayers(std::vector<player_t *> players);
+
+        /**
+         * Extract features for one player.
+         * Inputs :
+         *      - player : The player to extract features from.
+         */
+        void extractFeatures(player_t *player);
+
+    private:
+        tmd::DPMDetector *m_detector;
+
+        /**
+         * Helper method to extract the body part of a player.
+         * Inputs :
+         *      - p : The player to extract body parts from.
+         */
+        void extractBodyParts(player_t *p);
+
+        /**
+         * Convert the original_image field of a player from the RGB color
+         * space to the HSV color space.
+         * Input :
+         *      - p : the player.
+         */
+        void convertToHSV(player_t *p);
+
+        /**
+         * Apply a hue threshold on the player image. The result is an
+         * updated mask in the player given in parameter.
+         */
+        void updateMaskWithThreshold(player_t *p);
+
+        /**
+         * Create the color histogram of the player given in parameter. The
+         * histogram is then stored in the player features field.
+         */
+        void createHistogram(player_t *p);
     };
 }
 
