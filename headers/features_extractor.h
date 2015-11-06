@@ -19,10 +19,10 @@
 #define TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW      0.5f
 
 namespace tmd {
+
     /* This class is responsible to extract the features from the players,
      * and update their feature member in the player_t struct.
      */
-
     class FeaturesExtractor {
     public:
         /**
