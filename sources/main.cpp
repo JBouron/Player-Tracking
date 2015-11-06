@@ -93,7 +93,18 @@ void test_dpm_class(){
 }
 
 int main(int argc, char* argv[]) {
-    test_dpm_class();
+    cv::Mat img = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor"
+                                     "-Project/misc/images/player0.jpg");
+    int cols = img.cols;
+    int rows = img.rows;
+
+    for (int i = 0 ; i < rows ; i ++){
+        for (int j = 0 ; j < cols ; j ++){
+            img.at<cv::Vec3b>(i, j)[0] = 255;
+        }
+    }
+    imshow("Result", img);
+    cv::waitKey(0);
     return EXIT_SUCCESS;
 }
 
