@@ -21,7 +21,7 @@ namespace tmd{
 
         for (int i = 0; i < v.size(); i++) {
             d.extractBodyParts(v[i]);
-            comparator.addPlayerFeatures(v[i], 1);
+            comparator.addPlayerFeatures(v[i]);
         }
 
         comparator.runClustering();
