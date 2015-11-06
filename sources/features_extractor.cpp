@@ -1,6 +1,8 @@
 #include <opencv2/imgproc/types_c.h>
 #include "../headers/features_extractor.h"
 #include "../headers/player_t.h"
+#include "../headers/features_t.h"
+#include "../headers/debug.h"
 
 namespace tmd{
     FeaturesExtractor::FeaturesExtractor(std::string model_file){
@@ -26,7 +28,7 @@ namespace tmd{
     void FeaturesExtractor::extractFeatures(player_t *player) {
         if (player == NULL){
             throw std::invalid_argument("Error : Null pointer in "
-                                                "FeaturesExtractor::extractFeatures()");
+                                        "FeaturesExtractor::extractFeatures()");
         }
         extractBodyParts(player);
         convertToHSV(player);
@@ -40,18 +42,21 @@ namespace tmd{
 
     void FeaturesExtractor::convertToHSV(player_t *p) {
         cv::Mat hsv_tmp;
-        cvtColor(p->original_image, hsv_tmp, CV_RGB2HSV);
+        cvtColor(p->original_image, hsv_tmp, CV_BGR2HSV);
         p->original_image = hsv_tmp;
     }
 
-    bool isValid(double h, double s, double v){
-        float th_red_low = TMD_FEATURE_EXTRACTOR_TH_RED_LOW;
-        float th_red_high = TMD_FEATURE_EXTRACTOR_TH_RED_HIGH;
-        float th_green_low = TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW;
-        float th_green_high = TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH;
+    static bool isValid(double h, double s, double v){
+        float th_red_low = TMD_FEATURE_EXTRACTOR_TH_RED_LOW / 2.f;
+        float th_red_high = TMD_FEATURE_EXTRACTOR_TH_RED_HIGH / 2.f;
+        float th_green_low = TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW / 2.f;
+        float th_green_high = TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH / 2.f;
         float th_sat_low = TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW;
         float th_val_low = TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW;
-        return ( (th_red_low < h && h <= 360) || (0 <= h && h <= th_red_high)||
+        tmd::debug("FeaturesExtractor", "isValid", "h = " + std::to_string(h)
+                                                   + "s = " + std::to_string(s)
+                                               + "v = " + std::to_string(v));
+        return ((th_red_low < h && h <= 360) || (0 <= h && h <= th_red_high) ||
                 (th_green_low <= h && h <= th_green_high) ) &&
                 (th_sat_low <= s) && (th_val_low <= v);
 
@@ -75,6 +80,27 @@ namespace tmd{
     }
 
     void FeaturesExtractor::createHistogram(player_t *p) {
-
+        int bins_count = 180;
+        int dim = 1; // One dimension : The hue.
+        const int pixel_count = p->original_image.rows*p->original_image.cols;
+        float** range = new float*[1];
+        range[0] = new float[2];
+        range[0][0] = 0; range[0][1] = static_cast<float>(180);
+        bool uniform = true;  // Make the histogram uniform.
+        bool accumulate = false;
+        std::vector<cv::Mat> imagechannels;
+        cv::split(p->original_image, imagechannels);
+        cv::Mat images[] = {imagechannels[0]};
+        std::vector<cv::Mat> maskchannels;
+        cv::split(p->mask_image, maskchannels);
+        tmd::debug("FeaturesExtractor", "createHistogram", "p->original_image"
+                ".channels() = " + std::to_string(p->original_image.channels
+                ()));
+        tmd::debug("FeaturesExtractor", "createHistogram", "p->mask_image"""
+           ".channels() = " + std::to_string(p->original_image.channels()));
+        cv::calcHist(&images[0], 1, 0, maskchannels[0], p->features
+                .color_histogram, dim, &bins_count, (const float**) range,
+                     uniform,
+                     accumulate);
     }
 }
