@@ -15,6 +15,15 @@ namespace tmd{
             v[i]->original_image = cv::imread(
                     "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/player" +
                     std::to_string(i) + ".jpg");
+            player_t* player = v[i];
+            const int rows = player->original_image.rows;
+            const int cols = player->original_image.cols;
+            player->mask_image = cv::Mat(rows, cols, CV_8U);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    player->mask_image.at<uchar>(i, j) = 255;
+                }
+            }
         }
         return v;
 
@@ -43,13 +52,6 @@ namespace tmd{
             r.height = parts[i].height;
             cv::rectangle(image, r, color, thickness, line_type, shift);
         }
-        CvRect r;
-        cv::Rect t = p->features.torso;
-        r.x = t.x;
-        r.y = t.y;
-        r.width = t.width;
-        r.height = t.height;
-        cv::rectangle(image, r, torso, thickness, line_type, shift);
         cv::imshow("Body parts", image);
         cv::waitKey(0);
     }
