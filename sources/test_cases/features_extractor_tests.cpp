@@ -122,7 +122,7 @@ namespace tmd{
         }
 
         int hist_count = 0;
-        cv::Mat hist = m_player->features.color_histogram;
+        cv::Mat hist = m_player->features.torso_color_histogram;
         for (int i = 0 ; i < TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE ; i ++){
             hist_count += static_cast<int>(hist.at<float>(i));
         }

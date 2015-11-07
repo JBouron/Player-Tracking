@@ -88,7 +88,7 @@ namespace tmd {
     }
 
     cv::Mat FeatureComparator::getMatForPlayerFeature(player_t *player) {
-        return player->features.color_histogram;
+        return player->features.torso_color_histogram;
     }
 
     void FeatureComparator::writeCentersToFile() {
