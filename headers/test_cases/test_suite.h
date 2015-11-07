@@ -12,6 +12,9 @@ namespace tmd{
      * */
 
     void run_tests(void);
+
+    void run_tests_bgs(void);
+    void run_tests_dpm(void);
 }
 
 #endif //BACHELOR_PROJECT_TEST_SUITE_H
