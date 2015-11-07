@@ -1,8 +1,11 @@
 #include <opencv2/core/core_c.h>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
+#include <functional>
 #include "../headers/dpm_detector.h"
 #include "../headers/debug.h"
+#include "../headers/player_t.h"
+#include "../headers/features_t.h"
 
 namespace tmd {
     DPMDetector::DPMDetector(std::string model_file) {
@@ -31,6 +34,10 @@ namespace tmd {
         }
         IplImage playerImage = player->original_image; // Bug in CLion, ignore it.
         player->features.body_parts = getPartBoxesForImage(&playerImage);
+        // If there is a player on the image, we compute its torso box.
+        if (player->features.body_parts.size() > 0) {
+            extractTorsoForPlayer(player);
+        }
     }
 
     int DPMDetector::customEstimateBoxes(CvPoint *points, int *levels,
@@ -317,5 +324,31 @@ namespace tmd {
         tmd::debug("DPMDetector", "preparePartDetection",
                    "Exiting preparePartDetection method.");
         return LATENT_SVM_OK;
+    }
+
+    int max(int a, int b){
+        if (a < b) return b;
+        else return a;
+    }
+
+    void DPMDetector::extractTorsoForPlayer(player_t *player) {
+        if (player == NULL){
+            throw std::invalid_argument("Error null pointer given to "
+                                                "extractTorsoForPlayer method");
+        }
+        else if (player->features.body_parts.size() < 3){
+            throw std::invalid_argument("Error not enough body parts in "
+                                                "extractTorsoForPlayer");
+        }
+        cv::Rect torso1 = player->features.body_parts[1];
+        cv::Rect torso2 = player->features.body_parts[2];
+        cv::Rect mean;
+        mean.x = (torso1.x + torso2.x) / 2;
+        mean.y = (torso1.y + torso2.y) / 2;
+        int oppoX = ((torso1.x + torso1.width) + (torso2.x + torso2.width))/2;
+        int oppoY = ((torso1.y + torso1.height) + (torso2.y + torso2.height))/2;
+        mean.width = oppoX - mean.x;
+        mean.height = oppoY - mean.y;
+        player->features.torso = mean;
     }
 }
