@@ -11,12 +11,13 @@
 /** Defines of the different threshold values used to create colors
  * histograms for the players.
  */
-#define TMD_FEATURE_EXTRACTOR_TH_RED_LOW        300
-#define TMD_FEATURE_EXTRACTOR_TH_RED_HIGH       60
-#define TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW      100
-#define TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH     140
+#define TMD_FEATURE_EXTRACTOR_TH_RED_LOW        (300 / 2.f)
+#define TMD_FEATURE_EXTRACTOR_TH_RED_HIGH       (60 / 2.f)
+#define TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW      (100 / 2.f)
+#define TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH     (140 / 2.f)
 #define TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW 0.5f
 #define TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW      0.5f
+#define TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE    180
 
 namespace tmd {
     /* This class is responsible to extract the features from the players,
@@ -24,6 +25,11 @@ namespace tmd {
      */
 
     class FeaturesExtractor {
+        /**
+         * Create a friendship between this class and its corresponding test
+         * class to make testing easier and keep helper methods private.
+         */
+        friend class FeaturesExtractorTest;
     public:
         /**
          * Default constructor of the FeatureExtractor.
@@ -82,6 +88,12 @@ namespace tmd {
          * histogram is then stored in the player features field.
          */
         void createHistogram(player_t *p);
+
+        /**
+         * Returns true if the given color is within the thresholds defined
+         * above. False otherwise.
+         */
+        static bool withinThresholds(double h, double s, double v);
     };
 }
 

@@ -1,12 +1,14 @@
 #include "../../headers/test_cases/test_suite.h"
 #include "../../headers/test_cases/dpm_detector_tests.h"
 #include "../../headers/debug.h"
+#include "../../headers/test_cases/features_extractor_tests.h"
 
 namespace tmd {
 
     void run_tests(void) {
         run_tests_bgs();
         run_tests_dpm();
+        run_tests_features_extractor();
     }
 
     void run_tests_bgs(void){
@@ -29,5 +31,16 @@ namespace tmd {
         runner.addTest(registry.makeTest());
         runner.run("", false);
         tmd::debug("Tests for DPMDetector completed.");
+    }
+
+    void run_tests_features_extractor(void){
+        tmd::debug("Running tests for FeaturesExtractor.");
+        CPPUNIT_TEST_SUITE_REGISTRATION(FeaturesExtractorTest);
+        CppUnit::TextUi::TestRunner runner;
+        CppUnit::TestFactoryRegistry &registry =
+                CppUnit::TestFactoryRegistry::getRegistry();
+        runner.addTest(registry.makeTest());
+        runner.run("", false);
+        tmd::debug("Tests for FeaturesExtractor completed.");
     }
 }
