@@ -16,7 +16,7 @@ namespace tmd {
 
     typedef struct {
         cv::Mat original_frame;         // Original frame taken from the video.
-        int frame_index;                // Index of the frame in the video.
+        double frame_index;                // Index of the frame in the video.
         cv::Mat mask_frame;             // Frame after applying background substraction.
         unsigned char camera_index;     // Index of the camera which took the frame.
     } frame_t;
