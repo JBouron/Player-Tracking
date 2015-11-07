@@ -104,7 +104,7 @@ namespace tmd {
                                                            std::to_string(
                                                                    p->original_image.channels()));
         cv::calcHist(&images[0], 1, 0, maskchannels[0], p->features
-                             .color_histogram, dim, &bins_count,
+                             .torso_color_histogram, dim, &bins_count,
                      (const float **) range,
                      uniform,
                      accumulate);
