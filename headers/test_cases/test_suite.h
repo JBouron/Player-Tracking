@@ -13,6 +13,7 @@ namespace tmd{
 
     void run_tests(void);
 
+    void run_tests_feature_comparator(void);
     void run_tests_bgs(void);
     void run_tests_dpm(void);
     void run_tests_features_extractor(void);
