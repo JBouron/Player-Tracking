@@ -20,10 +20,10 @@
 #define TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE    180
 
 namespace tmd {
+
     /* This class is responsible to extract the features from the players,
      * and update their feature member in the player_t struct.
      */
-
     class FeaturesExtractor {
         /**
          * Create a friendship between this class and its corresponding test
