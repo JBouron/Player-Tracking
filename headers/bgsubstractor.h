@@ -1,7 +1,6 @@
 #ifndef TEAM_MEMBERSHIP_DETECTOR_BGSUBSTRACTOR_H
 #define TEAM_MEMBERSHIP_DETECTOR_BGSUBSTRACTOR_H
 
-//#include <opencv2/videoio.hpp>
 #include <exception>
 #include <stdexcept>
 #include <opencv2/highgui/highgui.hpp>
@@ -28,8 +27,8 @@ namespace tmd{
         cv::Ptr<cv::BackgroundSubtractorMOG2> m_bgs;
         cv::VideoCapture* m_input_video;
         unsigned char m_camera_index;
-        unsigned int m_frame_index;
-        unsigned int m_total_frame_count;
+        double m_frame_index;
+        double m_total_frame_count;
         float m_learning_rate;
     };
 }

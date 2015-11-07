@@ -26,16 +26,22 @@ namespace tmd{
         }
         tmd::debug("BGSubstractor", "BGSubstractor", "valid camera index");
         m_frame_index = 0;
-        m_total_frame_count = static_cast<unsigned int> (m_input_video->get(CV_CAP_PROP_FRAME_COUNT));
+        m_total_frame_count =  (m_input_video->get(CV_CAP_PROP_FRAME_COUNT));
+        tmd::debug("BGSubstractor", "BGSubstractor", "m_total_frame_count = "
+                                     + std::to_string(m_total_frame_count));
         tmd::debug("BGSubstractor", "BGSubstractor", "exiting method");
     }
 
     BGSubstractor::~BGSubstractor(){
-        free(m_bgs);
+        tmd::debug("BGSubstractor", "~BGSubstractor", "Free bgs.");
+        //m_bgs.delete_obj();
     }
 
     bool BGSubstractor::has_next_frame(){
-        return m_frame_index != m_total_frame_count;
+        tmd::debug("BGSubstractor", "has_next_frame", "m_frame_index = " +
+                std::to_string(m_frame_index) + " m_total_frame_count = " +
+                std::to_string(m_total_frame_count));
+        return m_frame_index < m_total_frame_count;
     }
 
     frame_t* BGSubstractor::next_frame(){
