@@ -11,6 +11,14 @@ namespace tmd{
                 "/res/xmls/person.xml";
         m_player = new player_t;
         m_player->original_image = m_player_image;
+        const int rows = m_player->original_image.rows;
+        const int cols = m_player->original_image.cols;
+        m_player->mask_image = cv::Mat(rows, cols, CV_8U);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                m_player->mask_image.at<uchar>(i, j) = 255;
+            }
+        }
         m_dummy_image = cv::imread
                 ("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/res/"
                          "tests/dummyimage.jpg");
