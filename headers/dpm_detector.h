@@ -85,6 +85,12 @@ namespace tmd{
                                  int *kPoints,
                                  int numThreads);
 
+        /**
+         * Fill the torso attribute of the player's feature.
+         * The torso is the 'mean' of the 2 box filter of the dpm detector.
+         */
+        void extractTorsoForPlayer(player_t* player);
+
         /* Instance of the LatentSvmDetector used to extract parts. */
         CvLatentSvmDetector* m_detector;
         /* Number of threads used during the process. */
