@@ -27,7 +27,7 @@ namespace tmd {
     void FeaturesExtractor::extractFeatures(player_t *player) {
         if (player == NULL) {
             throw std::invalid_argument("Error : Null pointer in "
-                                                "FeaturesExtractor::extractFeatures()");
+                                        "FeaturesExtractor::extractFeatures()");
         }
         extractBodyParts(player);
         convertToHSV(player);
