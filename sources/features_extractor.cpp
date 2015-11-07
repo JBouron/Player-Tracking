@@ -46,11 +46,11 @@ namespace tmd{
         p->original_image = hsv_tmp;
     }
 
-    static bool isValid(double h, double s, double v){
-        float th_red_low = TMD_FEATURE_EXTRACTOR_TH_RED_LOW / 2.f;
-        float th_red_high = TMD_FEATURE_EXTRACTOR_TH_RED_HIGH / 2.f;
-        float th_green_low = TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW / 2.f;
-        float th_green_high = TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH / 2.f;
+    bool FeaturesExtractor::withinThresholds(double h, double s, double v){
+        float th_red_low = TMD_FEATURE_EXTRACTOR_TH_RED_LOW;
+        float th_red_high = TMD_FEATURE_EXTRACTOR_TH_RED_HIGH;
+        float th_green_low = TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW;
+        float th_green_high = TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH;
         float th_sat_low = TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW;
         float th_val_low = TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW;
         tmd::debug("FeaturesExtractor", "isValid", "h = " + std::to_string(h)
@@ -70,9 +70,10 @@ namespace tmd{
         for (int i = 0 ; i < rows ; i ++){
             for (int j = 0 ; j < cols ; j ++){
                 cv::Vec3b color = img.at<cv::Vec3b>(i, j);
-                if (!isValid(color[0], color[1], color[2])){
-                    // Need to 'remove' this pixel from the mask.
-                    // TODO : Check the following line ...
+                if (withinThresholds(color[0], color[1], color[2])){
+                    p->mask_image.at<uchar>(i,j) = 255;
+                }
+                else{
                     p->mask_image.at<uchar>(i,j) = 0;
                 }
             }
