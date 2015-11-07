@@ -51,7 +51,9 @@ namespace tmd {
         Mat distances(m_centers.rows, 1, CV_32F);
 
         for (int i = 0; i < m_centers.rows; i++) {
-            distances.push_back(norm(m_centers.row(i), sample, NORM_L2));
+            float distance = (float) norm(m_centers.row(i), sample,
+                                                   NORM_L2);
+            distances.at<float>(i,0) = distance;
         }
 
         float min = distances.at<float>(0);
@@ -63,7 +65,7 @@ namespace tmd {
             }
         }
 
-        return m_centers.at<Mat>(minIndex);
+        return m_centers.row(minIndex);
     }
 
     cv::Mat FeatureComparator::getClosestCenter(player_t *player) {
@@ -110,14 +112,18 @@ namespace tmd {
         }
     }
 
-    Mat FeatureComparator::readCentersFromFile() {
+    Mat FeatureComparator::readCentersFromFile(int rows, int cols) {
         std::ifstream clustersFile("/home/nicolas/Desktop/clusterCenters.txt");
-        Mat toReturn;
+        Mat toReturn(rows, cols, CV_32F);
         if (clustersFile.is_open()) {
             string line;
             while (getline(clustersFile, line)) {
                 vector<float> floatVector = getFloatsFromString(line);
-                toReturn.push_back(Mat(floatVector));
+                Mat todo(1, cols, CV_32F);
+                for(int i = 0; i < cols; i ++){
+                    todo.at<float>(0, i) = floatVector[i];
+                }
+                toReturn.push_back(todo);
             }
             clustersFile.close();
         }
@@ -136,5 +142,9 @@ namespace tmd {
                            return std::stof(val);
                        });
         return floatVector;
+    }
+
+    cv::Mat FeatureComparator::getData() {
+        return m_data;
     }
 }
