@@ -70,7 +70,7 @@ namespace tmd {
         void extractBodyParts(player_t *p);
 
         /**
-         * Convert the original_image field of a player from the RGB color
+         * Convert the torso image field of a player from the RGB color
          * space to the HSV color space.
          * Input :
          *      - p : the player.
