@@ -1,6 +1,8 @@
 #include <opencv2/imgproc/types_c.h>
 #include "../headers/features_extractor.h"
 #include "../headers/debug.h"
+#include "../headers/player_t.h"
+#include "../headers/features_t.h"
 
 namespace tmd {
 
@@ -41,8 +43,8 @@ namespace tmd {
 
     void FeaturesExtractor::convertToHSV(player_t *p) {
         cv::Mat hsv_tmp;
-        cvtColor(p->original_image, hsv_tmp, CV_BGR2HSV);
-        p->original_image = hsv_tmp;
+        cvtColor(p->features.torso, hsv_tmp, CV_BGR2HSV);
+        p->features.torso = hsv_tmp;
     }
 
     bool FeaturesExtractor::withinThresholds(double h, double s, double v){
@@ -63,7 +65,7 @@ namespace tmd {
     }
 
     void FeaturesExtractor::updateMaskWithThreshold(player_t *p) {
-        cv::Mat img = p->original_image;
+        cv::Mat img = p->features.torso;
         int cols = img.cols;
         int rows = img.rows;
 
@@ -71,17 +73,17 @@ namespace tmd {
             for (int j = 0; j < cols; j++) {
                 cv::Vec3b color = img.at<cv::Vec3b>(i, j);
                 if (withinThresholds(color[0], color[1], color[2])){
-                    p->mask_image.at<uchar>(i,j) = 255;
+                    p->features.torso_mask.at<uchar>(i,j) = 255;
                 }
                 else{
-                    p->mask_image.at<uchar>(i,j) = 0;
+                    p->features.torso_mask.at<uchar>(i,j) = 0;
                 }
             }
         }
     }
 
     void FeaturesExtractor::createHistogram(player_t *p) {
-        int bins_count = 180;
+        int bins_count = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
         int dim = 1; // One dimension : The hue.
         float **range = new float *[1];
         range[0] = new float[2];
@@ -90,21 +92,18 @@ namespace tmd {
         bool uniform = true;  // Make the histogram uniform.
         bool accumulate = false;
         std::vector<cv::Mat> imagechannels;
-        cv::split(p->original_image, imagechannels);
+        cv::split(p->features.torso, imagechannels);
         cv::Mat images[] = {imagechannels[0]};
         std::vector<cv::Mat> maskchannels;
-        cv::split(p->mask_image, maskchannels);
-        tmd::debug("FeaturesExtractor", "createHistogram", "p->original_image"
-                                                                   ".channels() = " +
-                                                           std::to_string(
-                                                                   p->original_image.channels
-                                                                           ()));
-        tmd::debug("FeaturesExtractor", "createHistogram", "p->mask_image"""
-                                                                   ".channels() = " +
-                                                           std::to_string(
-                                                                   p->original_image.channels()));
-        cv::calcHist(&images[0], 1, 0, maskchannels[0], p->features
-                             .torso_color_histogram, dim, &bins_count,
+        cv::split(p->features.torso_mask, maskchannels);
+        tmd::debug("FeaturesExtractor", "createHistogram",
+                   "p->features.torso.channels() = " +
+                           std::to_string(p->features.torso.channels()));
+        tmd::debug("FeaturesExtractor", "createHistogram",
+                   "p->features.torso_mask.channels() = " +
+                           std::to_string(p->features.torso_mask.channels()));
+        cv::calcHist(&images[0], 1, 0, maskchannels[0],
+                     p->features.torso_color_histogram, dim, &bins_count,
                      (const float **) range,
                      uniform,
                      accumulate);
