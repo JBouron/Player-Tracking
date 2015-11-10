@@ -51,8 +51,9 @@ namespace tmd {
 
     frame_t *BGSubstractor::next_frame() {
         if (!this->has_next_frame()) {
-            throw std::runtime_error(
-                    "Error in BGSubstractor::next_frame() : no frame left.");
+            // TODO : Resolve this issue.
+            /*throw std::runtime_error(
+                    "Error in BGSubstractor::next_frame() : no frame left.");*/
         }
 
         frame_t *frame = new frame_t;

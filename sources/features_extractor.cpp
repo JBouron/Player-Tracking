@@ -58,7 +58,7 @@ namespace tmd {
                                                    + "s = " + std::to_string(s)
                                                    + "v = " +
                                                    std::to_string(v));
-        return ((th_red_low < h && h <= 360) || (0 <= h && h <= th_red_high) ||
+        return ((th_red_low < h && h <= 180) || (0 <= h && h <= th_red_high) ||
                 (th_green_low <= h && h <= th_green_high)) &&
                (th_sat_low <= s) && (th_val_low <= v);
 
@@ -72,7 +72,8 @@ namespace tmd {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 cv::Vec3b color = img.at<cv::Vec3b>(i, j);
-                if (withinThresholds(color[0], color[1], color[2])){
+                bool in_mask = p->features.torso_mask.at<uchar>(i,j) > 127;
+                if (withinThresholds(color[0], color[1], color[2]) && in_mask){
                     p->features.torso_mask.at<uchar>(i,j) = 255;
                 }
                 else{
