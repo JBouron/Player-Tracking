@@ -1,32 +1,39 @@
 #include <iostream>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
 #include "../../headers/demo/demo.h"
 #include "../../headers/features_extractor.h"
+#include "../../headers/player_t.h"
 
 namespace tmd{
     void run_demo(){
         std::string win_name = "Original player image";
         tmd::player_t* player = new player_t;
         player->original_image = cv::imread("./res/demo/playerimage.jpg");
-
+        cv::Mat mask = cv::imread("./res/demo/playerimagemask.jpg");
         const int rows = player->original_image.rows;
         const int cols = player->original_image.cols;
         player->mask_image = cv::Mat(rows, cols, CV_8U);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                player->mask_image.at<uchar>(i, j) = 255;
+                cv::Vec3b s =mask.at<cv::Vec3b>(i, j);
+                std::cout << s.val[0] << " " << s.val[1] << " " << s.val[2]
+                << std::endl;
+                if (s.val[1] > 127) {
+                    player->mask_image.at<uchar>(i, j) = 255;
+                }
+                else{
+                    player->mask_image.at<uchar>(i, j) = 0;
+                }
             }
         }
+
+        // Extract features from the player.
+        tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
+        featuresExtractor.extractFeatures(player);
 
         // Show player image and mask.
         show_original_image(player);
         show_original_image_and_mask(player);
 
-        // Extract features from the player.
-        tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
-        featuresExtractor.extractFeatures(player);
-        show_original_image_and_mask(player);
         // Show every parts of the filter.
         show_dpm_detection_parts(player);
 
@@ -39,7 +46,7 @@ namespace tmd{
         // Show the mask for the torso after Hue threshold.
         show_torso_mask_after_th(player);
 
-        // Create Color Histogram for the torso
+        // Create Color Histogram for the torso.
         show_torso_histogram(player);
 
     }
@@ -104,7 +111,8 @@ namespace tmd{
     }
 
     void show_torso_mask_before_th(const tmd::player_t* const player){
-        cv::Mat torso_mask_before = (player->mask_image.clone());
+        cv::Mat torso_mask_before = (player->mask_image(player->features
+                                                                .torso_pos));
         std::string win_name = "Torso mask before hue threshold";
         cv::imshow(win_name, torso_mask_before);
         cv::waitKey(0);
@@ -131,7 +139,7 @@ namespace tmd{
                                   hist_h - cvRound(localHist.at<float>(i - 1))),
                  cv::Point(1 * (i), hist_h - cvRound(localHist.at<float>
                     (i))),
-                 cv::Scalar(255, 0, 0), 2, 8, 0);
+                 cv::Scalar(255, 0, 0), 1, 8, 0);
         }
         std::string win_name = "Color Histogram for the torso after hue "
                 "threshold";

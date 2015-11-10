@@ -1,5 +1,6 @@
 #include "../headers/manual_player_extractor.h"
 #include "../headers/debug.h"
+#include "../headers/player_t.h"
 
 namespace tmd {
     bool ManualPlayerExtractor::mFirstClick = true;
@@ -8,18 +9,10 @@ namespace tmd {
 
     std::vector<player_t *> ManualPlayerExtractor::extract_player_from_frame(
             frame_t *frame) {
-        std::vector<tmd::player_t *> v;
-        for (int i = 0; i < 3; i++) {
-            v.push_back(new tmd::player_t);
-            v[i]->original_image = cv::imread(
-                    "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/img" +
-                    std::to_string(i + 1) + ".jpg");
-        }
-
         mFirstClick = true;
         mBoxComplete = false;
-        /*cv::namedWindow("Manual player extraction");
-        cv::setMouseCallback("Manual player extraction", onMouseClick, NULL);*/
+        cv::namedWindow("Manual player extraction");
+        cv::setMouseCallback("Manual player extraction", onMouseClick, NULL);
         int keyboard = 0;
         cv::Mat image;
         image = frame->original_frame.clone();
@@ -33,10 +26,10 @@ namespace tmd {
             for (size_t i = 0; i < max_idx; i++) {
                 cv::rectangle(image, mBoxes[i], cv::Scalar(255, 0, 0));
             }
-            //cv::imshow("Manual player extraction", image);
+            cv::imshow("Manual player extraction", image);
             keyboard = cv::waitKey(15);
         }
-        //cv::destroyAllWindows();
+        cv::destroyWindow("Manual player extraction");
         std::vector<player_t *> players;
         for (size_t i = 0; i < mBoxes.size(); i++) {
             tmd::debug("boxes");
@@ -46,11 +39,13 @@ namespace tmd {
             cv::imwrite(
                     "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/player" +
                     std::to_string(i) + ".jpg", players[i]->original_image);
-            //players[i]->mask_image = (*frame->mask_frame)(mBoxes[i]);
-            players[i]->frame_index = frame->frame_index;
+            players[i]->mask_image = (frame->mask_frame.clone())(mBoxes[i]);
+            cv::imwrite("./res/demo/playerimage.jpg",
+                        players[i]->original_image);
+            cv::imwrite("./res/demo/playerimagemask.jpg",
+                        players[i]->mask_image);
         }
-        return v;
-        //return players;
+        return players;
     }
 
     void ManualPlayerExtractor::onMouseClick(int event, int x, int y, int f,
