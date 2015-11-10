@@ -1,0 +1,150 @@
+#include <iostream>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include "../../headers/demo/demo.h"
+#include "../../headers/features_extractor.h"
+#include "../../headers/player_t.h"
+
+namespace tmd{
+    void run_demo(){
+        std::string win_name = "Original player image";
+        tmd::player_t* player = new player_t;
+        player->original_image = cv::imread("./res/demo/playerimage.jpg");
+
+        /** TEST **/
+        const int rows = player->original_image.rows;
+        const int cols = player->original_image.cols;
+        player->mask_image = cv::Mat(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                player->mask_image.at<uchar>(i, j) = 255;
+            }
+        }
+        /** TEST **/
+
+        // Show player image and mask.
+        show_original_image(player);
+        show_original_image_and_mask(player);
+
+        // Extract features from the player.
+        tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
+        featuresExtractor.extractFeatures(player);
+
+        // Show every parts of the filter.
+        show_dpm_detection_parts(player);
+
+        // Show torso box of the player.
+        show_torso_part(player);
+
+        // Show the mask for the torso before Hue threshold.
+        show_torso_mask_before_th(player);
+
+        // Show the mask for the torso after Hue threshold.
+        show_torso_mask_after_th(player);
+
+        // Create Color Histogram for the torso
+        show_torso_histogram(player);
+
+    }
+
+    void show_original_image(const tmd::player_t* const player){
+        cv::imshow("Original player image", player->original_image);
+        cv::waitKey(0);
+        cv::destroyWindow("Original player image");
+    }
+
+    void show_original_image_and_mask(const tmd::player_t* const player){
+        cv::Mat imgcat;
+        cv::Mat maskcpy = player->mask_image.clone();
+        maskcpy.convertTo(maskcpy, player->original_image.type());
+        cv::hconcat(player->original_image, maskcpy, imgcat);
+        cv::imshow("Original image with mask image form BGS", imgcat);
+        cv::waitKey(0);
+        cv::destroyWindow("Original image with mask image form BGS");
+    }
+
+    void show_dpm_detection_parts(const tmd::player_t* const player){
+        std::string win_name = "DPM Detection parts";
+        cv::Mat partsimg = player->original_image.clone();
+        std::vector<cv::Rect> parts = player->features.body_parts;
+        CvScalar color;
+        color.val[0] = 255;
+        color.val[1] = 0;
+        color.val[2] = 255;
+        color.val[3] = 255;
+        const int thickness = 1;
+        const int line_type = 8; // 8 connected line.
+        const int shift = 0;
+        for (int i = 0; i < parts.size(); i++) {
+            CvRect r;
+            r.x = parts[i].x;
+            r.y = parts[i].y;
+            r.width = parts[i].width;
+            r.height = parts[i].height;
+            cv::rectangle(partsimg, r, color, thickness, line_type, shift);
+        }
+        cv::imshow(win_name, partsimg);
+        cv::waitKey(0);
+        cv::destroyWindow(win_name);
+    }
+
+    void show_torso_part(const tmd::player_t* const player){
+        std::string win_name = "Find the torso";
+        cv::Mat torsoimg = player->original_image.clone();
+        CvScalar torso;
+        torso.val[0] = 255;
+        torso.val[1] = 255;
+        torso.val[2] = 0;
+        torso.val[3] = 255;
+        CvRect r;
+        const int thickness = 1;
+        const int line_type = 8; // 8 connected line.
+        const int shift = 0;
+        r.x = player->features.torso_pos.x;
+        r.y = player->features.torso_pos.y;
+        r.width = player->features.torso_pos.width;
+        r.height = player->features.torso_pos.height;
+        cv::rectangle(torsoimg, r, torso, thickness, line_type, shift);
+        cv::imshow(win_name, torsoimg);
+        cv::waitKey(0);
+        cv::destroyWindow(win_name);
+    }
+
+    void show_torso_mask_before_th(const tmd::player_t* const player){
+        cv::Mat torso_mask_before = player->mask_image(player->features
+                                                               .torso_pos);
+        std::string win_name = "Torso mask before hue threshold";
+        cv::imshow(win_name, torso_mask_before);
+        cv::waitKey(0);
+        cv::destroyWindow(win_name);
+    }
+
+    void show_torso_mask_after_th(const tmd::player_t* const player){
+        std::string win_name = "Torso mask after hue threshold";
+        cv::imshow(win_name, player->features.torso_mask);
+        cv::waitKey(0);
+        cv::destroyWindow(win_name);
+    }
+
+    void show_torso_histogram(const tmd::player_t* const player){
+        cv::Mat localHist = player->features.torso_color_histogram.clone();
+        // Normalize the histogram ...
+        const int hist_h = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
+        const int hist_w = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
+        cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar( 0,0,0));
+        normalize(localHist, localHist, 0, histImage.rows, cv::NORM_MINMAX, -1,
+                  cv::Mat());
+        for( int i = 1; i < TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE; i++ ) {
+            line(histImage, cv::Point(1 * (i - 1),
+                                  hist_h - cvRound(localHist.at<float>(i - 1))),
+                 cv::Point(1 * (i), hist_h - cvRound(localHist.at<float>
+                    (i))),
+                 cv::Scalar(255, 0, 0), 2, 8, 0);
+        }
+        std::string win_name = "Color Histogram for the torso after hue "
+                "threshold";
+        cv::imshow(win_name, histImage);
+        cv::waitKey(0);
+        cv::destroyWindow(win_name);
+    }
+}
