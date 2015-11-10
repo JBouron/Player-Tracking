@@ -349,8 +349,8 @@ namespace tmd {
         int oppoY = ((torso1.y + torso1.height) + (torso2.y + torso2.height))/2;
         mean.width = oppoX - mean.x;
         mean.height = oppoY - mean.y;
-        player->features.torso = player->original_image(mean);
-        player->features.torso_mask = player->mask_image(mean);
+        player->features.torso = (player->original_image.clone())(mean);
+        player->features.torso_mask = (player->mask_image.clone())(mean);
         player->features.torso_pos = mean;
     }
 }

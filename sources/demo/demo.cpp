@@ -26,7 +26,7 @@ namespace tmd{
         // Extract features from the player.
         tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
         featuresExtractor.extractFeatures(player);
-
+        show_original_image_and_mask(player);
         // Show every parts of the filter.
         show_dpm_detection_parts(player);
 
@@ -104,8 +104,7 @@ namespace tmd{
     }
 
     void show_torso_mask_before_th(const tmd::player_t* const player){
-        cv::Mat torso_mask_before = player->mask_image(player->features
-                                                               .torso_pos);
+        cv::Mat torso_mask_before = (player->mask_image.clone());
         std::string win_name = "Torso mask before hue threshold";
         cv::imshow(win_name, torso_mask_before);
         cv::waitKey(0);
