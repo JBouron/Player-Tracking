@@ -351,5 +351,6 @@ namespace tmd {
         mean.height = oppoY - mean.y;
         player->features.torso = player->original_image(mean);
         player->features.torso_mask = player->mask_image(mean);
+        player->features.torso_pos = mean;
     }
 }
