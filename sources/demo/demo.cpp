@@ -11,16 +11,15 @@ namespace tmd{
         tmd::player_t* player = new player_t;
         player->original_image = cv::imread("./res/demo/playerimage.jpg");
 
-        /** TEST **/
         const int rows = player->original_image.rows;
         const int cols = player->original_image.cols;
-        player->mask_image = cv::Mat(rows, cols);
+
+        player->mask_image = cv::Mat(rows, cols, CV_8U);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 player->mask_image.at<uchar>(i, j) = 255;
             }
         }
-        /** TEST **/
 
         // Show player image and mask.
         show_original_image(player);
@@ -54,10 +53,10 @@ namespace tmd{
     }
 
     void show_original_image_and_mask(const tmd::player_t* const player){
-        cv::Mat imgcat;
+        cv::Mat imgcat(player->original_image.rows, player->original_image
+                .cols, player->original_image.type());
         cv::Mat maskcpy = player->mask_image.clone();
-        maskcpy.convertTo(maskcpy, player->original_image.type());
-        cv::hconcat(player->original_image, maskcpy, imgcat);
+        player->original_image.copyTo(imgcat, maskcpy);
         cv::imshow("Original image with mask image form BGS", imgcat);
         cv::waitKey(0);
         cv::destroyWindow("Original image with mask image form BGS");
