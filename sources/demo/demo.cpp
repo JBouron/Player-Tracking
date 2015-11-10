@@ -3,7 +3,6 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "../../headers/demo/demo.h"
 #include "../../headers/features_extractor.h"
-#include "../../headers/player_t.h"
 
 namespace tmd{
     void run_demo(){
@@ -14,7 +13,7 @@ namespace tmd{
         /** TEST **/
         const int rows = player->original_image.rows;
         const int cols = player->original_image.cols;
-        player->mask_image = cv::Mat(rows, cols);
+        player->mask_image = cv::Mat(rows, cols, CV_8U);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 player->mask_image.at<uchar>(i, j) = 255;
@@ -54,13 +53,9 @@ namespace tmd{
     }
 
     void show_original_image_and_mask(const tmd::player_t* const player){
-        cv::Mat imgcat;
-        cv::Mat maskcpy = player->mask_image.clone();
-        maskcpy.convertTo(maskcpy, player->original_image.type());
-        cv::hconcat(player->original_image, maskcpy, imgcat);
-        cv::imshow("Original image with mask image form BGS", imgcat);
+        cv::imshow("Original mask image image form BGS", player->mask_image);
         cv::waitKey(0);
-        cv::destroyWindow("Original image with mask image form BGS");
+        cv::destroyWindow("Original mask image image form BGS" );
     }
 
     void show_dpm_detection_parts(const tmd::player_t* const player){
