@@ -10,7 +10,6 @@ namespace tmd{
         tmd::player_t* player = new player_t;
         player->original_image = cv::imread("./res/demo/playerimage.jpg");
 
-        /** TEST **/
         const int rows = player->original_image.rows;
         const int cols = player->original_image.cols;
         player->mask_image = cv::Mat(rows, cols, CV_8U);
@@ -19,7 +18,6 @@ namespace tmd{
                 player->mask_image.at<uchar>(i, j) = 255;
             }
         }
-        /** TEST **/
 
         // Show player image and mask.
         show_original_image(player);
