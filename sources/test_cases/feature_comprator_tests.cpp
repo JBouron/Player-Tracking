@@ -135,6 +135,12 @@ namespace tmd{
 
         comparator.writeCentersToFile();
         cv::Mat centers = comparator.readCentersFromFile(3,3);
+
+        std::cout << centers << std::endl;
+        std::cout << centers.rows << std::endl;
+        std::cout << centers.cols << std::endl;
+        std::cout << centers.type() << std::endl;
+
         for(int i = 0; i < 3; i ++){
             for(int j = 0; j < 3; j++){
                 CPPUNIT_ASSERT(centers.at<float>(i,j) == m_centers.at<float>

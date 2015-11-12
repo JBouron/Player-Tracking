@@ -117,13 +117,12 @@ namespace tmd {
         Mat toReturn(rows, cols, CV_32F);
         if (clustersFile.is_open()) {
             string line;
-            while (getline(clustersFile, line)) {
+            for(int j = 0; j < rows; j++){
+                getline(clustersFile, line);
                 vector<float> floatVector = getFloatsFromString(line);
-                Mat todo(1, cols, CV_32F);
                 for(int i = 0; i < cols; i ++){
-                    todo.at<float>(0, i) = floatVector[i];
+                    toReturn.at<float>(j, i) = floatVector[i];
                 }
-                toReturn.push_back(todo);
             }
             clustersFile.close();
         }
