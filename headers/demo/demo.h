@@ -4,7 +4,8 @@
 #include "../player_t.h"
 
 namespace tmd{
-    void run_demo();
+    void run_demo_dpm(void);
+    void run_demo_pipeline(void);
 
     void show_original_image(const tmd::player_t* const player);
     void show_original_image_and_mask(const tmd::player_t* const player);

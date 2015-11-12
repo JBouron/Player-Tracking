@@ -4,11 +4,37 @@
 #include "../../headers/player_t.h"
 
 namespace tmd{
-    void run_demo(){
+    void run_demo_dpm(void){
+        const int player_count = 5;
+        player_t** players = new player_t*[player_count];
+        for (int i = 0 ; i < player_count ; i ++){
+            players[i] = new player_t;
+            std::string path = "./res/demo/dpm/img" +std::to_string(i) + ".jpg";
+            std::cout << path << std::endl;
+            players[i]->original_image = cv::imread(path);
+        }
+        DPMDetector dpm("./res/xmls/person.xml");
+        for (int i = 0 ; i < player_count ; i ++){
+            std::cout << "image " << i << " ";
+            dpm.extractBodyParts(players[i]);
+            std::cout << "done" << std::endl;
+        }
+
+        for (int i = 0 ; i < player_count ; i ++){
+            show_dpm_detection_parts(players[i]);
+        }
+
+        for (int i = 0 ; i < player_count ; i ++){
+            delete players[i];
+        }
+        delete players;
+    }
+
+    void run_demo_pipeline(void){
         std::string win_name = "Original player image";
         tmd::player_t* player = new player_t;
-        player->original_image = cv::imread("./res/demo/playerimage.jpg");
-        cv::Mat mask = cv::imread("./res/demo/playerimagemask.jpg");
+        player->original_image = cv::imread("./res/demo/playerimagered.jpg");
+        cv::Mat mask = cv::imread("./res/demo/playerimagemaskred.jpg");
         const int rows = player->original_image.rows;
         const int cols = player->original_image.cols;
         player->mask_image = cv::Mat(rows, cols, CV_8U);
