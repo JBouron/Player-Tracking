@@ -7,8 +7,7 @@
 void extract_player_image(void);
 
 int main(int argc, char *argv[]) {
-    // extract_player_image();
-    tmd::run_demo();
+    tmd::run_demo_pipeline();
     return EXIT_SUCCESS;
 }
 
