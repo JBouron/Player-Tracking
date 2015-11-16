@@ -23,13 +23,10 @@ namespace tmd{
             bgs[i] = new tmd::BGSubstractor(videos[i], i);
         }
 
-        tmd::FeatureComparator comparator()
+        tmd::FeatureComparator comparator();
 
         //START VIDEO
         //JUMP TO FRAME X
-
-
-
 
     }
 
