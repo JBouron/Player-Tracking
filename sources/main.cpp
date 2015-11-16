@@ -8,9 +8,7 @@
 void extract_player_image(void);
 
 int main(int argc, char *argv[]) {
-    cv::VideoCapture* video = new cv::VideoCapture("/home/nicolas/Documents/EPFL/Projet/Bachelor-Project/res/videos/alone-green-no-ball/ace_04.mp4");
-    tmd::BGSubstractor s(video, 1);
-
+    tmd::run_demo_feature_comparator();
     //(tmd::run_demo_pipeline();
     return EXIT_SUCCESS;
 }
