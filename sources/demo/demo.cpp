@@ -2,8 +2,37 @@
 #include "../../headers/demo/demo.h"
 #include "../../headers/features_extractor.h"
 #include "../../headers/player_t.h"
+#include "../../headers/bgsubstractor.h"
+#include "../../headers/feature_comparator.h"
 
 namespace tmd{
+
+    void run_demo_feature_comparator(){
+        cv::VideoCapture* videos[8];
+        std::string video_folder = "PATH";
+        for (int i = 0; i < 8; i++) {
+            std::string path = video_folder + "/ace_" + std::to_string(i) + ".mp4";
+            videos[i] = new cv::VideoCapture(path);
+            if (videos[i] == NULL || !videos[i]->isOpened()) {
+                throw std::invalid_argument("Couldn't open video file : " + path);
+            }
+        }
+
+        tmd::BGSubstractor* bgs[8];
+        for(int i = 0; i < 8; i ++){
+            bgs[i] = new tmd::BGSubstractor(videos[i], i);
+        }
+
+        tmd::FeatureComparator comparator()
+
+        //START VIDEO
+        //JUMP TO FRAME X
+
+
+
+
+    }
+
     void run_demo_dpm(void){
         const int player_count = 5;
         player_t** players = new player_t*[player_count];

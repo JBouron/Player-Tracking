@@ -3,11 +3,15 @@
 #include "../headers/test_cases/test_suite.h"
 #include "../headers/demo/demo.h"
 #include "../headers/manual_player_extractor.h"
+#include "../headers/calibration_tool.h"
 
 void extract_player_image(void);
 
 int main(int argc, char *argv[]) {
-    tmd::run_demo_pipeline();
+    cv::VideoCapture* video = new cv::VideoCapture("/home/nicolas/Documents/EPFL/Projet/Bachelor-Project/res/videos/alone-green-no-ball/ace_04.mp4");
+    tmd::BGSubstractor s(video, 1);
+
+    //(tmd::run_demo_pipeline();
     return EXIT_SUCCESS;
 }
 
