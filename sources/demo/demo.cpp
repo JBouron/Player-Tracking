@@ -31,7 +31,7 @@ namespace tmd{
         }
 
         int clusterRows = 180;
-        int clusterCount = 3;
+        int clusterCount = 2;
         cv::Mat data, labels(1, clusterRows, CV_32F);
         cv::Mat clusterCenters = cv::Mat(clusterCount, clusterRows, CV_32F);
         cv::TermCriteria termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER,
@@ -103,6 +103,11 @@ namespace tmd{
         for(int i = 0; i < 8; i ++){
             bgs_two_green[i] = new tmd::BGSubstractor(&videos_two_green[i], i);
             bgs_two_red[i] = new tmd::BGSubstractor(&videos_two_red[i], i);
+        }
+
+        for(int i = 0; i < 8; i ++){
+            bgs_two_red[i]->jump_to_frame(300);
+            bgs_two_green[i]->jump_to_frame(300);
         }
 
         for(int i = 0; i < 8; i++){
