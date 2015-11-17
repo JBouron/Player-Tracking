@@ -1,5 +1,5 @@
 #include <iostream>
-#include <bits/stl_stack.h>
+#include <stack>
 #include "../../headers/demo/demo.h"
 #include "../../headers/features_extractor.h"
 #include "../../headers/bgsubstractor.h"
@@ -39,7 +39,7 @@ namespace tmd{
         tmd::FeatureComparator comparator(data, clusterCount, labels, termCriteria, attempts, flags, clusterCenters);
 
         tmd::ManualPlayerExtractor playerExtractor;
-        tmd::FeaturesExtractor featuresExtractor("/home/nicolas/Documents/EPFL/Projet/Bachelor-Project/res/xmls/person.xml");
+        tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
         std::stack<player_t*> players;
 
@@ -75,7 +75,7 @@ namespace tmd{
             playersAfterExtraction.pop();
         }
 
-
+        std::cout << "top kek" << std::endl;
 
     }
 
