@@ -81,6 +81,11 @@ namespace tmd {
         void setFlags(int flags);
 
         /**
+         * Getter method for the data that is in the cluster.
+         */
+        cv::Mat getData();
+
+        /**
          * Writes the cluster's centers to a file "clusterCenters.txt".
          */
         void writeCentersToFile();
@@ -88,7 +93,7 @@ namespace tmd {
         /**
          * Reads the cluster's centers from a file "clusterCenters.txt".
          */
-        cv::Mat readCentersFromFile();
+        cv::Mat readCentersFromFile(int rows, int cols);
 
     private:
         cv::Mat m_data;
