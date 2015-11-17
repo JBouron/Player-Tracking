@@ -19,6 +19,7 @@ namespace tmd{
         bool has_next_frame();
         frame_t* next_frame();
 
+        bool jump_to_frame(int index);
         void set_threshold_value(float th);
         void set_history_size(int s);
         void set_learning_rate(float lr);

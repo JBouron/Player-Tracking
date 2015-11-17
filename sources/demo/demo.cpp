@@ -44,9 +44,7 @@ namespace tmd{
         std::stack<player_t*> players;
 
         for(int i = 0; i < 8; i ++){
-           for(int j = 0; j < 360; j++){
-               bgs[i]->next_frame();
-           }
+           bgs[i]->jump_to_frame(360);
         }
 
         for(int i = 0; i < 8; i++){

@@ -81,4 +81,8 @@ namespace tmd {
     void BGSubstractor::set_learning_rate(float lr) {
         m_learning_rate = lr;
     }
+
+    bool BGSubstractor::jump_to_frame(int index) {
+        m_input_video->set(CV_CAP_PROP_POS_FRAMES, index);
+    }
 }
