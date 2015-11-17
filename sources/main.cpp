@@ -3,11 +3,12 @@
 #include "../headers/test_cases/test_suite.h"
 #include "../headers/demo/demo.h"
 #include "../headers/manual_player_extractor.h"
+#include "../headers/calibration_tool.h"
 
 void extract_player_image(void);
 
 int main(int argc, char *argv[]) {
-    tmd::run_tests();
+    tmd::run_demo_feature_comparator();
     return EXIT_SUCCESS;
 }
 

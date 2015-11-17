@@ -30,6 +30,5 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/demo/demo.h
         headers/test_cases/feature_comparator_tests.h
         sources/test_cases/feature_comprator_tests.cpp)
-
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} cppunit)
