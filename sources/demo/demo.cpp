@@ -6,36 +6,38 @@
 #include "../../headers/feature_comparator.h"
 #include "../../headers/player_extractor.h"
 #include "../../headers/manual_player_extractor.h"
+#include "../../headers/frame_t.h"
 
 namespace tmd{
 
     void run_demo_feature_comparator(void){
-        cv::VideoCapture videos[8];
-        std::string video_folder = "./res/videos/alone-green-ball";
+        std::string video_folder_green = "./res/videos/alone-green-no-ball";
+        std::string video_folder_red = "./res/videos/alone-red-no-ball";
+
+        cv::VideoCapture videos_green[8];
+        cv::VideoCapture videos_red[8];
         for (int i = 0; i < 8; i++) {
-            std::string path = video_folder + "/ace_" + std::to_string(i) + ".mp4";
-
-            videos[i].open(path);
-            if (&videos[i] == NULL || !videos[i].isOpened()) {
-                throw std::invalid_argument("Couldn't open video file : " + path);
-            }
+            std::string path = video_folder_green + "/ace_" + std::to_string(i) + ".mp4";
+            videos_green[i].open(path);
+            path = video_folder_red + "/ace_" + std::to_string(i) + ".mp4";
+            videos_red[i].open(path);
         }
 
-        tmd::BGSubstractor* bgs[8];
+        tmd::BGSubstractor* bgs_green[8];
+        tmd::BGSubstractor* bgs_red[8];
         for(int i = 0; i < 8; i ++){
-            bgs[i] = new tmd::BGSubstractor(&videos[i], i);
+            bgs_green[i] = new tmd::BGSubstractor(&videos_green[i], i);
+            bgs_red[i] = new tmd::BGSubstractor(&videos_red[i], i);
         }
 
-        int clusterRows = 2;
+        int clusterRows = 180;
         int clusterCount = 3;
         cv::Mat data, labels(1, clusterRows, CV_32F);
         cv::Mat clusterCenters = cv::Mat(clusterCount, clusterRows, CV_32F);
-
         cv::TermCriteria termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER,
                                           10, 1.0);
         int attempts = 3;
         int flags = cv::KMEANS_PP_CENTERS;
-
         tmd::FeatureComparator comparator(data, clusterCount, labels, termCriteria, attempts, flags, clusterCenters);
 
         tmd::ManualPlayerExtractor playerExtractor;
@@ -43,19 +45,27 @@ namespace tmd{
 
         std::stack<player_t*> players;
 
+
         for(int i = 0; i < 8; i ++){
-           bgs[i]->jump_to_frame(360);
+            bgs_red[i]->jump_to_frame(600);
+            bgs_green[i]->jump_to_frame(600);
         }
 
         for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 40; j++){
+            for(int j = 0; j < 1; j++){
                 for(int k = 0; k < 10; k++){
-                    bgs[i]->next_frame();
+                    bgs_green[i]->next_frame();
+                    bgs_red[i]->next_frame();
                 }
-                std::vector<player_t*> playersExtracted = playerExtractor.extract_player_from_frame(bgs[i]->next_frame());
-                for(int l = 0; l < playersExtracted.size(); l++){
-                    players.push(playersExtracted[l]);
+                std::vector<player_t*> playersExtractedGreen = playerExtractor.extract_player_from_frame(bgs_green[i]->next_frame());
+                std::vector<player_t*> playersExtractedRed = playerExtractor.extract_player_from_frame(bgs_red[i]->next_frame());
+                for(int l = 0; l < playersExtractedGreen.size(); l++){
+                    players.push(playersExtractedGreen[l]);
                 }
+                for(int l = 0; l < playersExtractedRed.size(); l++){
+                    players.push(playersExtractedRed[l]);
+                }
+
             }
         }
 
@@ -73,18 +83,70 @@ namespace tmd{
             playersAfterExtraction.pop();
         }
 
-        std::cout << "top kek" << std::endl;
+        comparator.runClustering();
+        comparator.writeCentersToFile();
+
+        std::string video_folder_two_green = "./res/videos/two-green-no-ball";
+        std::string video_folder_two_red = "./res/videos/two-red-no-ball";
+
+        cv::VideoCapture videos_two_green[8];
+        cv::VideoCapture videos_two_red[8];
+        for (int i = 0; i < 8; i++) {
+            std::string path = video_folder_two_green + "/ace_" + std::to_string(i) + ".mp4";
+            videos_two_green[i].open(path);
+            path = video_folder_two_red + "/ace_" + std::to_string(i) + ".mp4";
+            videos_two_red[i].open(path);
+        }
+
+        tmd::BGSubstractor* bgs_two_green[8];
+        tmd::BGSubstractor* bgs_two_red[8];
+        for(int i = 0; i < 8; i ++){
+            bgs_two_green[i] = new tmd::BGSubstractor(&videos_two_green[i], i);
+            bgs_two_red[i] = new tmd::BGSubstractor(&videos_two_red[i], i);
+        }
+
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 2; j++){
+                for(int k = 0; k < 10; k++){
+                    bgs_two_green[i]->next_frame();
+                    bgs_two_red[i]->next_frame();
+                }
+
+                std::vector<player_t*> playersExtractedGreen = playerExtractor.extract_player_from_frame(bgs_two_green[i]->next_frame());
+                for(int l = 0; l < playersExtractedGreen.size(); l++){
+                    featuresExtractor.extractFeatures(playersExtractedGreen[l]);
+                    cv::Mat closest = comparator.getClosestCenter(playersExtractedGreen[i]);
+                    std::cout << closest << std::endl;
+                }
+
+                std::vector<player_t*> playersExtractedRed = playerExtractor.extract_player_from_frame(bgs_two_red[i]->next_frame());
+                for(int l = 0; l < playersExtractedRed.size(); l++){
+                    featuresExtractor.extractFeatures(playersExtractedRed[l]);
+                    cv::Mat closest = comparator.getClosestCenter(playersExtractedRed[i]);
+                    std::cout << closest << std::endl;
+                }
+            }
+        }
 
     }
 
     void run_demo_dpm(void){
-        const int player_count = 5;
+        const int player_count = 4;
         player_t** players = new player_t*[player_count];
         for (int i = 0 ; i < player_count ; i ++){
             players[i] = new player_t;
             std::string path = "./res/demo/dpm/img" +std::to_string(i) + ".jpg";
             std::cout << path << std::endl;
             players[i]->original_image = cv::imread(path);
+            player_t* player = players[i];
+            const int rows = player->original_image.rows;
+            const int cols = player->original_image.cols;
+            player->mask_image = cv::Mat(rows, cols, CV_8U);
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                        player->mask_image.at<uchar>(i, j) = 255;
+                }
+            }
         }
         DPMDetector dpm("./res/xmls/person.xml");
         for (int i = 0 ; i < player_count ; i ++){
