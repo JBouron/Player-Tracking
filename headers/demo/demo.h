@@ -4,6 +4,7 @@
 #include "../player_t.h"
 
 namespace tmd{
+    void run_demo_feature_comparator(void);
     void run_demo_dpm(void);
     void run_demo_pipeline(void);
 
