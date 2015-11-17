@@ -1,13 +1,15 @@
 #include <iostream>
+#include <bits/stl_stack.h>
 #include "../../headers/demo/demo.h"
 #include "../../headers/features_extractor.h"
-#include "../../headers/player_t.h"
 #include "../../headers/bgsubstractor.h"
 #include "../../headers/feature_comparator.h"
+#include "../../headers/player_extractor.h"
+#include "../../headers/manual_player_extractor.h"
 
 namespace tmd{
 
-    void run_demo_feature_comparator(){
+    void run_demo_feature_comparator(void){
         cv::VideoCapture videos[8];
         std::string video_folder = "./res/videos/alone-green-ball";
         for (int i = 0; i < 8; i++) {
@@ -24,10 +26,56 @@ namespace tmd{
             bgs[i] = new tmd::BGSubstractor(&videos[i], i);
         }
 
-        tmd::FeatureComparator comparator();
+        int clusterRows = 2;
+        int clusterCount = 3;
+        cv::Mat data, labels(1, clusterRows, CV_32F);
+        cv::Mat clusterCenters = cv::Mat(clusterCount, clusterRows, CV_32F);
 
-        //START VIDEO
-        //JUMP TO FRAME X
+        cv::TermCriteria termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER,
+                                          10, 1.0);
+        int attempts = 3;
+        int flags = cv::KMEANS_PP_CENTERS;
+
+        tmd::FeatureComparator comparator(data, clusterCount, labels, termCriteria, attempts, flags, clusterCenters);
+
+        tmd::ManualPlayerExtractor playerExtractor;
+        tmd::FeaturesExtractor featuresExtractor("/home/nicolas/Documents/EPFL/Projet/Bachelor-Project/res/xmls/person.xml");
+
+        std::stack<player_t*> players;
+
+        for(int i = 0; i < 8; i ++){
+           for(int j = 0; j < 360; j++){
+               bgs[i]->next_frame();
+           }
+        }
+
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 40; j++){
+                for(int k = 0; k < 10; k++){
+                    bgs[i]->next_frame();
+                }
+                std::vector<player_t*> playersExtracted = playerExtractor.extract_player_from_frame(bgs[i]->next_frame());
+                for(int l = 0; l < playersExtracted.size(); l++){
+                    players.push(playersExtracted[l]);
+                }
+            }
+        }
+
+        std::stack<player_t*> playersAfterExtraction;
+        while(!players.empty()){
+            featuresExtractor.extractFeatures(players.top());
+            playersAfterExtraction.push(players.top());
+            players.pop();
+        }
+
+        std::stack<player_t*> playersAfterClusterSampling;
+        while(!playersAfterExtraction.empty()){
+            comparator.addPlayerFeatures(playersAfterExtraction.top());
+            playersAfterClusterSampling.push(playersAfterExtraction.top());
+            playersAfterExtraction.pop();
+        }
+
+
 
     }
 
