@@ -15,7 +15,6 @@ int main(int argc, char *argv[]) {
 void extract_player_image(void){
     cv::VideoCapture capt("./misc/ace_0.mp4");
     tmd::BGSubstractor bgs(&capt, 0);
-
     int keyboard = 0;
     cv::namedWindow("Extraction");
     tmd::frame_t* frame;
@@ -27,7 +26,6 @@ void extract_player_image(void){
             delete frame;
         }
     }
-
     tmd::ManualPlayerExtractor mp;
     mp.extract_player_from_frame(frame);
 }

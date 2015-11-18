@@ -30,10 +30,11 @@ namespace tmd{
             bgs_red[i] = new tmd::BGSubstractor(&videos_red[i], i);
         }
 
-        int clusterRows = 180;
+        int clusterCols = 180;
         int clusterCount = 2;
-        cv::Mat data, labels(1, clusterRows, CV_32F);
-        cv::Mat clusterCenters = cv::Mat(clusterCount, clusterRows, CV_32F);
+        cv::Mat data, labels(1, clusterCols, CV_32F);
+        std::cout << data.cols << std::endl;
+        cv::Mat clusterCenters = cv::Mat(clusterCount, clusterCols, CV_32F);
         cv::TermCriteria termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER,
                                           10, 1.0);
         int attempts = 3;
@@ -51,36 +52,29 @@ namespace tmd{
             bgs_green[i]->jump_to_frame(600);
         }
 
-        for(int i = 0; i < 8; i++){
+        for(int i = 0; i < 1; i++){
             for(int j = 0; j < 1; j++){
-                for(int k = 0; k < 10; k++){
+                for(int k = 0;  k < 10; k++){
                     bgs_green[i]->next_frame();
                     bgs_red[i]->next_frame();
                 }
                 std::vector<player_t*> playersExtractedGreen = playerExtractor.extract_player_from_frame(bgs_green[i]->next_frame());
                 std::vector<player_t*> playersExtractedRed = playerExtractor.extract_player_from_frame(bgs_red[i]->next_frame());
+
                 for(int l = 0; l < playersExtractedGreen.size(); l++){
                     players.push(playersExtractedGreen[l]);
+                    featuresExtractor.extractFeatures(players.top());
+                    comparator.addPlayerFeatures(players.top());
+                    delete players.top();
                 }
                 for(int l = 0; l < playersExtractedRed.size(); l++){
                     players.push(playersExtractedRed[l]);
+                    featuresExtractor.extractFeatures(players.top());
+                    comparator.addPlayerFeatures(players.top());
+                    delete players.top();
                 }
 
             }
-        }
-
-        std::stack<player_t*> playersAfterExtraction;
-        while(!players.empty()){
-            featuresExtractor.extractFeatures(players.top());
-            playersAfterExtraction.push(players.top());
-            players.pop();
-        }
-
-        std::stack<player_t*> playersAfterClusterSampling;
-        while(!playersAfterExtraction.empty()){
-            comparator.addPlayerFeatures(playersAfterExtraction.top());
-            playersAfterClusterSampling.push(playersAfterExtraction.top());
-            playersAfterExtraction.pop();
         }
 
         comparator.runClustering();
@@ -98,6 +92,10 @@ namespace tmd{
             videos_two_red[i].open(path);
         }
 
+        cv::Mat readCenters = comparator.readCentersFromFile(clusterCount, clusterCols);
+        cv::Mat center1 = readCenters.row(0);
+        cv::Mat center2 = readCenters.row(1);
+
         tmd::BGSubstractor* bgs_two_green[8];
         tmd::BGSubstractor* bgs_two_red[8];
         for(int i = 0; i < 8; i ++){
@@ -106,8 +104,8 @@ namespace tmd{
         }
 
         for(int i = 0; i < 8; i ++){
-            bgs_two_red[i]->jump_to_frame(300);
-            bgs_two_green[i]->jump_to_frame(300);
+            bgs_two_red[i]->jump_to_frame(600);
+            bgs_two_green[i]->jump_to_frame(600);
         }
 
         for(int i = 0; i < 8; i++){
@@ -121,18 +119,33 @@ namespace tmd{
                 for(int l = 0; l < playersExtractedGreen.size(); l++){
                     featuresExtractor.extractFeatures(playersExtractedGreen[l]);
                     cv::Mat closest = comparator.getClosestCenter(playersExtractedGreen[i]);
-                    std::cout << closest << std::endl;
+                    compareCenters(center1, center2, closest);
                 }
 
                 std::vector<player_t*> playersExtractedRed = playerExtractor.extract_player_from_frame(bgs_two_red[i]->next_frame());
                 for(int l = 0; l < playersExtractedRed.size(); l++){
                     featuresExtractor.extractFeatures(playersExtractedRed[l]);
                     cv::Mat closest = comparator.getClosestCenter(playersExtractedRed[i]);
-                    std::cout << closest << std::endl;
+                    compareCenters(center1, center2, closest);
                 }
             }
         }
 
+    }
+
+    void compareCenters(cv::Mat center1, cv::Mat center2, cv::Mat compare){
+        bool equal = true;
+        for(int i =0; i < 180; i++){
+            if(center1.at<float>(0, i) != compare.at<float>(0,i)){
+                equal = false;
+            }
+        }
+        if(equal){
+            std::cout << "CENTER 1" << std::endl;
+        }
+        else{
+            std::cout << "CENTER 2" << std::endl;
+        }
     }
 
     void run_demo_dpm(void){
