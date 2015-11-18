@@ -54,10 +54,10 @@ namespace tmd {
         float th_green_high = TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH;
         float th_sat_low = TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW;
         float th_val_low = TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW;
-        tmd::debug("FeaturesExtractor", "isValid", "h = " + std::to_string(h)
+        /*tmd::debug("FeaturesExtractor", "isValid", "h = " + std::to_string(h)
                                                    + "s = " + std::to_string(s)
                                                    + "v = " +
-                                                   std::to_string(v));
+                                                   std::to_string(v));*/
         return ((th_red_low < h && h <= 180) || (0 <= h && h <= th_red_high) ||
                 (th_green_low <= h && h <= th_green_high)) &&
                (th_sat_low <= s) && (th_val_low <= v);

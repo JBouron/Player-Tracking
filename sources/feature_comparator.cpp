@@ -35,10 +35,7 @@ namespace tmd {
     }
 
     void FeatureComparator::addSampleToData(cv::Mat sample) {
-        if (m_data.cols != sample.cols || sample.rows != 1) {
-            throw std::invalid_argument(
-                    "Sample doesn't have the same amount of dimensions as the data !");
-        }
+
         m_data.push_back(sample);
     }
 
@@ -92,6 +89,8 @@ namespace tmd {
     cv::Mat FeatureComparator::getMatForPlayerFeature(player_t *player) {
         cv::Mat t;
         cv::transpose(player->features.torso_color_histogram, t);
+        std::cout << t.rows << std::endl;
+        std::cout << t.cols << std::endl;
         return t;
     }
 

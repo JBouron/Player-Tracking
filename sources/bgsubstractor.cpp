@@ -43,9 +43,9 @@ namespace tmd {
     }
 
     bool BGSubstractor::has_next_frame(){
-        tmd::debug("BGSubstractor", "has_next_frame", "m_frame_index = " +
+       /* tmd::debug("BGSubstractor", "has_next_frame", "m_frame_index = " +
                 std::to_string(m_frame_index) + " m_total_frame_count = " +
-                std::to_string(m_total_frame_count));
+                std::to_string(m_total_frame_count));*/
         return true;
         return m_frame_index < m_total_frame_count;
     }
@@ -65,9 +65,9 @@ namespace tmd {
                           m_learning_rate);
         frame->camera_index = m_camera_index;
         m_frame_index++;
-        tmd::debug("BGSubstractor", "next_frame",
+        /*::debug("BGSubstractor", "next_frame",
                    "frame fetched. Frame index = " +
-                   std::to_string(m_frame_index));
+                   std::to_string(m_frame_index));*/
         return frame;
     }
 
