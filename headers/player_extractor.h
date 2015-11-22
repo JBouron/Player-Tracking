@@ -14,8 +14,6 @@ namespace tmd{
      *      mask_image
      *      frame_index
      *      pos_frame
-     *      pos_field
-     *      box
      *
      * All the players for one frame are returned in a vector.
      */
