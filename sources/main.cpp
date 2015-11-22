@@ -69,4 +69,20 @@ void pipeline(void){
     int attempts = 3;
     int flags = cv::KMEANS_PP_CENTERS;
     tmd::FeatureComparator comparator(data, clusterCount, labels, termCriteria, attempts, flags, clusterCenters);
+
+    //En gros là actuellement ta data est vide.
+    //Faire runClustering() va juste crash
+
+    //Cette ligne te retourne les centres du fichier
+    cv::Mat centersFromFile = comparator.readCentersFromFile(clusterCount, clusterCols);
+    //TU voudrais genre
+    tmd::FeatureComparator comparator(data, clusterCount, labels, termCriteria, attempts, flags, centersFromFile);
+    //ton data est vide mais t'as des centres
+
+    //Maintenant tu peux faire
+    comparator.getClosestCenter(player_t* lePlayerDOntTuVeuxSavoirLequipe)
+            //Ca te retrourne une MAt qui est le centre auqeuql il se rattache, soit son équipe
+    //Idéalement t'as genre une autre méthode qui ensuite exploite les valeurs de ce centre pour dire "vert"
+    //à savoir que le centre c'est juste l'histogramme donc t'as les hues nécessaire pour "créer" la couleur dominante"
+
 }
