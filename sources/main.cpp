@@ -4,11 +4,14 @@
 #include "../headers/demo/demo.h"
 #include "../headers/manual_player_extractor.h"
 #include "../headers/calibration_tool.h"
+#include "../headers/dpm_player_extractor.h"
+#include "../headers/player_t.h"
 
 void extract_player_image(void);
+void dpm_extractor(void);
 
 int main(int argc, char *argv[]) {
-    tmd::run_demo_feature_comparator();
+    dpm_extractor();
     return EXIT_SUCCESS;
 }
 
@@ -30,3 +33,17 @@ void extract_player_image(void){
     mp.extract_player_from_frame(frame);
 }
 
+void dpm_extractor(void){
+    tmd::DPMPlayerExtractor d("./res/xmls/person.xml");
+    tmd::frame_t* frame = new tmd::frame_t;
+    frame->original_frame = cv::imread("./res/images/uni2.jpg");
+    //frame->mask_frame = cv::imread("./res/demo/screenshot4.png");
+
+    std::vector<tmd::player_t*> res = d.extract_player_from_frame(frame);
+
+    std::cout << "Total detections = " << res.size() << std::endl;
+    for (size_t i = 0 ; i < res.size() ; i ++){
+        cv::imshow("Result", res[i]->original_image);
+        cv::waitKey(0);
+    }
+}

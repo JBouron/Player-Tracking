@@ -4,6 +4,8 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include "player_extractor.h"
 
+#define TMD_DMP_EXTRACTOR_SCORE_THRESHOLD 0.4
+
 namespace tmd{
 
     /**
@@ -11,12 +13,15 @@ namespace tmd{
      */
     class DPMPlayerExtractor : public tmd::PlayerExtractor{
     public :
-        DPMPlayerExtractor(std::string model_file);
+        DPMPlayerExtractor(std::string model_file, float overlap_threshold =
+        0.5f);
+        ~DPMPlayerExtractor();
         virtual std::vector<player_t*> extract_player_from_frame(frame_t*
         frame);
 
     private:
         cv::LatentSvmDetector* m_detector;
+        float m_overlap_threshold;
     };
 }
 
