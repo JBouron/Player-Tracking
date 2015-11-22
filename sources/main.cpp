@@ -6,9 +6,12 @@
 #include "../headers/calibration_tool.h"
 #include "../headers/dpm_player_extractor.h"
 #include "../headers/player_t.h"
+#include "../headers/features_extractor.h"
+#include "../headers/feature_comparator.h"
 
 void extract_player_image(void);
 void dpm_extractor(void);
+void pipeline(void);
 
 int main(int argc, char *argv[]) {
     dpm_extractor();
@@ -46,4 +49,24 @@ void dpm_extractor(void){
         cv::imshow("Result", res[i]->original_image);
         cv::waitKey(0);
     }
+}
+
+void pipeline(void){
+    std::string video_path = "./res/videos/alone-green-no-ball/ace_0.mp4";
+    cv::VideoCapture input_video(video_path);
+    tmd::BGSubstractor bgs(&input_video, 0);
+    tmd::DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
+    tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
+
+
+    /** Ca ça vient de la démo : **/
+    int clusterCols = 180;
+    int clusterCount = 2;
+    cv::Mat data, labels(1, clusterCols, CV_32F);
+    std::cout << data.cols << std::endl;
+    cv::Mat clusterCenters = cv::Mat(clusterCount, clusterCols, CV_32F);
+    cv::TermCriteria termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER, 10, 1.0);
+    int attempts = 3;
+    int flags = cv::KMEANS_PP_CENTERS;
+    tmd::FeatureComparator comparator(data, clusterCount, labels, termCriteria, attempts, flags, clusterCenters);
 }
