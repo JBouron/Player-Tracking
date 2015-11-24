@@ -32,13 +32,17 @@ namespace tmd {
                                         "FeaturesExtractor::extractFeatures()");
         }
         extractBodyParts(player);
-        convertToHSV(player);
-        updateMaskWithThreshold(player);
-        createHistogram(player);
+        if (player->features.body_parts.size() > 0) {
+            convertToHSV(player);
+            updateMaskWithThreshold(player);
+            createHistogram(player);
+        }
     }
 
     void FeaturesExtractor::extractBodyParts(player_t *p) {
         m_detector->extractBodyParts(p);
+        tmd::debug("FeaturesExtractor", "extractBodyParts", "Result : " +
+                std::to_string(p->features.body_parts.size()) + "body parts.");
     }
 
     void FeaturesExtractor::convertToHSV(player_t *p) {

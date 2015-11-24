@@ -6,6 +6,7 @@
 #include "../headers/debug.h"
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
+#include "../headers/openCV/_lsvm_types.h"
 
 namespace tmd {
     DPMDetector::DPMDetector(std::string model_file) {
@@ -109,9 +110,15 @@ namespace tmd {
                 max_score_for_level = scores[i];
         }
 
+        const int root_w = filters[0]->sizeX;
+        const int root_h = filters[0]->sizeY;
+        const int root_x = filters[0]->V.x;
+        const int root_y = filters[0]->V.y;
+        cv::Rect root(root_x, root_y, root_w, root_h);
+        parts.push_back(root);
+
         for (i = 0; i < kPoints; i++) {
             for (j = 0; j < n; j++) {
-                // Drawing rectangles for part filters
                 getOppositePoint(partsDisplacement[i][j],
                                  filters[j + 1]->sizeX, filters[j + 1]->sizeY,
                                  step, levels[i] - 2 * LAMBDA, &oppositePoint);
@@ -171,7 +178,9 @@ namespace tmd {
 
         if (image->nChannels == 3)
             cvCvtColor(image, image, CV_RGB2BGR);
-
+        if (H == NULL)
+            tmd::debug("DPMDetector", "getPartBoxesForImage", "pyramid is "
+                    "null.");
         freeFeaturePyramidObject(&H);
         free(points);
         free(oppPoints);

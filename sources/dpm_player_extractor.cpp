@@ -33,13 +33,30 @@ namespace tmd{
         for (size_t i = 0 ; i < results.size() ; i ++){
             if (results[i].score > TMD_DMP_EXTRACTOR_SCORE_THRESHOLD) {
                 players.push_back(new player_t);
-                tmd::player_t *p = players[i];
+                tmd::player_t *p = players[players.size()-1];
                 std::cout << results[i].score << std::endl;
                 p->frame_index = static_cast<int> (frame->frame_index);
 
                 cv::Rect playerRect = results[i].rect;
+                playerRect.height += 40;
+                playerRect.width += 40;
+                playerRect.x -= 20;
+                playerRect.y -= 20;
+                if (playerRect.x < 0) playerRect.x = 0;
+                if (playerRect.y < 0) playerRect.y = 0;
+                if (playerRect.x + playerRect.width > frame->original_frame
+                                                              .cols){
+                    playerRect.width = frame->original_frame.cols -
+                            playerRect.x;
+                }
+                if (playerRect.y + playerRect.height > frame->original_frame
+                        .rows){
+                    playerRect.height = frame->original_frame.rows -
+                                       playerRect.y;
+                }
                 p->original_image = frame->original_frame(playerRect);
-                //p->mask_image = frame->mask_frame(playerRect);
+                p->pos_frame = playerRect;
+                p->mask_image = frame->mask_frame(playerRect);
             }
         }
 
