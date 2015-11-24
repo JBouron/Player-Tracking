@@ -18,7 +18,7 @@ namespace tmd {
         m_input_video = input_video;
         if (m_input_video == NULL || !m_input_video->isOpened()) {
             throw std::invalid_argument("Error in BGSubstractor constructor, "
-                                                "input video is not valid (NULL or not opened).");
+                            "input video is not valid (NULL or not opened).");
         }
 
         tmd::debug("BGSubstractor", "BGSubstractor", "valid input video.");
@@ -39,35 +39,23 @@ namespace tmd {
 
     BGSubstractor::~BGSubstractor(){
         tmd::debug("BGSubstractor", "~BGSubstractor", "Free bgs.");
-        //m_bgs.delete_obj();
-    }
-
-    bool BGSubstractor::has_next_frame(){
-       /* tmd::debug("BGSubstractor", "has_next_frame", "m_frame_index = " +
-                std::to_string(m_frame_index) + " m_total_frame_count = " +
-                std::to_string(m_total_frame_count));*/
-        return true;
-        return m_frame_index < m_total_frame_count;
+        m_bgs.delete_obj();
     }
 
     frame_t *BGSubstractor::next_frame() {
-        if (!this->has_next_frame()) {
-            // TODO : Resolve this issue.
-            /*throw std::runtime_error(
-                    "Error in BGSubstractor::next_frame() : no frame left.");*/
-        }
-
         frame_t *frame = new frame_t;
-        m_input_video->read(frame->original_frame);
+        bool frame_extracted = m_input_video->read(frame->original_frame);
+        if (!frame_extracted){
+            delete frame;
+            return NULL;
+        }
         frame->frame_index = m_frame_index;
         cv::Mat mask;
-        m_bgs->operator()(frame->original_frame, frame->mask_frame,
+        m_bgs->operator()(frame->original_frame,
+                                        frame->mask_frame,
                           m_learning_rate);
         frame->camera_index = m_camera_index;
         m_frame_index++;
-        /*::debug("BGSubstractor", "next_frame",
-                   "frame fetched. Frame index = " +
-                   std::to_string(m_frame_index));*/
         return frame;
     }
 
