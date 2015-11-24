@@ -12,9 +12,6 @@
 
 void extract_player_image(void);
 
-void dpm_extractor(void);
-
-void dpm_crop_test(void);
 void dpm_feature_extractor_test(void);
 
 void pipeline(void);
@@ -41,31 +38,6 @@ void extract_player_image(void) {
     tmd::ManualPlayerExtractor mp;
     mp.extract_player_from_frame(frame);
 }
-
-void dpm_extractor(void) {
-    tmd::DPMPlayerExtractor d("./res/xmls/person.xml");
-
-    int image_count = 5;
-    for (int i = 0; i < image_count ; i ++){
-        std::cout << "player " << i << std::endl;
-        tmd::frame_t* frame = new tmd::frame_t;
-        frame->original_frame = cv::imread(
-                "./res/pipeline_results/player_extraction/player19" + std::to_string
-                        (i) + "0-0-resize.jpg");
-        frame->mask_frame = cv::imread(
-                "./res/pipeline_results/player_extraction/player19" + std::to_string
-                        (i) + "0-0-resize.jpg");
-
-        std::vector<tmd::player_t*> res = d.extract_player_from_frame(frame);
-        std::cout << res.size() << " players detected." << std::endl;
-
-        for (int i = 0 ; i < res.size() ; i ++){
-            delete res[i];
-        }
-        delete frame;
-    }
-}
-
 
 void show_body_parts(cv::Mat image, tmd::player_t* p) {
     std::vector<cv::Rect> parts = p->features.body_parts;
@@ -94,92 +66,99 @@ void show_body_parts(cv::Mat image, tmd::player_t* p) {
     cv::waitKey(0);
 }
 
-void pipeline(void) {
-    std::string video_path = "./res/videos/alone-green-no-ball/ace_0.mp4";
-    cv::VideoCapture input_video(video_path);
-    tmd::BGSubstractor bgs(&input_video, 0);
+void pipeline(void){
+    cv::VideoCapture capture("./res/videos/alone-green-no-ball/ace_0.mp4");
+    tmd::BGSubstractor bgSubstractor(&capture, 0);
     tmd::DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
     tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
-    // TODO : Cluster.
-    int fidx = 290;
+    const int frame_start = 900;
+    const int frame_limit = 1200;
+    const int frame_step = 10;
+    std::vector<cv::Mat> frames_results;
+    int frame_idx = frame_start;
+    bgSubstractor.jump_to_frame(frame_idx);
 
-    bgs.jump_to_frame(290);
-    while (true) {
-        std::cout << "fidx = " << fidx << std::endl;
-        for (int i = 0; i < 10; i++) {
-            delete (bgs.next_frame());
-        }
-        fidx += 10;
-        tmd::frame_t *frame = bgs.next_frame();
-        std::vector<tmd::player_t *> players = dpmPlayerExtractor
+    bool show_intermediate_results = false;
+
+    CvScalar color;
+    color.val[0] = 255;
+    color.val[1] = 0;
+    color.val[2] = 255;
+    color.val[3] = 255;
+    CvScalar torso;
+    torso.val[0] = 255;
+    torso.val[1] = 255;
+    torso.val[2] = 0;
+    torso.val[3] = 255;
+    const int thickness = 1;
+    const int line_type = 8; // 8 connected line.
+    const int shift = 0;
+    while (frame_idx < frame_limit){
+        std::cout << "In frame " << frame_idx << " : " << std::endl;
+
+        // Fetch next frame.
+        tmd::frame_t* frame = bgSubstractor.next_frame();
+
+        // Extract players from the frame.
+        std::vector<tmd::player_t*> players = dpmPlayerExtractor
                 .extract_player_from_frame(frame);
-
         std::cout << players.size() << " players detected." << std::endl;
 
-        CvScalar color;
-        color.val[0] = 255;
-        color.val[1] = 255;
-        color.val[2] = 0;
-        color.val[3] = 255;
+        cv::Mat frame_cpy(frame->original_frame);
+        // For each player
+        for (size_t i = 0 ; i < players.size() ; i ++){
+            tmd::player_t* player = players[i];
+            // Draw detection rectangle
+            cv::rectangle(frame_cpy, player->pos_frame, color, thickness,
+                          line_type, shift);
 
-        CvScalar torso;
-        torso.val[0] = 255;
-        torso.val[1] = 0;
-        torso.val[2] = 255;
-        torso.val[3] = 255;
+            /*if (frame_idx == 660){
+                cv::imshow("Debug frame 660", frame_cpy);
+                cv::waitKey(0);
+            }*/
 
-        const int thickness = 1;
-        const int line_type = 8; // 8 connected line.
-        const int shift = 0;
-        cv::Mat fcpy = frame->original_frame.clone();
-        for (int i = 0; i < players.size(); i++) {
-            tmd::player_t *player = players[i];
-            featuresExtractor.extractFeatures(players[i]);
-            CvRect r;
-            r.x = player->features.torso_pos.x + player->pos_frame.x;
-            r.y = player->features.torso_pos.y + player->pos_frame.y;
-            r.width = player->features.torso_pos.width;
-            r.height = player->features.torso_pos.height;
-            show_body_parts(fcpy, player);
-            cv::rectangle(fcpy, r, torso, thickness,
-                           line_type,
-                          shift);
-            cv::rectangle(fcpy, players[i]->pos_frame, color,
-                          thickness, line_type, shift);
-            cv::imwrite("./res/pipeline_results/player_extraction/player" +
-                                std::to_string(fidx) + "-" + std::to_string
-                 (i) + ".jpg", frame->original_frame(player->pos_frame));
+            // Extract the features.
+            featuresExtractor.extractFeatures(player);
+
+            // Draw the parts rectangles
+            for (size_t j = 0 ; j < player->features.body_parts.size() ; j ++){
+                cv::Rect part = player->features.body_parts[j];
+                part.x += player->pos_frame.x;
+                part.y += player->pos_frame.y;
+                cv::rectangle(frame_cpy, part, torso, thickness, line_type,
+                              shift);
+            }
         }
 
-        std::string file_name = "./res/pipeline_results/torsodetect" +
-                std::to_string
-                (fidx) + ".jpg";
-        cv::imwrite(file_name, fcpy);
-        std::cout << "Writing to file : " << file_name << std::endl;
-        /*cv::imshow("Frame", fcpy);
-        cv::waitKey(0);*/
-        delete (frame);
+        // Display the result in the window.
+        if (show_intermediate_results) {
+            std::string win_name = "Frame " + std::to_string(frame_idx);
+            cv::imshow(win_name, frame_cpy);
+            cv::waitKey(0);
+            cv::destroyWindow(win_name);
+        }
+
+        // Increment index.
+        frame_idx += frame_step;
+        for (int i = 0; i < frame_step ; i ++){
+            delete bgSubstractor.next_frame();
+        }
+
+        frames_results.push_back(frame_cpy.clone());
+
+        // Free the player vector.
+        for (size_t i = 0 ; i < players.size() ; i ++){
+            delete players[i];
+        }
+        // Free the frame.
+        delete frame;
     }
-}
 
-void dpm_feature_extractor_test(void){
-    tmd::FeaturesExtractor fe("./res/xmls/person.xml");
-
-    tmd::player_t* player = new tmd::player_t;
-    player->original_image =
-        cv::imread("./res/pipeline_results/player_extraction/player1910-0.jpg");
-
-    player->mask_image =
-            cv::imread("./res/pipeline_results/player_extraction/player1910-0"
-                               ".jpg");
-
-    fe.extractFeatures(player);
-
-    show_body_parts(player->original_image, player);
-    delete player;
-}
-
-void dpm_crop_test(void){
-
+    size_t results_count = frames_results.size();
+    for (size_t i = 0 ; i < results_count ; i ++){
+        cv::imshow("Result", frames_results[i]);
+        cv::waitKey(0);
+    }
+    cv::destroyAllWindows();
 }
