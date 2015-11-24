@@ -67,19 +67,24 @@ void show_body_parts(cv::Mat image, tmd::player_t* p) {
 }
 
 void pipeline(void){
-    cv::VideoCapture capture("./res/videos/alone-green-no-ball/ace_0.mp4");
+    cv::VideoCapture capture("./res/videos/two-green-no-ball/ace_0.mp4");
     tmd::BGSubstractor bgSubstractor(&capture, 0);
     tmd::DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
     tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
-    const int frame_start = 900;
-    const int frame_limit = 1200;
+    const int frame_start = 200;
+    const int frame_limit = 800;
     const int frame_step = 10;
     std::vector<cv::Mat> frames_results;
     int frame_idx = frame_start;
-    bgSubstractor.jump_to_frame(frame_idx);
 
-    bool show_intermediate_results = false;
+    // Setting the background in the bgs.
+    //delete bgSubstractor.next_frame();
+
+    bgSubstractor.jump_to_frame(frame_start);
+
+    const bool show_intermediate_results = false;
+    const bool save_results = true;
 
     CvScalar color;
     color.val[0] = 255;
@@ -94,12 +99,24 @@ void pipeline(void){
     const int thickness = 1;
     const int line_type = 8; // 8 connected line.
     const int shift = 0;
+
     while (frame_idx < frame_limit){
         std::cout << "In frame " << frame_idx << " : " << std::endl;
 
         // Fetch next frame.
         tmd::frame_t* frame = bgSubstractor.next_frame();
 
+        cv::Vec3b black;
+        black.val[0] = 0; black.val[1] = 0; black.val[2] = 0;
+        cv::Vec3b white;
+        white.val[0] = 255; white.val[1] = 255; white.val[2] = 255;
+        for (int c = 0 ; c < frame->mask_frame.cols ; c ++){
+            for (int r = 0 ; r < frame->mask_frame.rows ; r ++){
+                if (frame->mask_frame.at<uchar>(r,c) == 0){
+                    frame->original_frame.at<cv::Vec3b>(r, c) = black;
+                }
+            }
+        }
         // Extract players from the frame.
         std::vector<tmd::player_t*> players = dpmPlayerExtractor
                 .extract_player_from_frame(frame);
@@ -143,6 +160,11 @@ void pipeline(void){
         frame_idx += frame_step;
         for (int i = 0; i < frame_step ; i ++){
             delete bgSubstractor.next_frame();
+        }
+
+        if (save_results){
+            cv::imwrite("./res/pipeline_results/dpm-two-persons-1.0-"
+        "threshold/frame" + std::to_string(frame_idx) + ".jpg", frame_cpy);
         }
 
         frames_results.push_back(frame_cpy.clone());
