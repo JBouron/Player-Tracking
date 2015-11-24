@@ -1,4 +1,4 @@
 *.mp4
 .idea/*
 misc/*
-res/videos/*
+res/*

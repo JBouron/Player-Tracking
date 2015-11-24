@@ -15,8 +15,7 @@ namespace tmd{
         cv::Mat original_image;     // The original image of the player (when cropped from the frame).
         cv::Mat mask_image;         // The result of applying BGS on the original image. I gives us the important pixels.
         int frame_index;            // Frame indice from which this player has been extracted.
-        tmd::position_t pos_frame;  // Position of the player on the frame.
-        tmd::position_t pos_field;  // Position of the player on the field.
+        cv::Rect pos_frame;         // Position of the player on the frame.
         tmd::team_t team;           // Team of the player (TBD by the TeamDecider).
         tmd::box_t box;             // Box of the player.
         float likelihood;           // Likelihood of the team membership.
