@@ -1,4 +1,5 @@
 *.mp4
 .idea/*
 misc/*
-res/*
+res/videos/*
+res/pipeline_results/*
