@@ -32,9 +32,11 @@ namespace tmd {
                           cv::TermCriteria criteria, int attempts,
                           int flags, cv::Mat centers);
 
+        FeatureComparator(int clusterCount, int sampleCols, cv::Mat centers);
+
         /**
-         * Destructor for the class.
-         */
+                 * Destructor for the class.
+                 */
         ~FeatureComparator();
 
         /**
@@ -96,6 +98,7 @@ namespace tmd {
         cv::Mat readCentersFromFile(int rows, int cols);
 
     private:
+        int m_sampleCols;
         cv::Mat m_data;
         int m_clusterCount;
         cv::Mat m_labels;
