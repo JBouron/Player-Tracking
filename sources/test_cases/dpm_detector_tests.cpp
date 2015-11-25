@@ -4,11 +4,8 @@
 
 namespace tmd{
     void DPMDetectorTest::setUp() {
-        m_player_image = cv::imread
-                ("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/res/"
-                         "tests/player0.jpg");
-        m_model_file = "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project"
-                "/res/xmls/person.xml";
+        m_player_image = cv::imread("./res/tests/player0.jpg");
+        m_model_file = "./res/xmls/person.xml";
         m_player = new player_t;
         m_player->original_image = m_player_image;
         const int rows = m_player->original_image.rows;
@@ -19,9 +16,7 @@ namespace tmd{
                 m_player->mask_image.at<uchar>(i, j) = 255;
             }
         }
-        m_dummy_image = cv::imread
-                ("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/res/"
-                         "tests/dummyimage.jpg");
+        m_dummy_image = cv::imread("./res/tests/dummyimage.jpg");
     }
 
     void DPMDetectorTest::tearDown() {
