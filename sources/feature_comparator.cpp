@@ -95,7 +95,7 @@ namespace tmd {
     }
 
     void FeatureComparator::writeCentersToFile() {
-        std::ofstream clustersFile("/home/nicolas/Desktop/clusterCenters.txt");
+        std::ofstream clustersFile("./res/cluster/clusterCenters.txt");
         if (clustersFile.is_open()) {
             for (int i = 0; i < m_centers.rows; i++) {
                 for (int j = 0; j < m_centers.cols; j++) {
@@ -114,7 +114,7 @@ namespace tmd {
     }
 
     Mat FeatureComparator::readCentersFromFile(int rows, int cols) {
-        std::ifstream clustersFile("/home/nicolas/Desktop/clusterCenters.txt");
+        std::ifstream clustersFile("./res/cluster/clusterCenters.txt");
         Mat toReturn(rows, cols, CV_32F);
         if (clustersFile.is_open()) {
             string line;

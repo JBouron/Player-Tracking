@@ -6,8 +6,7 @@
 namespace tmd{
     void FeaturesExtractorTest::setUp() {
         m_player = new player_t;
-        m_player_image = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/"
-                                    "Bachelor-Project/res/tests/player0.jpg");
+        m_player_image = cv::imread("./res/tests/player0.jpg");
         m_player->original_image = m_player_image;
         const int rows = m_player->original_image.rows;
         const int cols = m_player->original_image.cols;
@@ -17,15 +16,10 @@ namespace tmd{
                 m_player->mask_image.at<uchar>(i, j) = 255;
             }
         }
-        m_model_file = "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor"
-                "-Project/misc/xmls/person.xml";
-        m_hue_120_image = cv::imread("/home/jbouron/EPFL/BA5/PlayfulVision/"
-                                 "Bachelor-Project/res/tests/hue120.jpg");
-        m_sat_05_image = cv::imread
-                ("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/res/tests/sat50.jpg");
-        m_val_05_image = cv::imread
-                ("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/res"
-                         "/tests/val50.jpg");
+        m_model_file = "./res/xmls/person.xml";
+        m_hue_120_image = cv::imread("./res/tests/hue120.jpg");
+        m_sat_05_image = cv::imread("./res/tests/sat50.jpg");
+        m_val_05_image = cv::imread("./res/tests/val50.jpg");
     }
 
     void FeaturesExtractorTest::tearDown() {
