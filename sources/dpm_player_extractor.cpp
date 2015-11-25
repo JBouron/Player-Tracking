@@ -5,7 +5,7 @@
 
 namespace tmd{
     DPMPlayerExtractor::DPMPlayerExtractor(std::string model_file, float
-    overlap_threshold){
+    overlap_threshold, float score_threshold){
         std::vector<std::string> model_files;
         model_files.push_back(model_file);
         m_detector = new cv::LatentSvmDetector();
@@ -15,6 +15,10 @@ namespace tmd{
                                     "constructor, couldn't load model file.");
         }
         m_overlap_threshold = overlap_threshold;
+        if (m_overlap_threshold < 0.0) m_overlap_threshold = 0.0;
+        else if (1.0 < m_overlap_threshold) m_overlap_threshold = 1.0;
+
+        m_score_threshold = score_threshold;
     }
 
     DPMPlayerExtractor::~DPMPlayerExtractor(){
@@ -31,9 +35,10 @@ namespace tmd{
         std::vector<tmd::player_t*> players;
 
         for (size_t i = 0 ; i < results.size() ; i ++){
-            if (results[i].score > TMD_DMP_EXTRACTOR_SCORE_THRESHOLD) {
+            if (results[i].score > m_score_threshold) {
                 players.push_back(new player_t);
                 tmd::player_t *p = players[players.size()-1];
+                p->likelihood = results[i].score;
                 std::cout << results[i].score << std::endl;
                 p->frame_index = static_cast<int> (frame->frame_index);
 
@@ -62,4 +67,22 @@ namespace tmd{
 
         return players;
     }
+
+    void DPMPlayerExtractor::set_overlapping_threshold(float th){
+        if (th < 0.0) th = 0.0; else if (1.0 < th) th = 1.0;
+        m_overlap_threshold = th;
+    }
+
+    void DPMPlayerExtractor::set_score_threshold(float th){
+        m_score_threshold = th;
+    }
+
+    float DPMPlayerExtractor::get_overlapping_threshold(){
+        return m_overlap_threshold;
+    }
+
+    float DPMPlayerExtractor::get_score_threshold(){
+        return m_score_threshold;
+    }
+
 }
