@@ -24,7 +24,8 @@ namespace tmd {
         }
     }
 
-    void DPMCalibrator::calibrate_dpm(std::string video_path, int frame_step) {
+    void DPMCalibrator::calibrate_dpm(std::string video_path, int start_frame,
+                                      int frame_step) {
         cv::VideoCapture capture(video_path);
         if (!capture.isOpened()) {
             throw std::invalid_argument("Error in DPM Calibrator : No such "
@@ -50,6 +51,9 @@ namespace tmd {
         FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
         int keyboard = 0;
+
+        bgSubstractor.jump_to_frame(start_frame);
+
         frame_t *frame = bgSubstractor.next_frame();
         apply_mask_on_frame(frame);
 
@@ -89,11 +93,15 @@ namespace tmd {
                 case 's': // Increase score threshold.
                     score_threshold += 0.1;
                     recompute_needed = false;
+                    std::cout << "score_threshold = " << score_threshold <<
+                    std::endl;
                     break;
 
                 case 'x': // Decrease score threshold.
                     score_threshold -= 0.1;
                     recompute_needed = false;
+                    std::cout << "score_threshold = " << score_threshold <<
+                    std::endl;
                     break;
 
                 default:
@@ -126,6 +134,12 @@ namespace tmd {
                 for (size_t i = 0; i < players.size(); i++) {
                     featuresExtractor.extractFeatures(players[i]);
                 }
+
+                std::cout << "overlapping_threshold = " <<
+                        overlapping_threshold << std::endl;
+
+                std::cout << "score_threshold = " << score_threshold <<
+                        std::endl;
 
             }
             frame_cpy = frame->original_frame.clone();
