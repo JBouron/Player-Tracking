@@ -42,7 +42,7 @@ namespace tmd {
     cv::Mat FeatureComparator::getClosestCenter(cv::Mat sample) {
         if (m_data.cols != sample.cols) {
             throw std::invalid_argument(
-                    "Sample doesn't have the same amount of dimensions as the data !");
+            "Sample doesn't have the same amount of dimensions as the data !");
         }
 
         Mat distances(m_centers.rows, 1, CV_32F);
