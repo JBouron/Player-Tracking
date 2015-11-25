@@ -62,6 +62,11 @@ namespace tmd {
          */
         void set_learning_rate(float lr);
 
+        /**
+         * Return the index of the last frame accessed by the bgs.
+         */
+        int get_current_frame_index();
+
     private:
         cv::Ptr<cv::BackgroundSubtractorMOG2> m_bgs;
         cv::VideoCapture *m_input_video;
