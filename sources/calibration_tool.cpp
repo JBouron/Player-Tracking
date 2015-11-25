@@ -40,8 +40,8 @@ namespace tmd {
 
         while (keyboard != TMD_CALIBRATION_TOOL_ESCAPE_CHAR && !done) {
             frame_t *frame;
-            if (m_bgs[m_current_camera]->has_next_frame()) {
-                frame = m_bgs[m_current_camera]->next_frame();
+            frame = m_bgs[m_current_camera]->next_frame();
+            if (frame != NULL) {
                 std::string infos =
                         "Camera " + std::to_string(m_current_camera) +
                         "    Threshold : " + std::to_string(

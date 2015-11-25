@@ -38,14 +38,16 @@ namespace tmd {
     }
 
     BGSubstractor::~BGSubstractor(){
-        tmd::debug("BGSubstractor", "~BGSubstractor", "Free bgs.");
-        m_bgs.delete_obj();
+        // cv::Ptr free the bgs for us.
     }
 
     frame_t *BGSubstractor::next_frame() {
         frame_t *frame = new frame_t;
         bool frame_extracted = m_input_video->read(frame->original_frame);
         if (!frame_extracted){
+            tmd::debug("BGSubstractor", "next_frame", "No frame left, "
+                    "returning NULL after " + std::to_string(m_frame_index) +
+                    " frames");
             delete frame;
             return NULL;
         }

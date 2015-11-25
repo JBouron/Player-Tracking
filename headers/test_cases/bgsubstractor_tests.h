@@ -13,9 +13,7 @@ namespace tmd{
         CPPUNIT_TEST_EXCEPTION(testInvalidVideoInput, std::invalid_argument);
         CPPUNIT_TEST_EXCEPTION(testInvalidCameraIndex1, std::invalid_argument);
         CPPUNIT_TEST_EXCEPTION(testInvalidCameraIndex2, std::invalid_argument);
-        CPPUNIT_TEST(testHasNextFrameIsCorrect);
-        CPPUNIT_TEST_EXCEPTION(testNextFrameThrowsExceptionWhenNoFramesLeft,
-                               std::runtime_error);
+        CPPUNIT_TEST(testNextFrameReturnsNullWhenNoFramesLeft);
         CPPUNIT_TEST(testNextFrameConstructCorrectFramesCameraIndex);
         CPPUNIT_TEST(testNextFrameConstructCorrectFramesFrameIndex);
         CPPUNIT_TEST_SUITE_END();
@@ -37,8 +35,7 @@ namespace tmd{
         void testInvalidVideoInput();
         void testInvalidCameraIndex1();
         void testInvalidCameraIndex2();
-        void testHasNextFrameIsCorrect();
-        void testNextFrameThrowsExceptionWhenNoFramesLeft();
+        void testNextFrameReturnsNullWhenNoFramesLeft();
         void testNextFrameConstructCorrectFramesCameraIndex();
         void testNextFrameConstructCorrectFramesFrameIndex();
 
