@@ -12,7 +12,7 @@ namespace tmd{
         bool model_loaded = m_detector->load(model_files);
         if (!model_loaded){
             throw std::invalid_argument("Error in DPMPlayerExtractor "
-                                    "constructor, couldn't load model file.");
+                                "constructor, couldn't load model file.");
         }
         m_overlap_threshold = overlap_threshold;
         if (m_overlap_threshold < 0.0) m_overlap_threshold = 0.0;

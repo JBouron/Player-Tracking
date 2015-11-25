@@ -35,6 +35,8 @@ namespace tmd {
         }
         IplImage playerImage = player->original_image; // Bug in CLion, ignore it.
         player->features.body_parts = getPartBoxesForImage(&playerImage);
+        // Clip the boxes if needed.
+        clipBoxes(player);
         // If there is a player on the image, we compute its torso box.
         if (player->features.body_parts.size() > 0) {
             extractTorsoForPlayer(player);
@@ -336,7 +338,7 @@ namespace tmd {
     void DPMDetector::extractTorsoForPlayer(player_t *player) {
         if (player == NULL){
             throw std::invalid_argument("Error null pointer given to "
-                                                "extractTorsoForPlayer method");
+                                            "extractTorsoForPlayer method");
         }
         else if (player->features.body_parts.size() < 3){
             throw std::invalid_argument("Error not enough body parts in "
@@ -354,5 +356,25 @@ namespace tmd {
         player->features.torso = (player->original_image.clone())(mean);
         player->features.torso_mask = (player->mask_image.clone())(mean);
         player->features.torso_pos = mean;
+    }
+
+    void DPMDetector::clipBoxes(player_t* player){
+        size_t boxes_count = player->features.body_parts.size();
+
+        for (size_t i = 0 ; i < boxes_count ; i ++){
+            cv::Rect *part = &(player->features.body_parts[i]);
+
+            // Zero boundaries
+            if (part->x < 0) part->x = 0;
+            if (part->y < 0) part->y = 0;
+
+            // Right and bottom boundaries.
+            if (part->x + part->width > player->original_image.cols){
+                part->width = player->original_image.cols - part->x - 1;
+            }
+            if (part->y + part->height > player->original_image.rows){
+                part->height = player->original_image.rows - part->y - 1;
+            }
+        }
     }
 }

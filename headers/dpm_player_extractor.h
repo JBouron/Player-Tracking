@@ -4,7 +4,7 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include "player_extractor.h"
 
-#define TMD_DMP_EXTRACTOR_SCORE_THRESHOLD 0.4
+#define TMD_DMP_EXTRACTOR_SCORE_THRESHOLD 0.0
 
 namespace tmd{
 
