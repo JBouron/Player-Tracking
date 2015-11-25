@@ -20,7 +20,7 @@ void dpm_feature_extractor_test(void);
 void pipeline(void);
 
 int main(int argc, char *argv[]) {
-    tmd::run_tests_bgs();
+    tmd::run_tests();
     return EXIT_SUCCESS;
 }
 
