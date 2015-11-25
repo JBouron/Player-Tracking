@@ -13,13 +13,29 @@ namespace tmd {
                                          cv::TermCriteria criteria,
                                          int attempts, int flags,
                                          cv::Mat centers) {
+        if (data.rows == 0 || data.cols == 0) {
+            throw std::invalid_argument("Data cannot be empty !");
+        }
         m_data = data;
+        m_sampleCols = m_data.cols;
         m_clusterCount = clusterCount;
         m_labels = labels;
         m_termCriteria = criteria;
         m_attempts = attempts;
         m_flags = flags;
         m_centers = centers;
+    }
+
+    FeatureComparator::FeatureComparator(int clusterCount, int sampleCols, cv::Mat centers) {
+        m_data = cv::Mat(0, sampleCols, CV_32F);
+        m_clusterCount = clusterCount;
+        m_labels = cv::Mat(m_data);
+        m_termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER,
+                                          10, 1.0);;
+        m_attempts = 3;
+        m_flags = cv::KMEANS_PP_CENTERS;
+        m_centers = centers;
+        m_sampleCols = sampleCols;
     }
 
     FeatureComparator::~FeatureComparator() {
@@ -35,12 +51,16 @@ namespace tmd {
     }
 
     void FeatureComparator::addSampleToData(cv::Mat sample) {
+        if (m_sampleCols != sample.cols || sample.rows != 1) {
+            throw std::invalid_argument(
+                    "Sample doesn't have the same amount of dimensions as the data !");
+        }
 
         m_data.push_back(sample);
     }
 
     cv::Mat FeatureComparator::getClosestCenter(cv::Mat sample) {
-        if (m_data.cols != sample.cols) {
+        if (m_data.cols != sample.cols || sample.rows != 1) {
             throw std::invalid_argument(
             "Sample doesn't have the same amount of dimensions as the data !");
         }
@@ -49,8 +69,8 @@ namespace tmd {
 
         for (int i = 0; i < m_centers.rows; i++) {
             float distance = (float) norm(m_centers.row(i), sample,
-                                                   NORM_L2);
-            distances.at<float>(i,0) = distance;
+                                          NORM_L2);
+            distances.at<float>(i, 0) = distance;
         }
 
         float min = distances.at<float>(0);
@@ -118,10 +138,10 @@ namespace tmd {
         Mat toReturn(rows, cols, CV_32F);
         if (clustersFile.is_open()) {
             string line;
-            for(int j = 0; j < rows; j++){
+            for (int j = 0; j < rows; j++) {
                 getline(clustersFile, line);
                 vector<float> floatVector = getFloatsFromString(line);
-                for(int i = 0; i < cols; i ++){
+                for (int i = 0; i < cols; i++) {
                     toReturn.at<float>(j, i) = floatVector[i];
                 }
             }
