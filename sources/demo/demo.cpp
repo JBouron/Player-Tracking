@@ -6,11 +6,10 @@
 #include "../../headers/feature_comparator.h"
 #include "../../headers/player_extractor.h"
 #include "../../headers/manual_player_extractor.h"
-#include "../../headers/frame_t.h"
 
-namespace tmd{
+namespace tmd {
 
-    void run_demo_feature_comparator(void){
+    void run_demo_feature_comparator(void) {
         std::string video_folder_green = "./res/videos/alone-green-no-ball";
         std::string video_folder_red = "./res/videos/alone-red-no-ball";
 
@@ -23,51 +22,47 @@ namespace tmd{
             videos_red[i].open(path);
         }
 
-        tmd::BGSubstractor* bgs_green[8];
-        tmd::BGSubstractor* bgs_red[8];
-        for(int i = 0; i < 8; i ++){
+        tmd::BGSubstractor *bgs_green[8];
+        tmd::BGSubstractor *bgs_red[8];
+        for (unsigned char i = 0; i < 8; i++) {
             bgs_green[i] = new tmd::BGSubstractor(&videos_green[i], i);
             bgs_red[i] = new tmd::BGSubstractor(&videos_red[i], i);
         }
 
         int clusterCols = 180;
         int clusterCount = 2;
-        cv::Mat data, labels(1, clusterCols, CV_32F);
-        std::cout << data.cols << std::endl;
         cv::Mat clusterCenters = cv::Mat(clusterCount, clusterCols, CV_32F);
-        cv::TermCriteria termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER,
-                                          10, 1.0);
-        int attempts = 3;
-        int flags = cv::KMEANS_PP_CENTERS;
-        tmd::FeatureComparator comparator(data, clusterCount, labels, termCriteria, attempts, flags, clusterCenters);
+        tmd::FeatureComparator comparator(clusterCount, clusterCols, clusterCenters);
 
         tmd::ManualPlayerExtractor playerExtractor;
         tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
-        std::stack<player_t*> players;
+        std::stack<player_t *> players;
 
 
-        for(int i = 0; i < 8; i ++){
+        for (int i = 0; i < 8; i++) {
             bgs_red[i]->jump_to_frame(600);
             bgs_green[i]->jump_to_frame(600);
         }
 
-        for(int i = 0; i < 1; i++){
-            for(int j = 0; j < 1; j++){
-                for(int k = 0;  k < 10; k++){
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < 1; j++) {
+                for (int k = 0; k < 10; k++) {
                     bgs_green[i]->next_frame();
                     bgs_red[i]->next_frame();
                 }
-                std::vector<player_t*> playersExtractedGreen = playerExtractor.extract_player_from_frame(bgs_green[i]->next_frame());
-                std::vector<player_t*> playersExtractedRed = playerExtractor.extract_player_from_frame(bgs_red[i]->next_frame());
+                std::vector<player_t *> playersExtractedGreen = playerExtractor.extract_player_from_frame(
+                        bgs_green[i]->next_frame());
+                std::vector<player_t *> playersExtractedRed = playerExtractor.extract_player_from_frame(
+                        bgs_red[i]->next_frame());
 
-                for(int l = 0; l < playersExtractedGreen.size(); l++){
+                for (int l = 0; l < playersExtractedGreen.size(); l++) {
                     players.push(playersExtractedGreen[l]);
                     featuresExtractor.extractFeatures(players.top());
                     comparator.addPlayerFeatures(players.top());
                     delete players.top();
                 }
-                for(int l = 0; l < playersExtractedRed.size(); l++){
+                for (int l = 0; l < playersExtractedRed.size(); l++) {
                     players.push(playersExtractedRed[l]);
                     featuresExtractor.extractFeatures(players.top());
                     comparator.addPlayerFeatures(players.top());
@@ -96,96 +91,97 @@ namespace tmd{
         cv::Mat center1 = readCenters.row(0);
         cv::Mat center2 = readCenters.row(1);
 
-        tmd::BGSubstractor* bgs_two_green[8];
-        tmd::BGSubstractor* bgs_two_red[8];
-        for(int i = 0; i < 8; i ++){
+        tmd::BGSubstractor *bgs_two_green[8];
+        tmd::BGSubstractor *bgs_two_red[8];
+        for (unsigned char i = 0; i < 8; i++) {
             bgs_two_green[i] = new tmd::BGSubstractor(&videos_two_green[i], i);
             bgs_two_red[i] = new tmd::BGSubstractor(&videos_two_red[i], i);
         }
 
-        for(int i = 0; i < 8; i ++){
+        for (int i = 0; i < 8; i++) {
             bgs_two_red[i]->jump_to_frame(600);
             bgs_two_green[i]->jump_to_frame(600);
         }
 
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j < 2; j++){
-                for(int k = 0; k < 10; k++){
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 10; k++) {
                     bgs_two_green[i]->next_frame();
                     bgs_two_red[i]->next_frame();
                 }
 
-                std::vector<player_t*> playersExtractedGreen = playerExtractor.extract_player_from_frame(bgs_two_green[i]->next_frame());
-                for(int l = 0; l < playersExtractedGreen.size(); l++){
+                std::vector<player_t *> playersExtractedGreen = playerExtractor.extract_player_from_frame(
+                        bgs_two_green[i]->next_frame());
+                for (int l = 0; l < playersExtractedGreen.size(); l++) {
                     featuresExtractor.extractFeatures(playersExtractedGreen[l]);
                     cv::Mat closest = comparator.getClosestCenter(playersExtractedGreen[i]);
-                    compareCenters(center1, center2, closest);
+                    compareCenters(center1, closest);
                 }
 
-                std::vector<player_t*> playersExtractedRed = playerExtractor.extract_player_from_frame(bgs_two_red[i]->next_frame());
-                for(int l = 0; l < playersExtractedRed.size(); l++){
+                std::vector<player_t *> playersExtractedRed = playerExtractor.extract_player_from_frame(
+                        bgs_two_red[i]->next_frame());
+                for (int l = 0; l < playersExtractedRed.size(); l++) {
                     featuresExtractor.extractFeatures(playersExtractedRed[l]);
                     cv::Mat closest = comparator.getClosestCenter(playersExtractedRed[i]);
-                    compareCenters(center1, center2, closest);
+                    compareCenters(center1, closest);
                 }
             }
         }
 
     }
 
-    void compareCenters(cv::Mat center1, cv::Mat center2, cv::Mat compare){
+    void compareCenters(cv::Mat center1, cv::Mat compare) {
         bool equal = true;
-        for(int i =0; i < 180; i++){
-            if(center1.at<float>(0, i) != compare.at<float>(0,i)){
+        for (int i = 0; i < 180; i++) {
+            if (center1.at<float>(0, i) != compare.at<float>(0, i)) {
                 equal = false;
             }
         }
-        if(equal){
+        if (equal) {
             std::cout << "CENTER 1" << std::endl;
         }
-        else{
+        else {
             std::cout << "CENTER 2" << std::endl;
         }
     }
 
-    void run_demo_dpm(void){
+    void run_demo_dpm(void) {
         const int player_count = 4;
-        player_t** players = new player_t*[player_count];
-        for (int i = 0 ; i < player_count ; i ++){
+        player_t **players = new player_t *[player_count];
+        for (int i = 0; i < player_count; i++) {
             players[i] = new player_t;
-            std::string path = "./res/demo/dpm/img" +std::to_string(i) + ".jpg";
+            std::string path = "./res/demo/dpm/img" + std::to_string(i) + ".jpg";
             std::cout << path << std::endl;
             players[i]->original_image = cv::imread(path);
-            player_t* player = players[i];
+            player_t *player = players[i];
             const int rows = player->original_image.rows;
             const int cols = player->original_image.cols;
             player->mask_image = cv::Mat(rows, cols, CV_8U);
-            for (int i = 0; i < rows; i++) {
+            for (int l = 0; l < rows; l++) {
                 for (int j = 0; j < cols; j++) {
-                        player->mask_image.at<uchar>(i, j) = 255;
+                    player->mask_image.at<uchar>(l, j) = 255;
                 }
             }
         }
         DPMDetector dpm("./res/xmls/person.xml");
-        for (int i = 0 ; i < player_count ; i ++){
+        for (int i = 0; i < player_count; i++) {
             std::cout << "image " << i << " ";
             dpm.extractBodyParts(players[i]);
             std::cout << "done" << std::endl;
         }
 
-        for (int i = 0 ; i < player_count ; i ++){
+        for (int i = 0; i < player_count; i++) {
             show_dpm_detection_parts(players[i]);
         }
 
-        for (int i = 0 ; i < player_count ; i ++){
+        for (int i = 0; i < player_count; i++) {
             delete players[i];
         }
         delete players;
     }
 
-    void run_demo_pipeline(void){
-        std::string win_name = "Original player image";
-        tmd::player_t* player = new player_t;
+    void run_demo_pipeline(void) {
+        tmd::player_t *player = new player_t;
         player->original_image = cv::imread("./res/demo/playerimagered.jpg");
         cv::Mat mask = cv::imread("./res/demo/playerimagemaskred.jpg");
         const int rows = player->original_image.rows;
@@ -193,13 +189,13 @@ namespace tmd{
         player->mask_image = cv::Mat(rows, cols, CV_8U);
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                cv::Vec3b s =mask.at<cv::Vec3b>(i, j);
+                cv::Vec3b s = mask.at<cv::Vec3b>(i, j);
                 std::cout << s.val[0] << " " << s.val[1] << " " << s.val[2]
                 << std::endl;
                 if (s.val[1] > 127) {
                     player->mask_image.at<uchar>(i, j) = 255;
                 }
-                else{
+                else {
                     player->mask_image.at<uchar>(i, j) = 0;
                 }
             }
@@ -230,19 +226,19 @@ namespace tmd{
 
     }
 
-    void show_original_image(const tmd::player_t* const player){
+    void show_original_image(const tmd::player_t *const player) {
         cv::imshow("Original player image", player->original_image);
         cv::waitKey(0);
         cv::destroyWindow("Original player image");
     }
 
-    void show_original_image_and_mask(const tmd::player_t* const player){
+    void show_original_image_and_mask(const tmd::player_t *const player) {
         cv::imshow("Original mask image image form BGS", player->mask_image);
         cv::waitKey(0);
-        cv::destroyWindow("Original mask image image form BGS" );
+        cv::destroyWindow("Original mask image image form BGS");
     }
 
-    void show_dpm_detection_parts(const tmd::player_t* const player){
+    void show_dpm_detection_parts(const tmd::player_t *const player) {
         std::string win_name = "DPM Detection parts";
         cv::Mat partsimg = player->original_image.clone();
         std::vector<cv::Rect> parts = player->features.body_parts;
@@ -267,7 +263,7 @@ namespace tmd{
         cv::destroyWindow(win_name);
     }
 
-    void show_torso_part(const tmd::player_t* const player){
+    void show_torso_part(const tmd::player_t *const player) {
         std::string win_name = "Find the torso";
         cv::Mat torsoimg = player->original_image.clone();
         CvScalar torso;
@@ -289,7 +285,7 @@ namespace tmd{
         cv::destroyWindow(win_name);
     }
 
-    void show_torso_mask_before_th(const tmd::player_t* const player){
+    void show_torso_mask_before_th(const tmd::player_t *const player) {
         cv::Mat torso_mask_before = (player->mask_image(player->features
                                                                 .torso_pos));
         std::string win_name = "Torso mask before hue threshold";
@@ -298,26 +294,26 @@ namespace tmd{
         cv::destroyWindow(win_name);
     }
 
-    void show_torso_mask_after_th(const tmd::player_t* const player){
+    void show_torso_mask_after_th(const tmd::player_t *const player) {
         std::string win_name = "Torso mask after hue threshold";
         cv::imshow(win_name, player->features.torso_mask);
         cv::waitKey(0);
         cv::destroyWindow(win_name);
     }
 
-    void show_torso_histogram(const tmd::player_t* const player){
+    void show_torso_histogram(const tmd::player_t *const player) {
         cv::Mat localHist = player->features.torso_color_histogram.clone();
         // Normalize the histogram ...
         const int hist_h = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
         const int hist_w = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
-        cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar( 0,0,0));
+        cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0, 0, 0));
         normalize(localHist, localHist, 0, histImage.rows, cv::NORM_MINMAX, -1,
                   cv::Mat());
-        for( int i = 1; i < TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE; i++ ) {
+        for (int i = 1; i < TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE; i++) {
             line(histImage, cv::Point(1 * (i - 1),
-                                  hist_h - cvRound(localHist.at<float>(i - 1))),
+                                      hist_h - cvRound(localHist.at<float>(i - 1))),
                  cv::Point(1 * (i), hist_h - cvRound(localHist.at<float>
-                    (i))),
+                         (i))),
                  cv::Scalar(255, 0, 0), 1, 8, 0);
         }
         std::string win_name = "Color Histogram for the torso after hue "

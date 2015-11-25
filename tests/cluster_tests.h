@@ -26,7 +26,7 @@ namespace tmd{
 
         comparator.runClustering();
         comparator.writeCentersToFile();
-        Mat readCenters = comparator.readCentersFromFile();
+        Mat readCenters = comparator.readCentersFromFile(3, 180);
         comparator.~FeatureComparator();
     }
 }
