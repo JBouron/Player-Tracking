@@ -36,7 +36,6 @@ namespace tmd {
             cv::Mat cpy = frame->original_frame.clone();
             players.push_back(new player_t);
             players[i]->original_image = cpy(mBoxes[i]);
-                    players[i]->original_image);
             players[i]->mask_image = (frame->mask_frame.clone())(mBoxes[i]);
         }
         return players;
