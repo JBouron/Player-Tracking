@@ -110,13 +110,6 @@ namespace tmd {
                 max_score_for_level = scores[i];
         }
 
-        const int root_w = filters[0]->sizeX;
-        const int root_h = filters[0]->sizeY;
-        const int root_x = filters[0]->V.x;
-        const int root_y = filters[0]->V.y;
-        cv::Rect root(root_x, root_y, root_w, root_h);
-        parts.push_back(root);
-
         for (i = 0; i < kPoints; i++) {
             for (j = 0; j < n; j++) {
                 getOppositePoint(partsDisplacement[i][j],
