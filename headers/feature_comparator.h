@@ -95,7 +95,7 @@ namespace tmd {
         /**
          * Reads the cluster's centers from a file "clusterCenters.txt".
          */
-        cv::Mat readCentersFromFile(int rows, int cols);
+        static cv::Mat readCentersFromFile(int rows, int cols);
 
     private:
         int m_sampleCols;
@@ -115,7 +115,7 @@ namespace tmd {
         /**
          * Returns a vector<float> of all of the floats contained in a string.
          */
-        std::vector<float> getFloatsFromString(std::string inputString);
+        static std::vector<float> getFloatsFromString(std::string inputString);
     };
 }
 
