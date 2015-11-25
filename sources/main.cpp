@@ -9,12 +9,14 @@
 #include "../headers/features_extractor.h"
 #include "../headers/feature_comparator.h"
 #include "../headers/features_t.h"
+#include "../headers/dpm_calibrator.h"
 
 void extract_player_image(void);
 
 
 int main(int argc, char *argv[]) {
-    tmd::run_tests();
+    tmd::DPMCalibrator::calibrate_dpm("./res/videos/alone-green-no-ball/ace_0"
+                                              ".mp4", 300);
     return EXIT_SUCCESS;
 }
 
