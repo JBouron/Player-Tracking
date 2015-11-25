@@ -19,7 +19,7 @@ void pipeline(void);
 
 int main(int argc, char *argv[]) {
     tmd::DPMCalibrator::calibrate_dpm("./res/videos/alone-green-no-ball/ace_0"
-                                              ".mp4", 300);
+                                              ".mp4", 700, 10);
     return EXIT_SUCCESS;
 }
 
