@@ -38,6 +38,7 @@ namespace tmd {
 
         /**
          * Extract the next frame from the input_video.
+         * Return NULL if there is no frame left in the input stream.
          */
         frame_t *next_frame();
 
