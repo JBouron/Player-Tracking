@@ -33,20 +33,11 @@ namespace tmd {
         cv::destroyWindow("Manual player extraction");
         std::vector<player_t *> players;
         for (size_t i = 0; i < mBoxes.size(); i++) {
-            tmd::debug("boxes");
             cv::Mat cpy = frame->original_frame.clone();
             players.push_back(new player_t);
             players[i]->original_image = cpy(mBoxes[i]);
-            cv::imwrite(
-                    "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/images/player" +
-                    std::to_string(i + static_cast<int >(frame->frame_index))
-                                   + ".jpg",
                     players[i]->original_image);
             players[i]->mask_image = (frame->mask_frame.clone())(mBoxes[i]);
-            cv::imwrite("./res/demo/playerimage.jpg",
-                        players[i]->original_image);
-            cv::imwrite("./res/demo/playerimagemask.jpg",
-                        players[i]->mask_image);
         }
         return players;
     }
