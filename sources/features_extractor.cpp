@@ -14,7 +14,8 @@ namespace tmd {
     }
 
     FeaturesExtractor::~FeaturesExtractor() {
-        delete m_detector;
+        // TODO : Find why it segfualts.
+        //delete m_detector;
     }
 
     void FeaturesExtractor::extractFeaturesFromPlayers(
