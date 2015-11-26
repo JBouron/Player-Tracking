@@ -12,6 +12,9 @@ namespace tmd{
     public:
         virtual std::vector<player_t*> extract_player_from_frame(frame_t*
         frame);
+
+    private :
+        bool clamp(int rows, int cols, int row, int col);
     };
 }
 
