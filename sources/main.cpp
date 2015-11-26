@@ -10,6 +10,7 @@
 #include "../headers/feature_comparator.h"
 #include "../headers/features_t.h"
 #include "../headers/dpm_calibrator.h"
+#include "../headers/pipeline.h"
 
 void extract_player_image(void);
 
@@ -17,10 +18,36 @@ void dpm_feature_extractor_test(void);
 
 void pipeline(void);
 
+void pipeline_class_tests(void);
+
 int main(int argc, char *argv[]) {
-    tmd::DPMCalibrator::calibrate_dpm("./res/videos/alone-green-no-ball/ace_0"
-                                              ".mp4", 700, 10);
+    pipeline();
     return EXIT_SUCCESS;
+}
+
+void pipeline_class_tests(void){
+    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", 0, ""
+            "./res/xmls/person.xml", true, true, "");
+
+    pipeline.set_frame_step_size(10);
+    pipeline.set_start_frame(700);
+
+    pipeline.set_end_frame(800);
+
+    int keyboard = 0;
+    std::string win_name = "Pipeline frame";
+    tmd::frame_t* frame = pipeline.next_frame();
+    while (keyboard != 27 && frame != NULL){
+        cv::imshow(win_name, frame->original_frame);
+        keyboard = cv::waitKey(0);
+
+        if (keyboard == 'n'){
+            delete frame;
+            frame = pipeline.next_frame();
+        }
+    }
+    cv::destroyWindow(win_name);
+    delete frame;
 }
 
 void extract_player_image(void) {
@@ -69,24 +96,24 @@ void show_body_parts(cv::Mat image, tmd::player_t* p) {
 }
 
 void pipeline(void){
-    cv::VideoCapture capture("./res/videos/two-green-no-ball/ace_0.mp4");
+    cv::VideoCapture capture("./res/videos/alone-green-no-ball/ace_0.mp4");
     tmd::BGSubstractor bgSubstractor(&capture, 0);
     tmd::DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
     tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
-    const int frame_start = 200;
+    const int frame_start = 700;
     const int frame_limit = 800;
     const int frame_step = 10;
     std::vector<cv::Mat> frames_results;
     int frame_idx = frame_start;
 
     // Setting the background in the bgs.
-    //delete bgSubstractor.next_frame();
+    delete bgSubstractor.next_frame();
 
     bgSubstractor.jump_to_frame(frame_start);
 
-    const bool show_intermediate_results = false;
-    const bool save_results = true;
+    const bool show_intermediate_results = true;
+    const bool save_results = false;
 
     CvScalar color;
     color.val[0] = 255;
@@ -131,11 +158,6 @@ void pipeline(void){
             // Draw detection rectangle
             cv::rectangle(frame_cpy, player->pos_frame, color, thickness,
                           line_type, shift);
-
-            /*if (frame_idx == 660){
-                cv::imshow("Debug frame 660", frame_cpy);
-                cv::waitKey(0);
-            }*/
 
             // Extract the features.
             featuresExtractor.extractFeatures(player);
