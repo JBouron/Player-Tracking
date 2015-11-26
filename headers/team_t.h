@@ -12,7 +12,7 @@ namespace tmd{
         TEAM_UNKNOWN    // Used when the algorithm couldn't determine the team of the player.
     }team_t;
 
-    std::string get_team_string(team_t team){
+    inline std::string get_team_string(team_t team){
         switch (team){
             case TEAM_A         : return "Team A";
             case TEAM_B         : return "Team B";
@@ -21,7 +21,7 @@ namespace tmd{
         }
     }
 
-    CvScalar get_team_color(team_t team){
+    inline CvScalar get_team_color(team_t team){
         CvScalar color;
         switch (team){
             case TEAM_A :
@@ -38,7 +38,7 @@ namespace tmd{
                 color.val[3] = 255;
                 break;
 
-            case default:
+            default:
                 color.val[0] = 0;
                 color.val[1] = 0;
                 color.val[2] = 0;
