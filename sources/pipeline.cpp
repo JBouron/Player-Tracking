@@ -63,6 +63,42 @@ namespace tmd{
 
         m_featuresExtractor->extractFeaturesFromPlayers(players);
 
-        // TODO : run feature comparator.
+        // TODO : FeatureComparator.
+
+    }
+
+    void Pipeline::set_bgs_properties(float threshold, int history_size,
+                                      float learning_rate) {
+        m_bgSubstractor->set_threshold_value(threshold);
+        m_bgSubstractor->set_history_size(history_size);
+        m_bgSubstractor->set_learning_rate(learning_rate);
+    }
+
+    void Pipeline::set_dpm_properties(float overlapping_threshold,
+                                      float score_threshold) {
+        if (m_using_dpm){
+            DPMPlayerExtractor *playerExtractor = (DPMPlayerExtractor*)
+                    m_featuresExtractor;
+
+            playerExtractor->set_overlapping_threshold(overlapping_threshold);
+            playerExtractor->set_score_threshold(score_threshold);
+        }
+    }
+
+    void Pipeline::set_frame_step_size(int step) {
+        m_step = step;
+    }
+
+    void Pipeline::set_start_frame(int frame_index) {
+        if (!m_running){
+            m_start = frame_index;
+            m_bgSubstractor->jump_to_frame(m_start);
+        }
+    }
+
+    void Pipeline::set_end_frame(int frame_index) {
+        if (!m_running){
+            m_end = frame_index;
+        }
     }
 }
