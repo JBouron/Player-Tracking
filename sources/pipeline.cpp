@@ -1,6 +1,8 @@
 #include "../headers/pipeline.h"
 #include "../headers/dpm_player_extractor.h"
 #include "../headers/debug.h"
+#include "../headers/player_t.h"
+#include "../headers/frame_t.h"
 
 namespace tmd{
     Pipeline::Pipeline(std::string video_path, unsigned char camera_index,
@@ -63,8 +65,25 @@ namespace tmd{
 
         m_featuresExtractor->extractFeaturesFromPlayers(players);
 
-        // TODO : FeatureComparator.
+        const int thickness = 1; // Thickness of the box.
+        const int line_type = 8; // 8 connected line.
+        const int shift = 0;
 
+
+
+        size_t player_count = players.size();
+        for (int i = 0 ; i < player_count ; i ++){
+            cv::Mat result = m_featuresComparator->getClosestCenter(players[i]);
+            players[i]->team = get_team_from_center(result);
+            tmd::debug("Pipeline", "next_frame", "Player " + std::to_string
+                         (i) + " detected with team " + get_team_string
+                         (players[i]->team));
+
+            cv::rectangle(frame->original_frame, players[i]->pos_frame,
+                          get_team_color(players[i]->team), thickness,
+                          line_type, shift);
+        }
+        return frame;
     }
 
     void Pipeline::set_bgs_properties(float threshold, int history_size,
@@ -99,6 +118,23 @@ namespace tmd{
     void Pipeline::set_end_frame(int frame_index) {
         if (!m_running){
             m_end = frame_index;
+        }
+    }
+
+    team_t Pipeline::get_team_from_center(cv::Mat closest_center){
+        int max_hue_value = 0;
+        for (int c = 0 ; c < closest_center.cols ; c ++){
+            if (closest_center.at<uchar>(0, c) == 1.0){
+                max_hue_value = c;
+                break;
+            }
+        }
+        if (TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW <= max_hue_value &&
+                max_hue_value <= TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH){
+            return TEAM_A;
+        }
+        else{
+            return TEAM_B;
         }
     }
 }

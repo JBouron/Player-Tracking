@@ -26,7 +26,7 @@ namespace tmd{
          * _ model_file : Path to the file containing the model of the person.
          * _ cluster_centers_file : Path to the file containing the cluster
          * centers.
-         * _ save_fames : True to enable saving the frames into the output
+         * _ save_frames : True to enable saving the frames into the output
          * folder.
          * _ output_folder : Path to the folder which will contain all the
          * saved frames (if save_frame is enabled).
@@ -80,6 +80,11 @@ namespace tmd{
 
 
     private:
+        /**
+         * Returns the team of the player given the closest_center.
+         */
+        team_t get_team_from_center(cv::Mat closest_center);
+
         cv::VideoCapture *m_video;
         tmd::BGSubstractor *m_bgSubstractor;
         tmd::PlayerExtractor *m_playerExtractor;
