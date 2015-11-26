@@ -28,7 +28,7 @@ namespace tmd{
         }
 
         m_featuresComparator = new FeatureComparator(2, 180,
-                             FeatureComparator::readCentersFromFile(180, 1));
+                             FeatureComparator::readCentersFromFile(1, 180));
 
         m_running = false;
         m_using_dpm = dpm;
@@ -38,6 +38,10 @@ namespace tmd{
 
         m_save = save_frames;
         m_output_folder = output_folder;
+
+        // Take the first frame so that the BGS can build a model for the
+        // background.
+        delete m_bgSubstractor->next_frame();
     }
 
     Pipeline::~Pipeline() {
@@ -50,6 +54,10 @@ namespace tmd{
 
     frame_t* Pipeline::next_frame() {
         m_running = true;
+
+        for (int i = 0 ; i < m_step ; i ++){
+            delete m_bgSubstractor->next_frame();
+        }
 
         frame_t* frame = m_bgSubstractor->next_frame();
        	if (frame == NULL){
@@ -75,13 +83,15 @@ namespace tmd{
         for (int i = 0 ; i < player_count ; i ++){
             cv::Mat result = m_featuresComparator->getClosestCenter(players[i]);
             players[i]->team = get_team_from_center(result);
-            tmd::debug("Pipeline", "next_frame", "Player " + std::to_string
-                         (i) + " detected with team " + get_team_string
+            tmd::debug("Pipeline", "next_frame", "Player " + std::to_string(i)
+                          + " detected with team " + get_team_string
                          (players[i]->team));
 
             cv::rectangle(frame->original_frame, players[i]->pos_frame,
                           get_team_color(players[i]->team), thickness,
                           line_type, shift);
+
+            delete players[i];
         }
         return frame;
     }
