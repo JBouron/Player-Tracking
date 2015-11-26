@@ -1,10 +1,8 @@
 #include <set>
+#include <iostream>
 #include "../headers/blob_player_extractor.h"
-#include "../headers/player_t.h"
-#include "../headers/frame_t.h"
-#include "../headers/box_t.h"
 
-#define BUFFER_SIZE 9 //MUST BE ODD
+#define BUFFER_SIZE 181 //MUST BE ODD
 #define MIN_BLOB_SIZE 50 //USED TO FILTER BALL SIZE AND NOISE
 
 using namespace cv;
@@ -17,47 +15,48 @@ namespace tmd {
         int rows = maskImage.rows;
         int cols = maskImage.cols;
 
-        unsigned char currentLabel = 1;
+        int currentLabel = 1;
 
         Mat labels;
-        labels = Mat::zeros(rows, cols, CV_8UC1);
-        unsigned char smallestLabel;
-        unsigned char label;
-        unsigned char maxLabel = std::numeric_limits<unsigned char>::max();
+        labels = Mat::zeros(rows, cols, CV_32SC1);
+        int smallestLabel;
+        int label;
+        int maxLabel = std::numeric_limits<int>::max();
 
-        std::map<unsigned char, std::set<unsigned char>> labelMap;
-
+        std::map<int, std::set<int>> labelMap;
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 if (maskImage.at<uchar>(row, col) != 0) {
-
-                    std::set<unsigned char> neighbours;
+                    std::set<int> neighbours;
                     smallestLabel = maxLabel;
 
                     for (int bufferCol = -BUFFER_SIZE / 2; bufferCol <= BUFFER_SIZE / 2; bufferCol++) {
                         for (int bufferRow = -BUFFER_SIZE / 2; bufferRow <= BUFFER_SIZE / 2; bufferRow++) {
                             if (clamp(rows, cols, row + bufferRow, col + bufferCol)
-                                && labels.at<uchar>(row, col) != 0) {
-                                neighbours.insert(labels.at<uchar>(row, col));
+                                && labels.at<int>(row + bufferRow, col + bufferCol) != 0) {
+                                std::cout << "LOL" << std::endl;
+                                label = labels.at<int>(row + bufferRow, col + bufferCol);
+                                neighbours.insert(label);
+
                                 smallestLabel = label < smallestLabel ? label : smallestLabel;
                             }
                         }
                     }
 
                     if (neighbours.empty()) {
-                        std::set<unsigned char> setTmp;
+                        std::set<int> setTmp;
                         setTmp.insert(currentLabel);
-                        labelMap.insert(std::pair<unsigned char, std::set<unsigned char>>(currentLabel, setTmp));
-                        labels.at<uchar>(row, col) = currentLabel;
+                        labelMap.insert(std::pair<int, std::set<int>>(currentLabel, setTmp));
+                        labels.at<int>(row, col) = currentLabel;
                         currentLabel++;
                     } else {
-                        labels.at<uchar>(row, col) = smallestLabel;
-                        for (unsigned char tmp : neighbours) {
-                            for (unsigned char tmp2 : neighbours) {
-                                std::set<unsigned char> setTmp;
+                        labels.at<int>(row, col) = smallestLabel;
+                        for (int tmp : neighbours) {
+                            for (int tmp2 : neighbours) {
+                                std::set<int> setTmp;
                                 setTmp.insert(tmp2);
-                                labelMap.insert(std::pair<unsigned char, std::set<unsigned char>>(tmp, setTmp));
+                                labelMap.insert(std::pair<int, std::set<int>>(tmp, setTmp));
                             }
                         }
                     }
@@ -65,23 +64,23 @@ namespace tmd {
             }
         }
 
-        std::map<unsigned char, int> blobSizes;
+        std::map<int, int> blobSizes;
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 if (maskImage.at<uchar>(row, col) != 0) {
-                    std::set<unsigned char> set = labelMap[labels.at<uchar>(row, col)];
-                    std::set<unsigned char>::iterator iter = set.begin();
+                    std::set<int> set = labelMap[labels.at<int>(row, col)];
+                    std::set<int>::iterator iter = set.begin();
                     label = *iter;
-                    labels.at<uchar>(row, col) = label;
+                    labels.at<int>(row, col) = label;
                     int currentSize = blobSizes[label] + 1;
-                    blobSizes.insert(std::pair<unsigned char, int>(label, currentSize));
+                    blobSizes.insert(std::pair<int, int>(label, currentSize));
                 }
             }
         }
 
         std::vector<player_t *> players;
-        for (auto iterator = blobSizes.begin(); iterator != blobSizes.end(); iterator++) {
+        for (std::map<int, int>::iterator iterator = blobSizes.begin(); iterator != blobSizes.end(); iterator++) {
             if (iterator->second >= MIN_BLOB_SIZE) {
                 player_t *player = new player_t;
                 label = iterator->first;
@@ -91,17 +90,17 @@ namespace tmd {
                 int maxCol = std::numeric_limits<int>::min();
                 for (int row = 0; row < rows; row++) {
                     for (int col = 0; col < cols; col++) {
-                        if(labels.at<uchar>(row, col) == label){
-                            if(row < minRow){
+                        if (labels.at<int>(row, col) == label) {
+                            if (row < minRow) {
                                 minRow = row;
                             }
-                            if(col < minCol){
+                            if (col < minCol) {
                                 minCol = col;
                             }
-                            if(row > maxRow){
+                            if (row > maxRow) {
                                 maxRow = row;
                             }
-                            if(col > maxCol){
+                            if (col > maxCol) {
                                 maxCol = col;
                             }
                         }
@@ -115,7 +114,8 @@ namespace tmd {
                 players.push_back(player);
             }
         }
-        return std::vector<player_t *>();
+
+        return players;
     }
 
     bool BlobPlayerExtractor::clamp(int rows, int cols, int row, int col) {

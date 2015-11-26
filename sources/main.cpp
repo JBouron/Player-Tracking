@@ -29,7 +29,7 @@ void pipeline_class_tests(void){
     tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", 0, ""
             "./res/xmls/person.xml", false, true, "");
 
-    pipeline.set_frame_step_size(10);
+    pipeline.set_frame_step_size(60);
     pipeline.set_start_frame(700);
 
     pipeline.set_end_frame(800);
@@ -41,10 +41,10 @@ void pipeline_class_tests(void){
         cv::imshow(win_name, frame->original_frame);
         keyboard = cv::waitKey(0);
 
-        if (keyboard == 'o'){
+
             delete frame;
             frame = pipeline.next_frame();
-        }
+
     }
     cv::destroyWindow(win_name);
     delete frame;
