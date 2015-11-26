@@ -28,7 +28,7 @@ namespace tmd{
 
     std::vector<player_t*> DPMPlayerExtractor::extract_player_from_frame(
             frame_t *frame){
-        cv::Mat image = frame->original_frame;
+        cv::Mat image = get_colored_mask_for_frame(frame);
         std::vector<cv::LatentSvmDetector::ObjectDetection> results;
         m_detector->detect(image, results, m_overlap_threshold, 4);
 
@@ -85,4 +85,18 @@ namespace tmd{
         return m_score_threshold;
     }
 
+    cv::Mat DPMPlayerExtractor::get_colored_mask_for_frame(frame_t* frame){
+        cv::Mat resulting_image = frame->original_frame.clone();
+        cv::Vec3b black;
+        black.val[0] = 0;
+        black.val[1] = 0;
+        black.val[2] = 0;
+        for (int c = 0; c < frame->mask_frame.cols; c++) {
+            for (int r = 0; r < frame->mask_frame.rows; r++) {
+                if (frame->mask_frame.at<uchar>(r, c) == 0) {
+                    resulting_image.at<cv::Vec3b>(r, c) = black;
+                }
+            }
+        }
+    }
 }

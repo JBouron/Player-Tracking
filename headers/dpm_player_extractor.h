@@ -4,7 +4,8 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include "player_extractor.h"
 
-#define TMD_DMP_EXTRACTOR_SCORE_THRESHOLD 0.0
+#define TMD_DEFAULT_DMP_EXTRACTOR_SCORE_THRESHOLD 0.0f
+#define TMD_DEFAULT_DMP_EXTRACTOR_OVERLAPPING_THRESHOLD 0.5f
 
 namespace tmd{
 
@@ -20,7 +21,8 @@ namespace tmd{
          * _ score_threshold : The score threshold to use to filter results.
          */
         DPMPlayerExtractor(std::string model_file, float overlap_threshold =
-        0.5f, float score_threshold = TMD_DMP_EXTRACTOR_SCORE_THRESHOLD);
+        TMD_DEFAULT_DMP_EXTRACTOR_OVERLAPPING_THRESHOLD, float score_threshold
+        = TMD_DEFAULT_DMP_EXTRACTOR_SCORE_THRESHOLD);
 
         ~DPMPlayerExtractor();
 
@@ -44,6 +46,15 @@ namespace tmd{
         float get_score_threshold();
 
     private:
+
+        /**
+         * Returns the "colored mask", ie all the pixels belonging to the
+         * background are in black, whereas the others are in color. The
+         * resulting image are colored forground objects on a black background.
+         * The point of doing this is to improve the results of dpm.
+         */
+        cv::Mat get_colored_mask_for_frame(frame_t* frame);
+
         cv::LatentSvmDetector* m_detector;
         float m_overlap_threshold;
         float m_score_threshold;
