@@ -91,6 +91,12 @@ namespace tmd{
          */
         void extractTorsoForPlayer(player_t* player);
 
+        /**
+         * Make sure that the boundaries of each part boxes are not 'outside'
+         * the player image. Resize them if needed.
+         */
+        void clipBoxes(player_t* player);
+
         /* Instance of the LatentSvmDetector used to extract parts. */
         CvLatentSvmDetector* m_detector;
         /* Number of threads used during the process. */
