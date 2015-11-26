@@ -29,6 +29,6 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         sources/demo/demo.cpp
         headers/demo/demo.h
         headers/test_cases/feature_comparator_tests.h
-        sources/test_cases/feature_comprator_tests.cpp headers/dpm_player_extractor.h headers/blob_player_extractor.h sources/dpm_player_extractor.cpp)
+        sources/test_cases/feature_comprator_tests.cpp headers/dpm_player_extractor.h headers/blob_player_extractor.h sources/dpm_player_extractor.cpp headers/dpm_calibrator.h sources/dpm_calibrator.cpp)
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} cppunit)

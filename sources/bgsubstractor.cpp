@@ -76,4 +76,8 @@ namespace tmd {
     bool BGSubstractor::jump_to_frame(int index) {
         m_input_video->set(CV_CAP_PROP_POS_FRAMES, index);
     }
+
+    int BGSubstractor::get_current_frame_index(){
+        return static_cast<int> (m_frame_index);
+    }
 }
