@@ -19,14 +19,14 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/openCV/_lsvm_error.h headers/openCV/_lsvm_fft.h
         headers/openCV/_lsvm_matching.h headers/openCV/_lsvm_routine.h
         headers/openCV/_lsvm_types.h sources/features_extractor.cpp
-        tests/features_extractor_tests.h tests/dpm_detector_tests.h
-        tests/cluster_tests.h headers/test_cases/bgsubstractor_tests.h
+        headers/test_cases/bgsubstractor_tests.h
         sources/test_cases/bgsubstractor_tests.cpp
         headers/test_cases/test_suite.h sources/test_cases/test_suite.cpp
         headers/test_cases/dpm_detector_tests.h
         sources/test_cases/dpm_detector_tests.cpp
         headers/test_cases/features_extractor_tests.h
-        sources/test_cases/features_extractor_tests.cpp sources/demo/demo.cpp
+        sources/test_cases/features_extractor_tests.cpp
+        sources/demo/demo.cpp
         headers/demo/demo.h
         headers/test_cases/feature_comparator_tests.h
         sources/test_cases/feature_comprator_tests.cpp headers/dpm_player_extractor.h headers/blob_player_extractor.h sources/dpm_player_extractor.cpp)
