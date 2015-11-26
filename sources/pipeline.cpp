@@ -3,6 +3,7 @@
 #include "../headers/debug.h"
 #include "../headers/player_t.h"
 #include "../headers/frame_t.h"
+#include "../headers/blob_player_extractor.h"
 
 namespace tmd{
     Pipeline::Pipeline(std::string video_path, unsigned char camera_index,
@@ -24,7 +25,7 @@ namespace tmd{
             m_playerExtractor = new DPMPlayerExtractor(model_file);
         }
         else{
-            // TODO : Create a blob-detection instance.
+            m_playerExtractor = new BlobPlayerExtractor();
         }
 
         m_featuresComparator = new FeatureComparator(2, 180,

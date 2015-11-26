@@ -21,7 +21,7 @@ namespace tmd{
          * _ video_path : the path to the video on which we will run the
          * pipeline
          * _ camera_index : The index of the camera.
-         * _ dom : Enable using dpm player extractor, if not enabled, the
+         * _ dpm : Enable using dpm player extractor, if not enabled, the
          * blob-detection based player extractor will be used instead.
          * _ model_file : Path to the file containing the model of the person.
          * _ cluster_centers_file : Path to the file containing the cluster

@@ -4,7 +4,7 @@ project(Bachelor_Project)
 # Note : -MM and -H can only build, not run the program.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(OpenCV_FOUND TRUE)
-find_package( OpenCV REQUIRED )
+find_package(OpenCV REQUIRED)
 set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/team_t.h headers/position_t.h headers/box_t.h
         headers/bgsubstractor.h sources/bgsubstractor.cpp headers/debug.h
@@ -25,9 +25,18 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/test_cases/dpm_detector_tests.h
         sources/test_cases/dpm_detector_tests.cpp
         headers/test_cases/features_extractor_tests.h
-        sources/test_cases/features_extractor_tests.cpp sources/demo/demo.cpp
+        sources/test_cases/features_extractor_tests.cpp
         headers/demo/demo.h
+        sources/demo/demo.cpp
         headers/test_cases/feature_comparator_tests.h
-        sources/test_cases/feature_comprator_tests.cpp headers/dpm_player_extractor.h headers/blob_player_extractor.h sources/dpm_player_extractor.cpp headers/dpm_calibrator.h sources/dpm_calibrator.cpp headers/pipeline.h sources/pipeline.cpp)
+        sources/test_cases/feature_comprator_tests.cpp
+        headers/dpm_player_extractor.h
+        sources/dpm_player_extractor.cpp
+        headers/dpm_calibrator.h
+        sources/dpm_calibrator.cpp
+        headers/blob_player_extractor.h
+        sources/blob_player_extractor.cpp
+        headers/pipeline.h
+        sources/pipeline.cpp)
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} cppunit)
