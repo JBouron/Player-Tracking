@@ -3,6 +3,7 @@
 
 #include <string>
 #include <opencv2/objdetect/objdetect.hpp>
+#include <opencv2/imgproc/imgproc_c.h>
 #include "../headers/openCV/_latentsvm.h"
 #include "../headers/openCV/_lsvm_matching.h"
 #include "player_t.h"

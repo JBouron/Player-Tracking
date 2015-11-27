@@ -182,7 +182,7 @@ namespace tmd {
 
     void run_demo_pipeline(void) {
         tmd::player_t *player = new player_t;
-        player->original_image = cv::imread("./res/demo/playerimagered.jpg");
+        player->original_image = cv::imread("./res/images/testbug.jpg");
         cv::Mat mask = cv::imread("./res/demo/playerimagemaskred.jpg");
         const int rows = player->original_image.rows;
         const int cols = player->original_image.cols;
