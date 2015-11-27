@@ -96,6 +96,12 @@ namespace tmd{
 
             delete players[i];
         }
+        if (m_save){
+            std::string file_name = "frame" + std::to_string
+               (m_bgSubstractor->get_current_frame_index()) + ".jpg";
+            cv::imwrite(m_output_folder+"/"+file_name, frame->original_frame);
+        }
+
         return frame;
     }
 
