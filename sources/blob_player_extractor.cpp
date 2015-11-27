@@ -71,7 +71,6 @@ namespace tmd {
                     std::set<int> set = labelMap[labels.at<int>(row, col)];
                     std::set<int>::iterator iter = set.begin();
                     label = *iter;
-                    std::cout << label << std::endl;
 
                     labels.at<int>(row, col) = label;
 
@@ -90,8 +89,7 @@ namespace tmd {
 
         std::vector<player_t *> players;
         for (std::map<int, int>::iterator iterator = blobSizes.begin(); iterator != blobSizes.end(); iterator++) {
-            std::cout << iterator->second << std::endl;
-            if (iterator->second >= MIN_BLOB_SIZE) {
+            //if (iterator->second >= MIN_BLOB_SIZE) {
                 player_t *player = new player_t;
                 label = iterator->first;
                 int minRow = std::numeric_limits<int>::max();
@@ -122,7 +120,7 @@ namespace tmd {
                 player->original_image = frame->original_frame.clone()(myRect);
                 player->frame_index = frame->frame_index;
                 players.push_back(player);
-            }
+            //}
         }
 
         return players;
