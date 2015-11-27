@@ -33,13 +33,12 @@ namespace tmd {
 
                     for (int bufferCol = -BUFFER_SIZE / 2; bufferCol <= BUFFER_SIZE / 2; bufferCol++) {
                         for (int bufferRow = -BUFFER_SIZE / 2; bufferRow <= BUFFER_SIZE / 2; bufferRow++) {
-                            if (clamp(rows, cols, row + bufferRow, col + bufferCol)
-                                && labels.at<int>(row + bufferRow, col + bufferCol) != 0) {
-                                std::cout << "LOL" << std::endl;
-                                label = labels.at<int>(row + bufferRow, col + bufferCol);
-                                neighbours.insert(label);
-
-                                smallestLabel = label < smallestLabel ? label : smallestLabel;
+                            if (!clamp(rows, cols, row + bufferRow, col + bufferCol)) {
+                                if (labels.at<int>(row + bufferRow, col + bufferCol) != 0) {
+                                    label = labels.at<int>(row + bufferRow, col + bufferCol);
+                                    neighbours.insert(label);
+                                    smallestLabel = label < smallestLabel ? label : smallestLabel;
+                                }
                             }
                         }
                     }
@@ -54,11 +53,11 @@ namespace tmd {
                         labels.at<int>(row, col) = smallestLabel;
                         for (int tmp : neighbours) {
                             for (int tmp2 : neighbours) {
-                                std::set<int> setTmp;
-                                setTmp.insert(tmp2);
-                                labelMap.insert(std::pair<int, std::set<int>>(tmp, setTmp));
+                                labelMap[tmp].insert(tmp2);
                             }
+                            labelMap[tmp].insert(smallestLabel);
                         }
+                        labelMap[smallestLabel].insert(smallestLabel);
                     }
                 }
             }
@@ -72,8 +71,18 @@ namespace tmd {
                     std::set<int> set = labelMap[labels.at<int>(row, col)];
                     std::set<int>::iterator iter = set.begin();
                     label = *iter;
+                    std::cout << label << std::endl;
+
                     labels.at<int>(row, col) = label;
-                    int currentSize = blobSizes[label] + 1;
+
+                    int currentSize = 0;
+                    std::map<int, int>::iterator it = blobSizes.find(label);
+
+                    if (it != blobSizes.end()) {
+                        currentSize = it->second;
+                    }
+
+                    currentSize++;
                     blobSizes.insert(std::pair<int, int>(label, currentSize));
                 }
             }
@@ -81,6 +90,7 @@ namespace tmd {
 
         std::vector<player_t *> players;
         for (std::map<int, int>::iterator iterator = blobSizes.begin(); iterator != blobSizes.end(); iterator++) {
+            std::cout << iterator->second << std::endl;
             if (iterator->second >= MIN_BLOB_SIZE) {
                 player_t *player = new player_t;
                 label = iterator->first;
