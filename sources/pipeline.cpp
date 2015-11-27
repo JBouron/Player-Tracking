@@ -99,6 +99,8 @@ namespace tmd{
         if (m_save){
             std::string file_name = "frame" + std::to_string
                (m_bgSubstractor->get_current_frame_index()) + ".jpg";
+            tmd::debug("Pipeline", "next_frame", "Save frame to : " +
+                    file_name);
             cv::imwrite(m_output_folder+"/"+file_name, frame->original_frame);
         }
 
