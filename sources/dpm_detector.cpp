@@ -1,12 +1,7 @@
-#include <opencv2/core/core_c.h>
 #include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc_c.h>
-#include <functional>
 #include "../headers/dpm_detector.h"
 #include "../headers/debug.h"
 #include "../headers/player_t.h"
-#include "../headers/features_t.h"
-#include "../headers/openCV/_lsvm_types.h"
 
 namespace tmd {
     DPMDetector::DPMDetector(std::string model_file) {
@@ -33,6 +28,8 @@ namespace tmd {
             throw std::invalid_argument("Error in DPMDetector : NULL pointer in"
                                                 " extractBodyParts method.");
         }
+        cv::imshow("Debug", player->original_image);
+        cv::waitKey(0);
         IplImage playerImage = player->original_image; // Bug in CLion, ignore it.
         player->features.body_parts = getPartBoxesForImage(&playerImage);
         // Clip the boxes if needed.

@@ -1,16 +1,10 @@
-#include <opencv2/imgproc/types_c.h>
 #include "../headers/features_extractor.h"
 #include "../headers/debug.h"
-#include "../headers/player_t.h"
-#include "../headers/features_t.h"
 
 namespace tmd {
 
-    FeaturesExtractor::FeaturesExtractor(std::string model_file) {
-        m_detector = new DPMDetector(model_file);
-        if (m_detector == NULL) {
-            throw std::bad_alloc();
-        }
+    FeaturesExtractor::FeaturesExtractor(std::string model_file) : m_detector
+                                                               (model_file) {
     }
 
     FeaturesExtractor::~FeaturesExtractor() {
@@ -41,7 +35,7 @@ namespace tmd {
     }
 
     void FeaturesExtractor::extractBodyParts(player_t *p) {
-        m_detector->extractBodyParts(p);
+        m_detector.extractBodyParts(p);
         tmd::debug("FeaturesExtractor", "extractBodyParts", "Result : " +
                 std::to_string(p->features.body_parts.size()) + "body parts.");
     }

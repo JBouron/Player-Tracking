@@ -98,5 +98,6 @@ namespace tmd{
                 }
             }
         }
+        return resulting_image;
     }
 }
