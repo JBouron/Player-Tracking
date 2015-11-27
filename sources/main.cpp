@@ -21,7 +21,18 @@ void pipeline(void);
 void pipeline_class_tests(void);
 
 int main(int argc, char *argv[]) {
-    pipeline_class_tests();
+    tmd::Pipeline pipeline("./res/videos/two-green-no-ball/ace_0.mp4", 0, ""
+                                   "./res/xmls/person.xml", true, true,
+               "./res/pipeline_results/complete_pipeline/two-green-no-ball/");
+    pipeline.set_frame_step_size(10);
+    pipeline.set_start_frame(200);
+
+    pipeline.set_end_frame(1200);
+    tmd::frame_t* frame = pipeline.next_frame();
+    while (frame != NULL){
+        delete frame;
+        frame = pipeline.next_frame();
+    }
     return EXIT_SUCCESS;
 }
 
@@ -29,6 +40,7 @@ void pipeline_class_tests(void){
     tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", 0, ""
             "./res/xmls/person.xml", false, true, ""
             "./res/pipeline_results/complete_pipeline/alone-green-no-ball/");
+
 
     pipeline.set_frame_step_size(10);
     pipeline.set_start_frame(200);
