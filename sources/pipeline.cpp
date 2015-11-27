@@ -15,7 +15,7 @@ namespace tmd{
 
         if (!m_video->isOpened()){
             throw std::invalid_argument("Error couldn't load the video in the"
-                                                " piepline.");
+                                                " pipeline.");
         }
 
         m_camera_index = camera_index;
@@ -31,6 +31,8 @@ namespace tmd{
         m_featuresComparator = new FeatureComparator(2, 180,
                              FeatureComparator::readCentersFromFile(1, 180));
 
+        m_featuresExtractor = new FeaturesExtractor("./res/xmls/person.xml");
+
         m_running = false;
         m_using_dpm = dpm;
         m_start = 0;
@@ -42,7 +44,7 @@ namespace tmd{
 
         // Take the first frame so that the BGS can build a model for the
         // background.
-        delete m_bgSubstractor->next_frame();
+        //delete m_bgSubstractor->next_frame();
     }
 
     Pipeline::~Pipeline() {
@@ -56,7 +58,7 @@ namespace tmd{
     frame_t* Pipeline::next_frame() {
         m_running = true;
 
-        for (int i = 0 ; i < m_step ; i ++){
+        for (int i = 0 ; i < m_step - 1; i ++){
             delete m_bgSubstractor->next_frame();
         }
 
@@ -94,6 +96,12 @@ namespace tmd{
 
             delete players[i];
         }
+        if (m_save){
+            std::string file_name = "frame" + std::to_string
+               (m_bgSubstractor->get_current_frame_index()) + ".jpg";
+            cv::imwrite(m_output_folder+"/"+file_name, frame->original_frame);
+        }
+
         return frame;
     }
 
@@ -121,8 +129,10 @@ namespace tmd{
 
     void Pipeline::set_start_frame(int frame_index) {
         if (!m_running){
+            tmd::debug("Pipeline", "set_frame_step_size", "Setting starting "
+                    "frame to " + std::to_string(frame_index));
             m_start = frame_index;
-            m_bgSubstractor->jump_to_frame(m_start);
+            m_bgSubstractor->jump_to_frame(frame_index);
         }
     }
 
