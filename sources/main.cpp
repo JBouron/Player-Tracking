@@ -38,7 +38,7 @@ void pipeline_class_tests(void){
     std::string win_name = "Pipeline frame";
     tmd::frame_t* frame = pipeline.next_frame();
     while (keyboard != 27 && frame != NULL){
-        cv::imshow(win_name, frame->original_frame);
+        cv::imshow(win_name, frame->mask_frame);
         keyboard = cv::waitKey(0);
 
 
