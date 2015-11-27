@@ -2,8 +2,8 @@
 #include <iostream>
 #include "../headers/blob_player_extractor.h"
 
-#define BUFFER_SIZE 181 //MUST BE ODD
-#define MIN_BLOB_SIZE 50 //USED TO FILTER BALL SIZE AND NOISE
+#define BUFFER_SIZE 20 //MUST BE ODD
+#define MIN_BLOB_SIZE 800 //USED TO FILTER BALL SIZE AND NOISE
 
 using namespace cv;
 
@@ -73,23 +73,22 @@ namespace tmd {
                     label = *iter;
 
                     labels.at<int>(row, col) = label;
-
                     int currentSize = 0;
                     std::map<int, int>::iterator it = blobSizes.find(label);
 
                     if (it != blobSizes.end()) {
-                        currentSize = it->second;
+                        currentSize = it.operator*().second ;
                     }
 
                     currentSize++;
-                    blobSizes.insert(std::pair<int, int>(label, currentSize));
+                    blobSizes[label] = currentSize;
                 }
             }
         }
 
         std::vector<player_t *> players;
         for (std::map<int, int>::iterator iterator = blobSizes.begin(); iterator != blobSizes.end(); iterator++) {
-            //if (iterator->second >= MIN_BLOB_SIZE) {
+            if (iterator->second >= MIN_BLOB_SIZE) {
                 player_t *player = new player_t;
                 label = iterator->first;
                 int minRow = std::numeric_limits<int>::max();
@@ -114,13 +113,13 @@ namespace tmd {
                         }
                     }
                 }
-                cv::Rect myRect(minCol, minRow, maxCol - minCol, maxRow - minRow);
+                cv::Rect myRect(minCol - 20, minRow - 20, maxCol - minCol + 40, maxRow - minRow + 40);
                 player->mask_image = frame->mask_frame.clone()(myRect);
                 player->pos_frame = myRect;
                 player->original_image = frame->original_frame.clone()(myRect);
                 player->frame_index = frame->frame_index;
                 players.push_back(player);
-            //}
+            }
         }
 
         return players;
