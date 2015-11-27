@@ -28,8 +28,6 @@ namespace tmd {
             throw std::invalid_argument("Error in DPMDetector : NULL pointer in"
                                                 " extractBodyParts method.");
         }
-        cv::imshow("Debug", player->original_image);
-        cv::waitKey(0);
         IplImage playerImage = player->original_image; // Bug in CLion, ignore it.
         player->features.body_parts = getPartBoxesForImage(&playerImage);
         // Clip the boxes if needed.

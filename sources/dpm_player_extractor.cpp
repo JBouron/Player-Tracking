@@ -86,7 +86,8 @@ namespace tmd{
     }
 
     cv::Mat DPMPlayerExtractor::get_colored_mask_for_frame(frame_t* frame){
-        cv::Mat resulting_image = frame->original_frame.clone();
+        cv::Mat resulting_image;
+        frame->original_frame.copyTo(resulting_image);
         cv::Vec3b black;
         black.val[0] = 0;
         black.val[1] = 0;
