@@ -2,9 +2,7 @@
 #define TEAM_MEMBERSHIP_DETECTOR_FEATURES_EXTRACTOR_H
 
 #include <vector>
-#include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/imgproc/imgproc.hpp>
 #include "player_t.h"
 #include "dpm_detector.h"
 
@@ -60,7 +58,7 @@ namespace tmd {
         void extractFeatures(player_t *player);
 
     private:
-        tmd::DPMDetector *m_detector;
+        tmd::DPMDetector m_detector;
 
         /**
          * Helper method to extract the body part of a player.

@@ -27,12 +27,12 @@ int main(int argc, char *argv[]) {
 
 void pipeline_class_tests(void){
     tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", 0, ""
-            "./res/xmls/person.xml", false, true, "");
+            "./res/xmls/person.xml", true, false, "");
 
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(700);
+    pipeline.set_start_frame(600);
 
-    pipeline.set_end_frame(800);
+    pipeline.set_end_frame(1200);
 
     int keyboard = 0;
     std::string win_name = "Pipeline frame";
@@ -41,7 +41,7 @@ void pipeline_class_tests(void){
         cv::imshow(win_name, frame->original_frame);
         keyboard = cv::waitKey(0);
 
-        if (keyboard == 'o'){
+        if (keyboard == 'n'){
             delete frame;
             frame = pipeline.next_frame();
         }
@@ -101,14 +101,14 @@ void pipeline(void){
     tmd::DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
     tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
-    const int frame_start = 700;
+    const int frame_start = 610;
     const int frame_limit = 800;
     const int frame_step = 10;
     std::vector<cv::Mat> frames_results;
     int frame_idx = frame_start;
 
     // Setting the background in the bgs.
-    delete bgSubstractor.next_frame();
+    //delete bgSubstractor.next_frame();
 
     bgSubstractor.jump_to_frame(frame_start);
 
