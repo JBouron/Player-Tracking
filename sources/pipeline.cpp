@@ -27,7 +27,8 @@ namespace tmd {
             m_playerExtractor = new BlobPlayerExtractor();
         }
 
-        m_featuresComparator = new FeatureComparator(2, 180, m_featuresComparator->readCentersFromFile(2, 180));
+        m_featuresComparator = new FeatureComparator(2, 180,
+                             FeatureComparator::readCentersFromFile(2, 180));
 
         m_featuresExtractor = new FeaturesExtractor("./res/xmls/person.xml");
 
@@ -39,10 +40,6 @@ namespace tmd {
 
         m_save = save_frames;
         m_output_folder = output_folder;
-
-        // Take the first frame so that the BGS can build a model for the
-        // background.
-        //delete m_bgSubstractor->next_frame();
     }
 
     Pipeline::~Pipeline() {
@@ -53,7 +50,34 @@ namespace tmd {
         delete m_featuresComparator;
     }
 
-    frame_t *Pipeline::next_frame() {
+    void show_body_parts(cv::Mat image, tmd::player_t* p) {
+        std::vector<cv::Rect> parts = p->features.body_parts;
+        CvScalar color;
+        color.val[0] = 255;
+        color.val[1] = 0;
+        color.val[2] = 255;
+        color.val[3] = 255;
+        CvScalar torso;
+        torso.val[0] = 255;
+        torso.val[1] = 255;
+        torso.val[2] = 0;
+        torso.val[3] = 255;
+        const int thickness = 1;
+        const int line_type = 8; // 8 connected line.
+        const int shift = 0;
+        for (int i = 0; i < parts.size(); i++) {
+            CvRect r;
+            r.x = parts[i].x;
+            r.y = parts[i].y;
+            r.width = parts[i].width;
+            r.height = parts[i].height;
+            cv::rectangle(image, r, color, thickness, line_type, shift);
+        }
+        cv::imshow("Body parts", image);
+        cv::waitKey(0);
+    }
+
+    frame_t* Pipeline::next_frame() {
         m_running = true;
 
         for (int i = 0; i < m_step - 1; i++) {
@@ -145,23 +169,29 @@ namespace tmd {
         }
     }
 
-    team_t Pipeline::get_team_from_center(cv::Mat closest_center) {
-        int max_hue_value = 0;
-        for (int c = 0; c < closest_center.cols; c++) {
-            if (closest_center.at<uchar>(0, c) > max_hue_value) {
-                max_hue_value = c;
-                break;
+    team_t Pipeline::get_team_from_center(cv::Mat closest_center){
+        float max_hue_value = 0;
+        int hue_index = 0;
+        for (int c = 0 ; c < closest_center.cols ; c ++){
+            if (closest_center.at<float>(0, c) > max_hue_value){
+                max_hue_value = closest_center.at<float>(0, c);
+                hue_index = c;
             }
         }
-        if (TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW <= max_hue_value &&
-            max_hue_value <= TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH) {
-            return TEAM_A;
+        tmd::debug("Pipeline", "get_team_from_center", "max_hue_index = " +
+                std::to_string(hue_index) + " with " + std::to_string
+                                                               (max_hue_value));
+        if (TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW <= hue_index &&
+                hue_index <= TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH){
+            return TEAM_B; // GREEN
         }
-        else if (TMD_FEATURE_EXTRACTOR_TH_RED_LOW <= max_hue_value &&
-                 max_hue_value <= TMD_FEATURE_EXTRACTOR_TH_RED_HIGH) {
-            return TEAM_B;
+        else if ((0 <= hue_index && hue_index <=
+                    TMD_FEATURE_EXTRACTOR_TH_RED_HIGH) ||
+            (TMD_FEATURE_EXTRACTOR_TH_RED_LOW <= hue_index && hue_index <= 180))
+        {
+            return TEAM_A; // RED
         }
-        else {
+        else{
             return TEAM_UNKNOWN;
         }
     }

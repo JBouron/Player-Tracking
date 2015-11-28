@@ -11,7 +11,7 @@
 #include "../headers/features_t.h"
 #include "../headers/dpm_calibrator.h"
 #include "../headers/pipeline.h"
-
+void show_body_parts(cv::Mat image, tmd::player_t* p);
 void extract_player_image(void);
 
 void dpm_feature_extractor_test(void);
@@ -20,12 +20,15 @@ void pipeline(void);
 
 void pipeline_class_tests(void);
 
+void dpm_whole_frame(void);
+
 int main(int argc, char *argv[]) {
-    tmd::Pipeline pipeline("./res/videos/alone-green-ball/ace_0.mp4", 0, ""
-                                   "./res/xmls/person.xml", false, true,
-               "./res/pipeline_results/complete_pipeline/alone-green-ball/");
+    tmd::Pipeline pipeline("./res/videos/two-red-no-ball/ace_0.mp4", 0, ""
+                                   "./res/xmls/person.xml", true, true,
+               "./res/pipeline_results/complete_pipeline/two-red-no-ball"
+                       "/");
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(200);
+    pipeline.set_start_frame(340);
 
     pipeline.set_end_frame(1200);
     tmd::frame_t* frame = pipeline.next_frame();
@@ -41,9 +44,8 @@ void pipeline_class_tests(void){
             "./res/xmls/person.xml", false, true, ""
             "./res/pipeline_results/complete_pipeline/alone-green-no-ball/");
 
-
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(200);
+    pipeline.set_start_frame(0);
 
     pipeline.set_end_frame(1200);
 
@@ -61,6 +63,23 @@ void pipeline_class_tests(void){
     }
     cv::destroyWindow(win_name);
     delete frame;
+}
+
+void dpm_whole_frame(void){
+    tmd::player_t* player = new tmd::player_t;
+    player->original_image = cv::imread("./res/images/uni0.jpg");
+    const int rows = player->original_image.rows;
+    const int cols = player->original_image.cols;
+    player->mask_image = cv::Mat(rows, cols, CV_8U);
+    for (int l = 0; l < rows; l++) {
+        for (int j = 0; j < cols; j++) {
+            player->mask_image.at<uchar>(l, j) = 255;
+        }
+    }
+
+    tmd::DPMDetector dpmDetector("./res/xmls/person.xml");
+    dpmDetector.extractBodyParts(player);
+    show_body_parts(player->original_image, player);
 }
 
 void extract_player_image(void) {
@@ -119,9 +138,6 @@ void pipeline(void){
     const int frame_step = 10;
     std::vector<cv::Mat> frames_results;
     int frame_idx = frame_start;
-
-    // Setting the background in the bgs.
-    //delete bgSubstractor.next_frame();
 
     bgSubstractor.jump_to_frame(frame_start);
 
