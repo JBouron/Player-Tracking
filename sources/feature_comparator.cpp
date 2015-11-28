@@ -1,8 +1,11 @@
 #include <opencv2/core/core.hpp>
 #include "../headers/feature_comparator.h"
+#include "../headers/player_t.h"
+#include "../headers/features_t.h"
 #include <iostream>
 #include <fstream>
 #include <bits/stream_iterator.h>
+#include <opencv2/highgui/highgui.hpp>
 
 using namespace cv;
 
@@ -107,11 +110,13 @@ namespace tmd {
     }
 
     cv::Mat FeatureComparator::getMatForPlayerFeature(player_t *player) {
-        cv::Mat t;
-        cv::transpose(player->features.torso_color_histogram, t);
-        std::cout << t.rows << std::endl;
-        std::cout << t.cols << std::endl;
-        return t;
+        if (player->features.body_parts.size() > 0){
+            cv::Mat t;
+            cv::transpose(player->features.torso_color_histogram, t);
+            std::cout << t.rows << std::endl;
+            std::cout << t.cols << std::endl;
+            return t;
+        }
     }
 
     void FeatureComparator::writeCentersToFile() {
