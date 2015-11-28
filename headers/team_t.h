@@ -25,9 +25,9 @@ namespace tmd{
         CvScalar color;
         switch (team){
             case TEAM_A :
-                color.val[0] = 255;
+                color.val[0] = 0;
                 color.val[1] = 0;
-                color.val[2] = 0;
+                color.val[2] = 255;
                 color.val[3] = 255;
                 break;
 
