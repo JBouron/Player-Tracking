@@ -43,10 +43,12 @@ namespace tmd{
                 p->frame_index = static_cast<int> (frame->frame_index);
 
                 cv::Rect playerRect = results[i].rect;
+                /* Correction. */
                 playerRect.height += 40;
                 playerRect.width += 40;
                 playerRect.x -= 20;
                 playerRect.y -= 20;
+                /* ** */
                 if (playerRect.x < 0) playerRect.x = 0;
                 if (playerRect.y < 0) playerRect.y = 0;
                 if (playerRect.x + playerRect.width > frame->original_frame
