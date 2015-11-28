@@ -12,21 +12,26 @@ namespace tmd {
     void run_demo_feature_comparator(void) {
         std::string video_folder_green = "./res/videos/alone-green-no-ball";
         std::string video_folder_red = "./res/videos/alone-red-no-ball";
+        std::string mask_folder = "./res/bgs_masks";
 
         cv::VideoCapture videos_green[8];
         cv::VideoCapture videos_red[8];
+        std::string masks[8];
         for (int i = 0; i < 8; i++) {
             std::string path = video_folder_green + "/ace_" + std::to_string(i) + ".mp4";
             videos_green[i].open(path);
             path = video_folder_red + "/ace_" + std::to_string(i) + ".mp4";
             videos_red[i].open(path);
+            std::string mask_path = mask_folder + "/mask_ace" + std::to_string(i) + ".jpg";
+            masks[i] = mask_path;
+
         }
 
         tmd::BGSubstractor *bgs_green[8];
         tmd::BGSubstractor *bgs_red[8];
         for (unsigned char i = 0; i < 8; i++) {
-            bgs_green[i] = new tmd::BGSubstractor(&videos_green[i], i);
-            bgs_red[i] = new tmd::BGSubstractor(&videos_red[i], i);
+            bgs_green[i] = new tmd::BGSubstractor(&videos_green[i], cv::imread(masks[i], 0), i);
+            bgs_red[i] = new tmd::BGSubstractor(&videos_red[i], cv::imread(masks[i], 0), i);
         }
 
         int clusterCols = 180;
@@ -94,8 +99,8 @@ namespace tmd {
         tmd::BGSubstractor *bgs_two_green[8];
         tmd::BGSubstractor *bgs_two_red[8];
         for (unsigned char i = 0; i < 8; i++) {
-            bgs_two_green[i] = new tmd::BGSubstractor(&videos_two_green[i], i);
-            bgs_two_red[i] = new tmd::BGSubstractor(&videos_two_red[i], i);
+            bgs_two_green[i] = new tmd::BGSubstractor(&videos_two_green[i], cv::imread(masks[i], 0), i);
+            bgs_two_red[i] = new tmd::BGSubstractor(&videos_two_red[i], cv::imread(masks[i], 0), i);
         }
 
         for (int i = 0; i < 8; i++) {
@@ -307,8 +312,9 @@ namespace tmd {
         const int hist_h = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
         const int hist_w = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
         cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0, 0, 0));
-        normalize(localHist, localHist, 0, histImage.rows, cv::NORM_MINMAX, -1,
+        normalize(localHist, localHist, 0, 1, cv::NORM_MINMAX, -1,
                   cv::Mat());
+        std::cout << localHist << std::endl;
         for (int i = 1; i < TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE; i++) {
             line(histImage, cv::Point(1 * (i - 1),
                                       hist_h - cvRound(localHist.at<float>(i - 1))),

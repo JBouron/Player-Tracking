@@ -1,9 +1,10 @@
 #include <opencv2/core/core.hpp>
 #include "../headers/bgsubstractor.h"
 #include "../headers/debug.h"
+#include "../headers/frame_t.h"
 
 namespace tmd {
-    BGSubstractor::BGSubstractor(cv::VideoCapture *input_video,
+    BGSubstractor::BGSubstractor(cv::VideoCapture *input_video, cv::Mat static_mask,
                                  unsigned char camera_index, float threshold,
                                  int history, float learning_rate) {
         m_bgs = new cv::BackgroundSubtractorMOG2(history, threshold,
@@ -11,6 +12,11 @@ namespace tmd {
         if (m_bgs == NULL) {
             throw std::bad_alloc();
         }
+
+        if(static_mask.channels() != 1){
+            throw std::invalid_argument("The mask must only have 1 dimension : it's a binary image");
+        }
+        m_static_mask = static_mask.clone();
 
         m_learning_rate = learning_rate;
         tmd::debug("BGSubstractor", "BGSubstractor", "bgs created.");
@@ -57,6 +63,15 @@ namespace tmd {
                                         frame->mask_frame,
                           m_learning_rate);
         frame->camera_index = m_camera_index;
+
+        for(int row = 0; row < m_static_mask.rows; row++){
+            for(int col = 0; col < m_static_mask.cols ; col++) {
+                if(m_static_mask.at<uchar>(row, col) == 0){
+                    frame->mask_frame.at<uchar>(row, col) = 0;
+                }
+            }
+        }
+
         m_frame_index++;
         return frame;
     }

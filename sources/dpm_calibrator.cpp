@@ -24,7 +24,7 @@ namespace tmd {
         }
     }
 
-    void DPMCalibrator::calibrate_dpm(std::string video_path, int start_frame,
+    void DPMCalibrator::calibrate_dpm(std::string video_path, std::string mask_path, int start_frame,
                                       int frame_step) {
         cv::VideoCapture capture(video_path);
         if (!capture.isOpened()) {
@@ -47,7 +47,7 @@ namespace tmd {
         const int shift = 0;
 
         DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
-        BGSubstractor bgSubstractor(&capture, 0);
+        BGSubstractor bgSubstractor(&capture, cv::imread(mask_path, 0), 0);
         FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
         int keyboard = 0;

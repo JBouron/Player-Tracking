@@ -24,26 +24,36 @@ namespace tmd {
 
     void BGSubstractorTest::testInvalidVideoInput() {
         tmd::debug("BGSubstractorTest", "testInvalidVideoInput", "Begin test.");
-        tmd::BGSubstractor s(NULL, 0);
+        cv::Mat mat;
+        mat = cv::Mat::zeros(0, 0, CV_32SC1);
+        tmd::BGSubstractor s(NULL, mat, 0, 256, 500, 0);
     }
 
     void BGSubstractorTest::testInvalidCameraIndex1() {
         tmd::debug("BGSubstractorTest", "testInvalidCameraIndex1",
                    "Begin test.");
-        tmd::BGSubstractor s(m_video, -1);
+        cv::Mat mat;
+        mat = cv::Mat::zeros(0, 0, CV_32SC1);
+        tmd::BGSubstractor s(m_video, mat, -1, 256, 500, 0);
     }
 
     void BGSubstractorTest::testInvalidCameraIndex2() {
         tmd::debug("BGSubstractorTest", "testInvalidCameraIndex2", "Begin "
                 "test.");
-        tmd::BGSubstractor s(m_video, 8);
+        cv::Mat mat;
+        mat = cv::Mat::zeros(0, 0, CV_32SC1);
+
+        tmd::BGSubstractor s(m_video, mat, 8, 256, 500, 0);
     }
 
     void BGSubstractorTest::testNextFrameReturnsNullWhenNoFramesLeft() {
         tmd::debug("BGSubstractorTest",
                    "testNextFrameThrowsExceptionWhenNoFramesLeft",
                    "Begin test.");
-        tmd::BGSubstractor bgs(m_video, 0);
+        cv::Mat mat;
+        mat = cv::Mat::zeros(0, 0, CV_32SC1);
+
+        tmd::BGSubstractor bgs(m_video, mat, 0, 256, 500, 0);
         bgs.jump_to_frame(147);
         CPPUNIT_ASSERT(bgs.next_frame() == NULL);
     }
@@ -52,7 +62,10 @@ namespace tmd {
         tmd::debug("BGSubstractorTest",
                    "testNextFrameConstructCorrectFramesCameraIndex",
                    "Begin test.");
-        tmd::BGSubstractor bgs(m_video, 0);
+        cv::Mat mat;
+        mat = cv::Mat::zeros(0, 0, CV_32SC1);
+
+        tmd::BGSubstractor bgs(m_video, mat, 0);
         frame_t *f = bgs.next_frame();
         while (f != NULL) {
             CPPUNIT_ASSERT(f->camera_index == 0);
@@ -65,7 +78,10 @@ namespace tmd {
         tmd::debug("BGSubstractorTest",
                    "testNextFrameConstructCorrectFramesFrameIndex",
                    "Begin test.");
-        tmd::BGSubstractor bgs(m_video, 0);
+        cv::Mat mat;
+        mat = cv::Mat::zeros(0, 0, CV_32SC1);
+
+        tmd::BGSubstractor bgs(m_video, mat, 0);
         int findex = 0;
         frame_t *f = bgs.next_frame();
         int c  = 0;
