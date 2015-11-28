@@ -76,10 +76,10 @@ namespace tmd {
             distances.at<float>(i, 0) = distance;
         }
 
-        float min = distances.at<float>(0);
+        float min = distances.at<float>(0, 0);
         int minIndex = 0;
         for (int i = 1; i < distances.rows; i++) {
-            if (distances.at<float>(i) < min) {
+            if (distances.at<float>(i, 0) < min) {
                 min = distances.at<float>(i, 0);
                 minIndex = i;
             }
@@ -110,13 +110,18 @@ namespace tmd {
     }
 
     cv::Mat FeatureComparator::getMatForPlayerFeature(player_t *player) {
-        if (player->features.body_parts.size() > 0){
-            cv::Mat t;
-            cv::transpose(player->features.torso_color_histogram, t);
-            std::cout << t.rows << std::endl;
-            std::cout << t.cols << std::endl;
-            return t;
+        cv::Mat t;
+        cv::transpose(player->features.torso_color_histogram, t);
+        float max = 0;
+        for (int i = 0 ; i < t.cols ; i ++){
+            if (t.at<float>(0, i) > t.at<float>(0, max)){
+                max = i;
+            }
         }
+        std::cout << "Max in player hist = " << max << std::endl;
+        std::cout << t.rows << std::endl;
+        std::cout << t.cols << std::endl;
+        return t;
     }
 
     void FeatureComparator::writeCentersToFile() {

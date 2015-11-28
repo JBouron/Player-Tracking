@@ -14,13 +14,20 @@ namespace tmd {
         //delete m_detector;
     }
 
+    bool empty_body_parts(player_t* p){
+        return p->features.body_parts.size() == 0;
+    }
+
     void FeaturesExtractor::extractFeaturesFromPlayers(
-            std::vector<player_t *> players) {
+            std::vector<player_t *> &players) {
         size_t size = players.size();
         size_t i = 0;
-        for (i = 0; i < size; i++) {
+        for (i = 0; i < players.size(); i++) {
             extractFeatures(players[i]);
             if (players[i]->features.body_parts.size() == 0){
+                tmd::debug("FeaturesExtractor", "extractFeaturesFromPlayers",
+                           "Player " + std::to_string(i) + " has no body "
+                                                                   "parts !");
                 players.erase(players.begin()+i);
                 i --;
             }
