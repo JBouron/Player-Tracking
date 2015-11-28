@@ -20,6 +20,7 @@ namespace tmd {
         /**
          * Constructor of the Background Substractor.
          * input_video : The video to operate on.
+         * static_mask : The static to use.
          * camera_index : The index of the camera.
          * threshold : Threshold for the color distance to use during
          *              computation.
@@ -27,7 +28,7 @@ namespace tmd {
          * learning_rate : Learning rate of the algorithm, ie. how does the
          * background model changes over time.
          */
-        BGSubstractor(cv::VideoCapture *input_video, unsigned char camera_index,
+        BGSubstractor(cv::VideoCapture *input_video, cv::Mat static_mask, unsigned char camera_index,
                       float threshold = 256, int history = 500,
                       float learning_rate = 0.0);
 
@@ -70,7 +71,7 @@ namespace tmd {
     private:
         cv::Ptr<cv::BackgroundSubtractorMOG2> m_bgs;
         cv::VideoCapture *m_input_video;
-        cv::Mat mCurrentFrame;
+        cv::Mat m_static_mask;
         unsigned char m_camera_index;
         double m_frame_index;
         double m_total_frame_count;
