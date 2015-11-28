@@ -5,10 +5,8 @@
 #include "../headers/manual_player_extractor.h"
 #include "../headers/calibration_tool.h"
 #include "../headers/dpm_player_extractor.h"
-#include "../headers/player_t.h"
 #include "../headers/features_extractor.h"
 #include "../headers/feature_comparator.h"
-#include "../headers/features_t.h"
 #include "../headers/dpm_calibrator.h"
 #include "../headers/pipeline.h"
 void show_body_parts(cv::Mat image, tmd::player_t* p);
@@ -27,20 +25,12 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
-    /*cv::Mat centers = tmd::FeatureComparator::readCentersFromFile(2, 180);
-    cv::Mat center1 = centers.row(0);
-    for (int i = 0; i < 180; i++) {
-        std::cout << center1.at<float>(0, i) << ", ";
-    }
-    return EXIT_SUCCESS;*/
-    tmd::run_demo_feature_comparator();
-    return EXIT_SUCCESS;
-    tmd::Pipeline pipeline("./res/videos/two-red-no-ball/ace_0.mp4","./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", true, true,
-               "./res/pipeline_results/complete_pipeline/alone-green-no-ball/"
-                       "/");
+    tmd::Pipeline pipeline("./res/videos/two-green-ball/ace_0.mp4","./res/bgs_masks/mask_ace0.jpg", 0, ""
+                                   "./res/xmls/person.xml", false, true,
+               "./res/pipeline_results/complete_pipeline/two-green-ball/");
+
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(5000);
+    //pipeline.set_start_frame(0);
 
     pipeline.set_end_frame(1200);
     tmd::frame_t* frame = pipeline.next_frame();
@@ -49,6 +39,23 @@ int main(int argc, char *argv[]) {
         frame = pipeline.next_frame();
     }
     return EXIT_SUCCESS;
+}
+
+void create_training_set(void){
+
+    std::string basic_path = "./res/videos/";
+
+    std::string video_folders[8];
+    std::string mask_folder[8];
+
+    video_folders[0] = basic_path + "alone-green-ball/";
+    video_folders[1] = basic_path + "alone-green-no-ball/";
+    video_folders[2] = basic_path + "alone-red-ball/";
+    video_folders[3] = basic_path + "alone-red-no-ball/";
+    video_folders[4] = basic_path + "two-green-ball/";
+    video_folders[5] = basic_path + "two-green-no-ball/";
+    video_folders[6] = basic_path + "two-red-ball/";
+    video_folders[7] = basic_path + "two-red-no-ball/";
 }
 
 void pipeline_class_tests(void){

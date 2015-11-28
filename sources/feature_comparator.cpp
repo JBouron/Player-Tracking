@@ -106,7 +106,7 @@ namespace tmd {
             }
         }
 
-        return m_centers.row(0);
+        return m_centers.row(max_area_center);
     }
 
     cv::Mat FeatureComparator::getClosestCenter(player_t *player) {

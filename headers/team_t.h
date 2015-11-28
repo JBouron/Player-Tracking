@@ -27,8 +27,8 @@ namespace tmd{
             case TEAM_A :
                 color.val[0] = 0;
                 color.val[1] = 0;
-                color.val[2] = 255;
                 color.val[3] = 255;
+                color.val[2] = 255;
                 break;
 
             case TEAM_B :
