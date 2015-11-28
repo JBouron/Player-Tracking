@@ -6,6 +6,8 @@
 #include "../../headers/feature_comparator.h"
 #include "../../headers/player_extractor.h"
 #include "../../headers/manual_player_extractor.h"
+#include "../../headers/player_t.h"
+#include "../../headers/features_t.h"
 
 namespace tmd {
 
@@ -72,6 +74,35 @@ namespace tmd {
             }
         }
 
+        /*tmd::player_t* green = new player_t;
+        green->features.torso = cv::imread("./res/images/greentorso.jpg");
+        const int rows = green->features.torso.rows;
+        const int cols = green->features.torso.cols;
+        green->features.torso_mask = cv::Mat(rows, cols, CV_8U);
+        for (int l = 0; l < rows; l++) {
+            for (int j = 0; j < cols; j++) {
+                green->features.torso_mask.at<uchar>(l, j) = 255;
+            }
+        }
+
+        tmd::player_t* red = new player_t;
+        red->features.torso = cv::imread("./res/images/redtorso.jpg");
+        const int rowsR = red->features.torso.rows;
+        const int colsR = red->features.torso.cols;
+        red->features.torso_mask = cv::Mat(rowsR, colsR, CV_8U);
+        for (int l = 0; l < rowsR; l++) {
+            for (int j = 0; j < colsR; j++) {
+                red->features.torso_mask.at<uchar>(l, j) = 255;
+            }
+        }
+
+        FeaturesExtractor fe("./res/xmls/person.xml");
+        fe.createHistogram(green);
+        fe.createHistogram(red);
+
+        comparator.addPlayerFeatures(green);
+        comparator.addPlayerFeatures(red);*/
+
         comparator.runClustering();
         comparator.writeCentersToFile();
 
@@ -81,9 +112,9 @@ namespace tmd {
         cv::VideoCapture videos_two_green[8];
         cv::VideoCapture videos_two_red[8];
         for (int i = 0; i < 8; i++) {
-            std::string path = video_folder_two_green + "/ace_" + std::to_string(i) + ".mp4";
+            std::string path = video_folder_green + "/ace_" + std::to_string(i) + ".mp4";
             videos_two_green[i].open(path);
-            path = video_folder_two_red + "/ace_" + std::to_string(i) + ".mp4";
+            path = video_folder_red + "/ace_" + std::to_string(i) + ".mp4";
             videos_two_red[i].open(path);
         }
 
@@ -103,8 +134,8 @@ namespace tmd {
             bgs_two_green[i]->jump_to_frame(600);
         }
 
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 2; j++) {
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < 1; j++) {
                 for (int k = 0; k < 10; k++) {
                     bgs_two_green[i]->next_frame();
                     bgs_two_red[i]->next_frame();
@@ -182,8 +213,8 @@ namespace tmd {
 
     void run_demo_pipeline(void) {
         tmd::player_t *player = new player_t;
-        player->original_image = cv::imread("./res/images/testbug.jpg");
-        cv::Mat mask = cv::imread("./res/demo/playerimagemaskred.jpg");
+        player->original_image = cv::imread("./res/demo/playerimagegreen.jpg");
+        cv::Mat mask = cv::imread("./res/demo/playerimagemaskgreen.jpg");
         const int rows = player->original_image.rows;
         const int cols = player->original_image.cols;
         player->mask_image = cv::Mat(rows, cols, CV_8U);
