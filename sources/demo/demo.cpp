@@ -106,6 +106,7 @@ namespace tmd {
         comparator.runClustering();
         comparator.writeCentersToFile();
 
+
         std::string video_folder_two_green = "./res/videos/two-green-no-ball";
         std::string video_folder_two_red = "./res/videos/two-red-no-ball";
 
@@ -118,9 +119,16 @@ namespace tmd {
             videos_two_red[i].open(path);
         }
 
-        cv::Mat readCenters = comparator.readCentersFromFile(clusterCount, clusterCols);
+        cv::Mat readCenters = tmd::FeatureComparator::readCentersFromFile(clusterCount,
+                                                      clusterCols);
         cv::Mat center1 = readCenters.row(0);
         cv::Mat center2 = readCenters.row(1);
+
+        std::cout << "read from file :" << std::endl;
+        for (int i = 0; i < 180; i++) {
+            std::cout << readCenters.at<float>(0, i) << ", ";
+        }
+        std::cout << std::endl;
 
         tmd::BGSubstractor *bgs_two_green[8];
         tmd::BGSubstractor *bgs_two_red[8];
@@ -164,8 +172,12 @@ namespace tmd {
     void compareCenters(cv::Mat center1, cv::Mat compare) {
         bool equal = true;
         for (int i = 0; i < 180; i++) {
+            std::cout << i << " : " <<  center1.at<float>
+                    (0, i) << " vs " << compare.at<float>(0, i) <<
+            std::endl;
             if (center1.at<float>(0, i) != compare.at<float>(0, i)) {
                 equal = false;
+
             }
         }
         if (equal) {
