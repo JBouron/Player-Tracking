@@ -124,9 +124,6 @@ namespace tmd {
             tmd::debug("Pipeline", "next_frame", "Save frame to : " +
                                                  file_name);
             cv::imwrite(m_output_folder + "/" + file_name, frame->original_frame);
-            file_name = "mask" + std::to_string
-                    (m_bgSubstractor->get_current_frame_index()) + ".jpg";
-            cv::imwrite(m_output_folder + "/" + file_name, frame->mask_frame);
         }
 
         return frame;
@@ -170,7 +167,7 @@ namespace tmd {
     }
 
     team_t Pipeline::get_team_from_center(cv::Mat closest_center){
-        float max_hue_value = 0;
+        /*float max_hue_value = 0;
         int hue_index = 0;
         for (int c = 0 ; c < closest_center.cols ; c ++){
             if (closest_center.at<float>(0, c) > max_hue_value){
@@ -193,6 +190,14 @@ namespace tmd {
         }
         else{
             return TEAM_UNKNOWN;
+        }*/
+
+        cv::Mat red_center = m_featuresComparator->getRedCenter();
+        for (int i = 0 ; i < red_center.cols ; i ++){
+            if (closest_center.at<float>(0, i) != red_center.at<float>(0, i)){
+                return TEAM_B;
+            }
         }
+        return TEAM_A;
     }
 }

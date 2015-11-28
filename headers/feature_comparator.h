@@ -97,6 +97,9 @@ namespace tmd {
          */
         static cv::Mat readCentersFromFile(int rows, int cols);
 
+        cv::Mat getRedCenter(){return m_centers.row(1);}
+        cv::Mat getGreenCenter(){return m_centers.row(1);}
+
     private:
         int m_sampleCols;
         cv::Mat m_data;
