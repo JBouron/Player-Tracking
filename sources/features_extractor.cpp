@@ -152,11 +152,5 @@ namespace tmd {
         cv::Mat histCpy = p->features.torso_color_histogram.clone();
         normalize(histCpy, p->features
                           .torso_color_histogram, 0, 1.0, cv::NORM_MINMAX, -1);
-
-        for (int i = 0 ; i < p->features.torso_color_histogram.rows ; i ++){
-            std::cout << p->features.torso_color_histogram.at<float>(i, 0) <<
-                    ", ";
-        }
-        std::cout << std::endl;
     }
 }

@@ -52,8 +52,8 @@ namespace tmd {
             bgs_green[i]->jump_to_frame(600);
         }
 
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < 1; j++) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
                 for (int k = 0; k < 10; k++) {
                     bgs_green[i]->next_frame();
                     bgs_red[i]->next_frame();
@@ -147,8 +147,8 @@ namespace tmd {
             bgs_two_green[i]->jump_to_frame(600);
         }
 
-        for (int i = 0; i < 1; i++) {
-            for (int j = 0; j < 1; j++) {
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
                 for (int k = 0; k < 10; k++) {
                     bgs_two_green[i]->next_frame();
                     bgs_two_red[i]->next_frame();
@@ -177,9 +177,6 @@ namespace tmd {
     void compareCenters(cv::Mat center1, cv::Mat compare) {
         bool equal = true;
         for (int i = 0; i < 180; i++) {
-            std::cout << i << " : " <<  center1.at<float>
-                    (0, i) << " vs " << compare.at<float>(0, i) <<
-            std::endl;
             if (center1.at<float>(0, i) != compare.at<float>(0, i)) {
                 equal = false;
 

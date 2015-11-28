@@ -87,17 +87,11 @@ namespace tmd {
 
         float max_diff_area = 0.0;
         int max_area_center = 0;
-        for (int i = 0 ; i < sample.cols ; i ++){
-            std::cout << sample.at<float>(0, i) << ", ";
-        }
-        std::cout << std::endl;
         for (int i = 0 ; i < m_centers.rows ; i ++){
             float area = 0;
             for (int h = 0 ; h < m_centers.row(i).cols ; h ++){
-                std::cout << m_centers.row(i).at<float>(0, h) << ", ";
                 area += MIN(m_centers.at<float>(i, h), sample.at<float>(0, h));
             }
-            std::cout << std::endl;
             std::cout << "Area with center " << i << " = " << area <<
                     std::endl;
             if (area > max_diff_area){
