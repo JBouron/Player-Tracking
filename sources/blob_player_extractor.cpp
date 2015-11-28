@@ -2,8 +2,8 @@
 #include <iostream>
 #include "../headers/blob_player_extractor.h"
 
-#define BUFFER_SIZE 20 //MUST BE ODD
-#define MIN_BLOB_SIZE 800 //USED TO FILTER BALL SIZE AND NOISE
+#define BUFFER_SIZE 11 //MUST BE ODD
+#define MIN_BLOB_SIZE 200 //USED TO FILTER BALL SIZE AND NOISE
 
 using namespace cv;
 
@@ -77,7 +77,7 @@ namespace tmd {
                     std::map<int, int>::iterator it = blobSizes.find(label);
 
                     if (it != blobSizes.end()) {
-                        currentSize = it.operator*().second ;
+                        currentSize = it.operator*().second;
                     }
 
                     currentSize++;
@@ -113,7 +113,12 @@ namespace tmd {
                         }
                     }
                 }
-                cv::Rect myRect(minCol - 20, minRow - 20, maxCol - minCol + 40, maxRow - minRow + 40);
+
+                int tpX = (minCol - 20) < 0 ? 0 : (minCol - 20);
+                int tpY = (minRow - 20) < 0 ? 0 : (minRow - 20);
+                int btX = (maxCol + 20) > cols ? cols : (maxCol + 20);
+                int btY = (maxRow + 20) > rows ? rows: (maxRow + 20);
+                cv::Rect myRect(tpX, tpY, btX - tpX , btY - tpY);
                 player->mask_image = frame->mask_frame.clone()(myRect);
                 player->pos_frame = myRect;
                 player->original_image = frame->original_frame.clone()(myRect);

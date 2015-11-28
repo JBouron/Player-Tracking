@@ -79,6 +79,8 @@ namespace tmd{
         void set_end_frame(int frame_index);
 
 
+        void cluster();
+
     private:
         /**
          * Returns the team of the player given the closest_center.
