@@ -33,9 +33,9 @@ int main(int argc, char *argv[]) {
         std::cout << center1.at<float>(0, i) << ", ";
     }
     return EXIT_SUCCESS;*/
-    /*tmd::run_demo_feature_comparator();
-    return EXIT_SUCCESS;*/
-    tmd::Pipeline pipeline("./res/videos/two-red-no-ball/ace_0.mp4", 0, ""
+    tmd::run_demo_feature_comparator();
+    return EXIT_SUCCESS;
+    tmd::Pipeline pipeline("./res/videos/two-red-no-ball/ace_0.mp4","./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/person.xml", true, true,
                "./res/pipeline_results/complete_pipeline/two-red-no-ball/"
                        "/");
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
 }
 
 void pipeline_class_tests(void){
-    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", 0, ""
+    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", "./res/bgs_masks/mask_ace0.jpg", 0, ""
             "./res/xmls/person.xml", false, true, ""
             "./res/pipeline_results/complete_pipeline/alone-green-no-ball/");
 
@@ -96,7 +96,7 @@ void dpm_whole_frame(void){
 
 void extract_player_image(void) {
     cv::VideoCapture capt("./misc/ace_0.mp4");
-    tmd::BGSubstractor bgs(&capt, 0);
+    tmd::BGSubstractor bgs(&capt, cv::imread("./res/bgs_masks/mask_ace0.jpg"), 0);
     int keyboard = 0;
     cv::namedWindow("Extraction");
     tmd::frame_t *frame;
@@ -141,7 +141,7 @@ void show_body_parts(cv::Mat image, tmd::player_t* p) {
 
 void pipeline(void){
     cv::VideoCapture capture("./res/videos/alone-green-no-ball/ace_0.mp4");
-    tmd::BGSubstractor bgSubstractor(&capture, 0);
+    tmd::BGSubstractor bgSubstractor(&capture, cv::imread("./res/bgs_masks/mask_ace0.jpg"), 0);
     tmd::DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
     tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 

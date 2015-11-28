@@ -13,7 +13,7 @@ namespace tmd{
     class CalibrationTool{
     public:
 
-        CalibrationTool(std::string video_folder_path);
+        CalibrationTool(std::string video_folder_path, std::string mask_folder_path);
         ~CalibrationTool();
 
         void calibrate();

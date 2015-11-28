@@ -2,7 +2,7 @@
 #include "../headers/calibration_tool.h"
 
 namespace tmd {
-    CalibrationTool::CalibrationTool(std::string video_folder_path) {
+    CalibrationTool::CalibrationTool(std::string video_folder_path, std::string mask_foler_path) {
         m_video_folder = video_folder_path;
         for (int i = 0; i < 8; i++) {
             std::string path =
@@ -14,7 +14,10 @@ namespace tmd {
                         path);
             }
 
-            m_bgs[i] = new BGSubstractor(m_videos[i], i);
+            std::string mask_path =
+                    mask_foler_path + "mask_ace" + std::to_string(i) + ".jpg";
+
+            m_bgs[i] = new BGSubstractor(m_videos[i], cv::imread(mask_path), i);
 
             m_params[i][THRESHOLD_IDX] = 256;
             m_params[i][HISTORY_SIZE_IDX] = 500;
