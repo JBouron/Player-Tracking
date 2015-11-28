@@ -29,7 +29,7 @@ namespace tmd{
         }
 
         m_featuresComparator = new FeatureComparator(2, 180,
-                             FeatureComparator::readCentersFromFile(1, 180));
+                             FeatureComparator::readCentersFromFile(2, 180));
 
         m_featuresExtractor = new FeaturesExtractor("./res/xmls/person.xml");
 
@@ -168,19 +168,29 @@ namespace tmd{
     }
 
     team_t Pipeline::get_team_from_center(cv::Mat closest_center){
-        int max_hue_value = 0;
+        float max_hue_value = 0;
+        int hue_index = 0;
         for (int c = 0 ; c < closest_center.cols ; c ++){
-            if (closest_center.at<uchar>(0, c) > 10){
-                max_hue_value = c;
-                break;
+            if (closest_center.at<float>(0, c) > max_hue_value){
+                max_hue_value = closest_center.at<float>(0, c);
+                hue_index = c;
             }
         }
-        if (TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW <= max_hue_value &&
-                max_hue_value <= TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH){
-            return TEAM_A;
+        tmd::debug("Pipeline", "get_team_from_center", "max_hue_index = " +
+                std::to_string(hue_index) + " with " + std::to_string
+                                                               (max_hue_value));
+        if (TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW <= hue_index &&
+                hue_index <= TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH){
+            return TEAM_B; // GREEN
+        }
+        else if ((0 <= hue_index && hue_index <=
+                    TMD_FEATURE_EXTRACTOR_TH_RED_HIGH) ||
+            (TMD_FEATURE_EXTRACTOR_TH_RED_LOW <= hue_index && hue_index <= 180))
+        {
+            return TEAM_A; // RED
         }
         else{
-            return TEAM_B;
+            return TEAM_UNKNOWN;
         }
     }
 }

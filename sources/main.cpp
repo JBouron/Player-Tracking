@@ -23,12 +23,14 @@ void pipeline_class_tests(void);
 void dpm_whole_frame(void);
 
 int main(int argc, char *argv[]) {
-    tmd::Pipeline pipeline("./res/videos/two-green-no-ball/ace_0.mp4", 0, ""
+    tmd::run_demo_feature_comparator();
+    return EXIT_SUCCESS;
+    tmd::Pipeline pipeline("./res/videos/two-red-no-ball/ace_0.mp4", 0, ""
                                    "./res/xmls/person.xml", true, true,
-               "./res/pipeline_results/complete_pipeline/two-green-no-ball"
+               "./res/pipeline_results/complete_pipeline/two-red-no-ball"
                        "/");
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(200);
+    pipeline.set_start_frame(340);
 
     pipeline.set_end_frame(1200);
     tmd::frame_t* frame = pipeline.next_frame();
