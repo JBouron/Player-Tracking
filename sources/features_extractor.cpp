@@ -1,5 +1,7 @@
 #include "../headers/features_extractor.h"
 #include "../headers/debug.h"
+#include "../headers/player_t.h"
+#include "../headers/features_t.h"
 
 namespace tmd {
 
@@ -18,6 +20,10 @@ namespace tmd {
         size_t i = 0;
         for (i = 0; i < size; i++) {
             extractFeatures(players[i]);
+            if (players[i]->features.body_parts.size() == 0){
+                players.erase(players.begin()+i);
+                i --;
+            }
         }
     }
 

@@ -10,7 +10,7 @@
  * histograms for the players.
  */
 #define TMD_FEATURE_EXTRACTOR_TH_RED_LOW        (300 / 2.f)
-#define TMD_FEATURE_EXTRACTOR_TH_RED_HIGH       (60 / 2.f)
+#define TMD_FEATURE_EXTRACTOR_TH_RED_HIGH       (30 / 2.f)
 #define TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW      (60 / 2.f)
 #define TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH     (180 / 2.f)
 #define TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW 50
