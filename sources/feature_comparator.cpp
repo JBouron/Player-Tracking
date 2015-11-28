@@ -68,7 +68,7 @@ namespace tmd {
             "Sample doesn't have the same amount of dimensions as the data !");
         }
 
-        Mat distances(m_centers.rows, 1, CV_32F);
+        /*Mat distances(m_centers.rows, 1, CV_32F);
 
         for (int i = 0; i < m_centers.rows; i++) {
             float distance = (float) norm(m_centers.row(i), sample,
@@ -83,9 +83,30 @@ namespace tmd {
                 min = distances.at<float>(i, 0);
                 minIndex = i;
             }
+        }*/
+
+        float max_diff_area = 0.0;
+        int max_area_center = 0;
+        for (int i = 0 ; i < sample.cols ; i ++){
+            std::cout << sample.at<float>(0, i) << ", ";
+        }
+        std::cout << std::endl;
+        for (int i = 0 ; i < m_centers.rows ; i ++){
+            float area = 0;
+            for (int h = 0 ; h < m_centers.row(i).cols ; h ++){
+                std::cout << m_centers.row(i).at<float>(0, h) << ", ";
+                area += MIN(m_centers.at<float>(i, h), sample.at<float>(0, h));
+            }
+            std::cout << std::endl;
+            std::cout << "Area with center " << i << " = " << area <<
+                    std::endl;
+            if (area > max_diff_area){
+                max_diff_area = area;
+                max_area_center = i;
+            }
         }
 
-        return m_centers.row(minIndex);
+        return m_centers.row(0);
     }
 
     cv::Mat FeatureComparator::getClosestCenter(player_t *player) {
@@ -126,10 +147,12 @@ namespace tmd {
 
     void FeatureComparator::writeCentersToFile() {
         std::ofstream clustersFile("./res/cluster/clusterCenters.txt");
+        std::cout << "Write centers " << std::endl;
         if (clustersFile.is_open()) {
             for (int i = 0; i < m_centers.rows; i++) {
                 for (int j = 0; j < m_centers.cols; j++) {
                     Mat row = m_centers.row(i);
+                    std::cout << row.at<float>(j) << ", ";
                     if (j < m_centers.cols - 1) {
                         clustersFile << row.at<float>(j) << " ";
                     }
@@ -137,13 +160,16 @@ namespace tmd {
                         clustersFile << row.at<float>(j);
                     }
                 }
+                std::cout << std::endl;
                 clustersFile << "\n";
             }
+            clustersFile.flush();
             clustersFile.close();
         }
     }
 
     Mat FeatureComparator::readCentersFromFile(int rows, int cols) {
+        std::cout << "readCentersFromFile :" << std::endl;
         std::ifstream clustersFile("./res/cluster/clusterCenters.txt");
         if (! clustersFile.is_open()){
             throw std::runtime_error("Error couldn't load clusterCenters.txt");
@@ -155,8 +181,10 @@ namespace tmd {
                 getline(clustersFile, line);
                 vector<float> floatVector = getFloatsFromString(line);
                 for (int i = 0; i < cols; i++) {
+                    std::cout << floatVector[i] << ", ";
                     toReturn.at<float>(j, i) = floatVector[i];
                 }
+                std::cout << std::endl;
             }
             clustersFile.close();
         }
