@@ -2,13 +2,13 @@
 #include "../headers/dpm_player_extractor.h"
 #include "../headers/debug.h"
 #include "../headers/blob_player_extractor.h"
-#include "../headers/frame_t.h"
 
 namespace tmd {
     Pipeline::Pipeline(std::string video_path, std::string static_mask_path, unsigned char camera_index,
                        std::string model_file, bool dpm, bool save_frames,
                        std::string output_folder) {
         m_video_path = video_path;
+
         m_video = new cv::VideoCapture;
         m_video->open(video_path);
 
