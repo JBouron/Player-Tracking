@@ -123,8 +123,6 @@ namespace tmd {
     }
 
     void FeaturesExtractor::createHistogram(player_t *p) {
-        cv::Mat pcpy = p->mask_image.clone();
-        show_body_partsss(pcpy, p);
         int bins_count = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
         int dim = 1; // One dimension : The hue.
         float **range = new float *[1];

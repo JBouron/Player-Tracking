@@ -27,6 +27,14 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
+    /*cv::Mat centers = tmd::FeatureComparator::readCentersFromFile(2, 180);
+    cv::Mat center1 = centers.row(0);
+    for (int i = 0; i < 180; i++) {
+        std::cout << center1.at<float>(0, i) << ", ";
+    }
+    return EXIT_SUCCESS;*/
+    tmd::run_demo_feature_comparator();
+    return EXIT_SUCCESS;
     tmd::Pipeline pipeline("./res/videos/two-red-no-ball/ace_0.mp4", 0, ""
                                    "./res/xmls/person.xml", true, true,
                "./res/pipeline_results/complete_pipeline/alone-green-no-ball/"
