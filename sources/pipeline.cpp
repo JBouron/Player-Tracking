@@ -1,11 +1,10 @@
 #include "../headers/pipeline.h"
 #include "../headers/dpm_player_extractor.h"
 #include "../headers/debug.h"
-#include "../headers/player_t.h"
-#include "../headers/frame_t.h"
 #include "../headers/blob_player_extractor.h"
+#include "../headers/frame_t.h"
 
-namespace tmd{
+namespace tmd {
     Pipeline::Pipeline(std::string video_path, unsigned char camera_index,
                        std::string model_file, bool dpm, bool save_frames,
                        std::string output_folder) {
@@ -13,7 +12,7 @@ namespace tmd{
         m_video = new cv::VideoCapture;
         m_video->open(video_path);
 
-        if (!m_video->isOpened()){
+        if (!m_video->isOpened()) {
             throw std::invalid_argument("Error couldn't load the video in the"
                                                 " pipeline.");
         }
@@ -21,15 +20,14 @@ namespace tmd{
         m_camera_index = camera_index;
         m_bgSubstractor = new BGSubstractor(m_video, camera_index);
 
-        if (dpm){
+        if (dpm) {
             m_playerExtractor = new DPMPlayerExtractor(model_file);
         }
-        else{
+        else {
             m_playerExtractor = new BlobPlayerExtractor();
         }
 
-        m_featuresComparator = new FeatureComparator(2, 180,
-                             FeatureComparator::readCentersFromFile(1, 180));
+        m_featuresComparator = new FeatureComparator(2, 180, m_featuresComparator->readCentersFromFile(2, 180));
 
         m_featuresExtractor = new FeaturesExtractor("./res/xmls/person.xml");
 
@@ -55,24 +53,24 @@ namespace tmd{
         delete m_featuresComparator;
     }
 
-    frame_t* Pipeline::next_frame() {
+    frame_t *Pipeline::next_frame() {
         m_running = true;
 
-        for (int i = 0 ; i < m_step - 1; i ++){
+        for (int i = 0; i < m_step - 1; i++) {
             delete m_bgSubstractor->next_frame();
         }
 
-        frame_t* frame = m_bgSubstractor->next_frame();
-       	if (frame == NULL){
-		    return NULL;
-	    }
+        frame_t *frame = m_bgSubstractor->next_frame();
+        if (frame == NULL) {
+            return NULL;
+        }
 
-        std::vector<tmd::player_t*> players =
+        std::vector<tmd::player_t *> players =
                 m_playerExtractor->extract_player_from_frame(frame);
 
         tmd::debug("Pipeline", "next_frame", "Frame " + std::to_string
-            (m_bgSubstractor->get_current_frame_index()) + " : " +
-                std::to_string(players.size()) + " players detected");
+                (m_bgSubstractor->get_current_frame_index()) + " : " +
+                                             std::to_string(players.size()) + " players detected");
 
         m_featuresExtractor->extractFeaturesFromPlayers(players);
 
@@ -81,27 +79,30 @@ namespace tmd{
         const int shift = 0;
 
 
-
         size_t player_count = players.size();
-        for (int i = 0 ; i < player_count ; i ++){
-            cv::Mat result = m_featuresComparator->getClosestCenter(players[i]);
-            players[i]->team = get_team_from_center(result);
-            tmd::debug("Pipeline", "next_frame", "Player " + std::to_string(i)
-                          + " detected with team " + get_team_string
-                         (players[i]->team));
+        for (int i = 0; i < player_count; i++) {
+            if (players[i]->features.body_parts.size() != 0) {
+                cv::Mat result = m_featuresComparator->getClosestCenter(players[i]);
+                players[i]->team = get_team_from_center(result);
+                tmd::debug("Pipeline", "next_frame", "Player " + std::to_string(i)
+                                                     + " detected with team " + get_team_string
+                                                             (players[i]->team));
+            }
 
             cv::rectangle(frame->original_frame, players[i]->pos_frame,
                           get_team_color(players[i]->team), thickness,
                           line_type, shift);
-
             delete players[i];
         }
-        if (m_save){
+        if (m_save) {
             std::string file_name = "frame" + std::to_string
-               (m_bgSubstractor->get_current_frame_index()) + ".jpg";
+                    (m_bgSubstractor->get_current_frame_index()) + ".jpg";
             tmd::debug("Pipeline", "next_frame", "Save frame to : " +
-                    file_name);
-            cv::imwrite(m_output_folder+"/"+file_name, frame->original_frame);
+                                                 file_name);
+            cv::imwrite(m_output_folder + "/" + file_name, frame->original_frame);
+            file_name = "mask" + std::to_string
+                    (m_bgSubstractor->get_current_frame_index()) + ".jpg";
+            cv::imwrite(m_output_folder + "/" + file_name, frame->mask_frame);
         }
 
         return frame;
@@ -116,8 +117,8 @@ namespace tmd{
 
     void Pipeline::set_dpm_properties(float overlapping_threshold,
                                       float score_threshold) {
-        if (m_using_dpm){
-            DPMPlayerExtractor *playerExtractor = (DPMPlayerExtractor*)
+        if (m_using_dpm) {
+            DPMPlayerExtractor *playerExtractor = (DPMPlayerExtractor *)
                     m_featuresExtractor;
 
             playerExtractor->set_overlapping_threshold(overlapping_threshold);
@@ -130,34 +131,38 @@ namespace tmd{
     }
 
     void Pipeline::set_start_frame(int frame_index) {
-        if (!m_running){
+        if (!m_running) {
             tmd::debug("Pipeline", "set_frame_step_size", "Setting starting "
-                    "frame to " + std::to_string(frame_index));
+                                                                  "frame to " + std::to_string(frame_index));
             m_start = frame_index;
             m_bgSubstractor->jump_to_frame(frame_index);
         }
     }
 
     void Pipeline::set_end_frame(int frame_index) {
-        if (!m_running){
+        if (!m_running) {
             m_end = frame_index;
         }
     }
 
-    team_t Pipeline::get_team_from_center(cv::Mat closest_center){
+    team_t Pipeline::get_team_from_center(cv::Mat closest_center) {
         int max_hue_value = 0;
-        for (int c = 0 ; c < closest_center.cols ; c ++){
-            if (closest_center.at<uchar>(0, c) == 1.0){
+        for (int c = 0; c < closest_center.cols; c++) {
+            if (closest_center.at<uchar>(0, c) > max_hue_value) {
                 max_hue_value = c;
                 break;
             }
         }
         if (TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW <= max_hue_value &&
-                max_hue_value <= TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH){
+            max_hue_value <= TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH) {
             return TEAM_A;
         }
-        else{
+        else if (TMD_FEATURE_EXTRACTOR_TH_RED_LOW <= max_hue_value &&
+                 max_hue_value <= TMD_FEATURE_EXTRACTOR_TH_RED_HIGH) {
             return TEAM_B;
+        }
+        else {
+            return TEAM_UNKNOWN;
         }
     }
 }

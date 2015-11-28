@@ -38,6 +38,13 @@ namespace tmd{
                 color.val[3] = 255;
                 break;
 
+            case TEAM_UNKNOWN:
+                color.val[0] = 0;
+                color.val[1] = 0;
+                color.val[2] = 0;
+                color.val[3] = 255;
+                break;
+
             default:
                 color.val[0] = 0;
                 color.val[1] = 0;
