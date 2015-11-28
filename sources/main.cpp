@@ -27,9 +27,7 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
-    tmd::run_demo_feature_comparator();
-    return EXIT_SUCCESS;
-    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", 0, ""
+    tmd::Pipeline pipeline("./res/videos/two-red-no-ball/ace_0.mp4", 0, ""
                                    "./res/xmls/person.xml", true, true,
                "./res/pipeline_results/complete_pipeline/alone-green-no-ball/"
                        "/");
@@ -66,7 +64,6 @@ void pipeline_class_tests(void){
             delete frame;
             frame = pipeline.next_frame();
         }
-
     }
     cv::destroyWindow(win_name);
     delete frame;
