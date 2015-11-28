@@ -3,6 +3,7 @@
 
 #include "features_t.h"
 #include "player_t.h"
+#include "features_extractor.h" // Threshold values
 
 namespace tmd {
 
@@ -97,7 +98,7 @@ namespace tmd {
          */
         static cv::Mat readCentersFromFile(int rows, int cols);
 
-        cv::Mat getRedCenter(){return m_centers.row(1);}
+        cv::Mat getRedCenter(){return m_centers.row(0);}
         cv::Mat getGreenCenter(){return m_centers.row(1);}
 
     private:
@@ -109,6 +110,8 @@ namespace tmd {
         int m_attempts;
         int m_flags;
         cv::Mat m_centers;
+        int m_redCenterIndex;
+        int m_greenCenterIndex;
 
         /**
          * Returns the Mat corresponding to a player's features.
@@ -119,6 +122,11 @@ namespace tmd {
          * Returns a vector<float> of all of the floats contained in a string.
          */
         static std::vector<float> getFloatsFromString(std::string inputString);
+
+        /**
+         * Make the mapping between colors and centers.
+         */
+        void computeColorCentersIndexes();
     };
 }
 
