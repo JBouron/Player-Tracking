@@ -9,12 +9,13 @@
 /** Defines of the different threshold values used to create colors
  * histograms for the players.
  */
-#define TMD_FEATURE_EXTRACTOR_TH_RED_LOW        (150)
-#define TMD_FEATURE_EXTRACTOR_TH_RED_HIGH       (15)
+
+#define TMD_FEATURE_EXTRACTOR_TH_RED_LOW        (120)
+#define TMD_FEATURE_EXTRACTOR_TH_RED_HIGH       (20)
 #define TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW      (25)
 #define TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH     (90)
-#define TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW 50
-#define TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW      50
+#define TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW 30
+#define TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW      30
 #define TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE    180
 
 namespace tmd {
@@ -56,6 +57,7 @@ namespace tmd {
          *      - player : The player to extract features from.
          */
         void extractFeatures(player_t *player);
+        void createHistogram(player_t *p);
 
     private:
         tmd::DPMDetector m_detector;
@@ -85,7 +87,6 @@ namespace tmd {
          * Create the color histogram of the player given in parameter. The
          * histogram is then stored in the player features field.
          */
-        void createHistogram(player_t *p);
 
         /**
          * Returns true if the given color is within the thresholds defined
