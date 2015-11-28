@@ -5,7 +5,7 @@
 #include "../headers/frame_t.h"
 
 namespace tmd {
-    Pipeline::Pipeline(std::string video_path, unsigned char camera_index,
+    Pipeline::Pipeline(std::string video_path, std::string static_mask_path, unsigned char camera_index,
                        std::string model_file, bool dpm, bool save_frames,
                        std::string output_folder) {
         m_video_path = video_path;
@@ -18,7 +18,8 @@ namespace tmd {
         }
 
         m_camera_index = camera_index;
-        m_bgSubstractor = new BGSubstractor(m_video, camera_index);
+        cv::Mat mask = cv::imread(static_mask_path,0);
+        m_bgSubstractor = new BGSubstractor(m_video, mask, camera_index);
 
         if (dpm) {
             m_playerExtractor = new DPMPlayerExtractor(model_file);

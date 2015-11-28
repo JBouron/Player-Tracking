@@ -9,6 +9,7 @@
 /** Defines of the different threshold values used to create colors
  * histograms for the players.
  */
+
 #define TMD_FEATURE_EXTRACTOR_TH_RED_LOW        (120)
 #define TMD_FEATURE_EXTRACTOR_TH_RED_HIGH       (20)
 #define TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW      (25)
