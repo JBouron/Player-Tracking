@@ -27,9 +27,11 @@ namespace tmd {
         m_attempts = attempts;
         m_flags = flags;
         m_centers = centers;
+        computeColorCentersIndexes();
     }
 
-    FeatureComparator::FeatureComparator(int clusterCount, int sampleCols, cv::Mat centers) {
+    FeatureComparator::FeatureComparator(int clusterCount, int sampleCols,
+                                         cv::Mat centers) {
         m_data = cv::Mat(0, sampleCols, CV_32F);
         m_clusterCount = clusterCount;
         m_labels = cv::Mat(m_data);
@@ -39,6 +41,7 @@ namespace tmd {
         m_flags = cv::KMEANS_PP_CENTERS;
         m_centers = centers;
         m_sampleCols = sampleCols;
+        computeColorCentersIndexes();
     }
 
     FeatureComparator::~FeatureComparator() {
@@ -51,12 +54,13 @@ namespace tmd {
         m_labels = m_data;
         kmeans(m_data, m_clusterCount, m_labels, m_termCriteria, m_attempts,
                m_flags, m_centers);
+        computeColorCentersIndexes();
     }
 
     void FeatureComparator::addSampleToData(cv::Mat sample) {
         if (m_sampleCols != sample.cols || sample.rows != 1) {
             throw std::invalid_argument(
-                    "Sample doesn't have the same amount of dimensions as the data !");
+            "Sample doesn't have the same amount of dimensions as the data !");
         }
 
         m_data.push_back(sample);
@@ -67,23 +71,6 @@ namespace tmd {
             throw std::invalid_argument(
             "Sample doesn't have the same amount of dimensions as the data !");
         }
-
-        /*Mat distances(m_centers.rows, 1, CV_32F);
-
-        for (int i = 0; i < m_centers.rows; i++) {
-            float distance = (float) norm(m_centers.row(i), sample,
-                                          NORM_L2);
-            distances.at<float>(i, 0) = distance;
-        }
-
-        float min = distances.at<float>(0, 0);
-        int minIndex = 0;
-        for (int i = 1; i < distances.rows; i++) {
-            if (distances.at<float>(i, 0) < min) {
-                min = distances.at<float>(i, 0);
-                minIndex = i;
-            }
-        }*/
 
         float max_diff_area = 0.0;
         int max_area_center = 0;
@@ -201,5 +188,30 @@ namespace tmd {
 
     cv::Mat FeatureComparator::getData() {
         return m_data;
+    }
+
+    void FeatureComparator::computeColorCentersIndexes(){
+        if (m_centers.rows == 0){
+            return;
+        }
+
+        float max_value = 0;
+        int max_hue = 0;
+        for (int i = 0 ; i < m_centers.row(0).cols ; i ++) {
+            if (m_centers.at<float>(0, i) > max_value) {
+                max_value = m_centers.at<float>(0, i);
+                max_hue = i;
+            }
+        }
+
+        if (TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW <= max_hue && max_hue <=
+                                         TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH){
+            m_greenCenterIndex = 0;
+            m_redCenterIndex = 1;
+        }
+        else{
+            m_greenCenterIndex = 1;
+            m_redCenterIndex = 0;
+        }
     }
 }
