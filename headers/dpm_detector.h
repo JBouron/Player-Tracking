@@ -98,6 +98,8 @@ namespace tmd{
          */
         void clipBoxes(player_t* player);
 
+        void shrinkBox(player_t* player);
+
         /* Instance of the LatentSvmDetector used to extract parts. */
         CvLatentSvmDetector* m_detector;
         /* Number of threads used during the process. */
