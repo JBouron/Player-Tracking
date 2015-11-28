@@ -40,9 +40,9 @@ int main(int argc, char *argv[]) {
 }
 
 void pipeline_class_tests(void){
-    tmd::Pipeline pipeline("", 0, ""
-            "./res/xmls/person.xml", true, true,
-            "");
+    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", 0, ""
+            "./res/xmls/person.xml", false, true, ""
+            "./res/pipeline_results/complete_pipeline/alone-green-no-ball/");
 
     pipeline.set_frame_step_size(10);
     pipeline.set_start_frame(0);
