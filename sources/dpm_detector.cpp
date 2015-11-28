@@ -2,6 +2,7 @@
 #include "../headers/dpm_detector.h"
 #include "../headers/debug.h"
 #include "../headers/player_t.h"
+#include "../headers/features_t.h"
 
 namespace tmd {
     DPMDetector::DPMDetector(std::string model_file) {
@@ -28,10 +29,12 @@ namespace tmd {
             throw std::invalid_argument("Error in DPMDetector : NULL pointer in"
                                                 " extractBodyParts method.");
         }
-        IplImage playerImage = player->original_image; // Bug in CLion, ignore it.
+        IplImage playerImage = player->original_image;
         player->features.body_parts = getPartBoxesForImage(&playerImage);
         // Clip the boxes if needed.
         clipBoxes(player);
+        // Shrink the player box to the minimum size.
+        shrinkBox(player);
         // If there is a player on the image, we compute its torso box.
         if (player->features.body_parts.size() > 0) {
             extractTorsoForPlayer(player);
@@ -285,7 +288,7 @@ namespace tmd {
                            "searchObjectThreshold finished with error.");
                 if (error == LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT) {
                     tmd::debug("DPMDetector", "preparePartDetection",
-                               "error is LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT.");
+                           "error is LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT.");
                 }
                 return LATENT_SVM_SEARCH_OBJECT_FAILED;
             }
@@ -371,5 +374,29 @@ namespace tmd {
                 part->height = player->original_image.rows - part->y - 1;
             }
         }
+    }
+
+    void DPMDetector::shrinkBox(player_t* player){
+        int min_x = std::numeric_limits<int>::max();
+        int min_y = std::numeric_limits<int>::max();
+        int max_x = 0;
+        int max_y = 0;
+
+        for (int i = 0 ; i < player->features.body_parts.size() ; i ++){
+            cv::Rect part = player->features.body_parts[i];
+            if (part.x < min_x) min_x = part.x;
+            if (part.y < min_y) min_y = part.y;
+            if (part.x + part.width > max_x) max_x = part.x + part.width;
+            if (part.y + part.height > max_y) max_y = part.y + part.height;
+        }
+        cv::Rect shrank_box;
+        shrank_box.x = min_x;
+        shrank_box.y = min_y;
+        shrank_box.width = max_x;
+        shrank_box.height = max_y;
+        player->pos_frame.x += min_x;
+        player->pos_frame.y += min_y;
+        player->pos_frame.width = max_x - min_x;
+        player->pos_frame.height = max_y - min_y;
     }
 }
