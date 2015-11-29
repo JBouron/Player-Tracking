@@ -64,10 +64,7 @@ namespace tmd {
         float th_green_high = TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH;
         float th_sat_low = TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW;
         float th_val_low = TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW;
-        /*tmd::debug("FeaturesExtractor", "isValid", "h = " + std::to_string(h)
-                                                   + "s = " + std::to_string(s)
-                                                   + "v = " +
-                                                   std::to_string(v));*/
+
         return ((th_red_low < h && h <= 180) || (0 <= h && h <= th_red_high) ||
                 (th_green_low <= h && h <= th_green_high)) &&
                (th_sat_low <= s) && (th_val_low <= v);
@@ -93,31 +90,6 @@ namespace tmd {
         }
     }
 
-    void show_body_partsss(cv::Mat image, tmd::player_t *p) {
-        std::vector<cv::Rect> parts = p->features.body_parts;
-        CvScalar color;
-        color.val[0] = 255;
-        color.val[1] = 0;
-        color.val[2] = 255;
-        color.val[3] = 255;
-        CvScalar torso;
-        torso.val[0] = 255;
-        torso.val[1] = 255;
-        torso.val[2] = 0;
-        torso.val[3] = 255;
-        const int thickness = 1;
-        const int line_type = 8; // 8 connected line.
-        const int shift = 0;
-        CvRect r;
-        r.x = p->features.torso_pos.x;
-        r.y = p->features.torso_pos.y;
-        r.width = p->features.torso_pos.width;
-        r.height = p->features.torso_pos.height;
-        cv::rectangle(image, r, color, thickness, line_type, shift);
-        cv::imshow("Body parts", image);
-        cv::waitKey(0);
-    }
-
     void FeaturesExtractor::createHistogram(player_t *p) {
         int bins_count = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
         int dim = 1; // One dimension : The hue.
@@ -132,8 +104,6 @@ namespace tmd {
         cv::Mat images[] = {imagechannels[0]};
         std::vector<cv::Mat> maskchannels;
         cv::split(p->features.torso_mask, maskchannels);
-        /*cv::imshow("Debug mask", maskchannels[0]);
-        cv::waitKey(0);*/
         tmd::debug("FeaturesExtractor", "createHistogram",
                    "p->features.torso.channels() = " +
                    std::to_string(p->features.torso.channels()));
