@@ -76,6 +76,7 @@ namespace tmd {
         double m_frame_index;
         double m_total_frame_count;
         float m_learning_rate;
+        bool m_start;
     };
 }
 
