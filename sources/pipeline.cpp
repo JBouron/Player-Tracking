@@ -5,9 +5,9 @@
 #include "../headers/frame_t.h"
 
 namespace tmd {
-    Pipeline::Pipeline(std::string video_path, std::string static_mask_path, unsigned char camera_index,
-                       std::string model_file, bool dpm, bool save_frames,
-                       std::string output_folder) {
+    Pipeline::Pipeline(std::string video_path, std::string static_mask_path,
+                       unsigned char camera_index, std::string model_file,
+                       bool dpm, bool save_frames, std::string output_folder) {
         m_video_path = video_path;
         m_video = new cv::VideoCapture;
         m_video->open(video_path);
@@ -95,7 +95,7 @@ namespace tmd {
 
         tmd::debug("Pipeline", "next_frame", "Frame " + std::to_string
                 (m_bgSubstractor->get_current_frame_index()) + " : " +
-                                             std::to_string(players.size()) + " players detected");
+                         std::to_string(players.size()) + " players detected");
 
         m_featuresExtractor->extractFeaturesFromPlayers(players);
 
@@ -103,28 +103,22 @@ namespace tmd {
         const int line_type = 8; // 8 connected line.
         const int shift = 0;
 
+        m_featuresComparator->detectTeamForPlayers(players);
 
         size_t player_count = players.size();
         for (int i = 0; i < player_count; i++) {
-            if (players[i]->features.body_parts.size() != 0) {
-                cv::Mat result = m_featuresComparator->getClosestCenter(players[i]);
-                players[i]->team = get_team_from_center(result);
-                tmd::debug("Pipeline", "next_frame", "Player " + std::to_string(i)
-                                                     + " detected with team " + get_team_string
-                                                             (players[i]->team));
-            }
-
             cv::rectangle(frame->original_frame, players[i]->pos_frame,
                           get_team_color(players[i]->team), thickness,
                           line_type, shift);
             delete players[i];
         }
+
         if (m_save) {
             std::string file_name = "frame" + std::to_string
                     (m_bgSubstractor->get_current_frame_index()) + ".jpg";
             tmd::debug("Pipeline", "next_frame", "Save frame to : " +
                                                  file_name);
-            cv::imwrite(m_output_folder + "/" + file_name, frame->original_frame);
+            cv::imwrite(m_output_folder+ "/" +file_name,frame->original_frame);
         }
 
         return frame;
@@ -155,7 +149,7 @@ namespace tmd {
     void Pipeline::set_start_frame(int frame_index) {
         if (!m_running) {
             tmd::debug("Pipeline", "set_frame_step_size", "Setting starting "
-                                                                  "frame to " + std::to_string(frame_index));
+                                  "frame to " + std::to_string(frame_index));
             m_start = frame_index;
             m_bgSubstractor->jump_to_frame(frame_index);
         }
@@ -165,40 +159,5 @@ namespace tmd {
         if (!m_running) {
             m_end = frame_index;
         }
-    }
-
-    team_t Pipeline::get_team_from_center(cv::Mat closest_center){
-        /*float max_hue_value = 0;
-        int hue_index = 0;
-        for (int c = 0 ; c < closest_center.cols ; c ++){
-            if (closest_center.at<float>(0, c) > max_hue_value){
-                max_hue_value = closest_center.at<float>(0, c);
-                hue_index = c;
-            }
-        }
-        tmd::debug("Pipeline", "get_team_from_center", "max_hue_index = " +
-                std::to_string(hue_index) + " with " + std::to_string
-                                                               (max_hue_value));
-        if (TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW <= hue_index &&
-                hue_index <= TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH){
-            return TEAM_B; // GREEN
-        }
-        else if ((0 <= hue_index && hue_index <=
-                    TMD_FEATURE_EXTRACTOR_TH_RED_HIGH) ||
-            (TMD_FEATURE_EXTRACTOR_TH_RED_LOW <= hue_index && hue_index <= 180))
-        {
-            return TEAM_A; // RED
-        }
-        else{
-            return TEAM_UNKNOWN;
-        }*/
-
-        cv::Mat red_center = m_featuresComparator->getRedCenter();
-        for (int i = 0 ; i < red_center.cols ; i ++){
-            if (closest_center.at<float>(0, i) != red_center.at<float>(0, i)){
-                return TEAM_B;
-            }
-        }
-        return TEAM_A;
     }
 }
