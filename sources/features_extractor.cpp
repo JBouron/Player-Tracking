@@ -103,8 +103,6 @@ namespace tmd {
         cv::Mat images[] = {imagechannels[0]};
         std::vector<cv::Mat> maskchannels;
         cv::split(p->features.torso_mask, maskchannels);
-        /*cv::imshow("Debug mask", maskchannels[0]);
-        cv::waitKey(0);*/
         tmd::debug("FeaturesExtractor", "createHistogram",
                    "p->features.torso.channels() = " +
                            std::to_string(p->features.torso.channels()));
