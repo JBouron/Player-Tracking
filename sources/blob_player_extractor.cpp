@@ -1,9 +1,10 @@
 #include <set>
 #include <iostream>
 #include "../headers/blob_player_extractor.h"
+#include "../headers/player_t.h"
 
-#define BUFFER_SIZE 11 //MUST BE ODD
-#define MIN_BLOB_SIZE 200 //USED TO FILTER BALL SIZE AND NOISE
+#define BUFFER_SIZE 16 //MUST BE ODD
+#define MIN_BLOB_SIZE 100 //USED TO FILTER BALL SIZE AND NOISE
 
 using namespace cv;
 
@@ -121,6 +122,7 @@ namespace tmd {
                 cv::Rect myRect(tpX, tpY, btX - tpX , btY - tpY);
                 player->mask_image = frame->mask_frame.clone()(myRect);
                 player->pos_frame = myRect;
+                player->team = TEAM_UNKNOWN;
                 player->original_image = frame->original_frame.clone()(myRect);
                 player->frame_index = frame->frame_index;
                 players.push_back(player);

@@ -5,10 +5,8 @@
 #include "../headers/manual_player_extractor.h"
 #include "../headers/calibration_tool.h"
 #include "../headers/dpm_player_extractor.h"
-#include "../headers/player_t.h"
 #include "../headers/features_extractor.h"
 #include "../headers/feature_comparator.h"
-#include "../headers/features_t.h"
 #include "../headers/dpm_calibrator.h"
 #include "../headers/pipeline.h"
 void show_body_parts(cv::Mat image, tmd::player_t* p);
@@ -35,7 +33,7 @@ int main(int argc, char *argv[]) {
                "./res/pipeline_results/complete_pipeline/alone-red-no-ball/"
                        "/");
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(200);
+    //pipeline.set_start_frame(0);
 
     pipeline.set_end_frame(1200);
     tmd::frame_t* frame = pipeline.next_frame();
@@ -44,6 +42,23 @@ int main(int argc, char *argv[]) {
         frame = pipeline.next_frame();
     }
     return EXIT_SUCCESS;
+}
+
+void create_training_set(void){
+
+    std::string basic_path = "./res/videos/";
+
+    std::string video_folders[8];
+    std::string mask_folder[8];
+
+    video_folders[0] = basic_path + "alone-green-ball/";
+    video_folders[1] = basic_path + "alone-green-no-ball/";
+    video_folders[2] = basic_path + "alone-red-ball/";
+    video_folders[3] = basic_path + "alone-red-no-ball/";
+    video_folders[4] = basic_path + "two-green-ball/";
+    video_folders[5] = basic_path + "two-green-no-ball/";
+    video_folders[6] = basic_path + "two-red-ball/";
+    video_folders[7] = basic_path + "two-red-no-ball/";
 }
 
 void pipeline_class_tests(void){
