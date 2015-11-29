@@ -168,7 +168,8 @@ namespace tmd {
     }
 
     team_t Pipeline::get_team_from_center(cv::Mat closest_center){
-        /*float max_hue_value = 0;
+        /*
+        float max_hue_value = 0;
         int hue_index = 0;
         for (int c = 0 ; c < closest_center.cols ; c ++){
             if (closest_center.at<float>(0, c) > max_hue_value){
