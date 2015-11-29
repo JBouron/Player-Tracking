@@ -15,10 +15,6 @@ namespace tmd {
         //delete m_detector;
     }
 
-    bool empty_body_parts(player_t* p){
-        return p->features.body_parts.size() == 0;
-    }
-
     void FeaturesExtractor::extractFeaturesFromPlayers(
             std::vector<player_t *> &players) {
         size_t size = players.size();
@@ -71,7 +67,6 @@ namespace tmd {
                                                    + "s = " + std::to_string(s)
                                                    + "v = " +
                                                    std::to_string(v));*/
-        return true;
         return ((th_red_low < h && h <= 180) || (0 <= h && h <= th_red_high) ||
                 (th_green_low <= h && h <= th_green_high)) &&
                (th_sat_low <= s) && (th_val_low <= v);
