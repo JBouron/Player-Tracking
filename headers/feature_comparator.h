@@ -129,13 +129,13 @@ namespace tmd {
          * Gets the closest center of the clusters for a sample.
          * Returns the index of the closest center in m_centers.
          */
-        int getClosestCenter(cv::Mat sample);
+        double getClosestCenter(cv::Mat sample);
 
         /**
          * Gets the closest center of the clusters for a player.
          * Returns the index of the closest center in m_centers.
          */
-        int getClosestCenter(player_t *player);
+        double getClosestCenter(player_t *player);
     };
 }
 

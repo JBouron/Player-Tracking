@@ -9,6 +9,8 @@
 #include "../headers/feature_comparator.h"
 #include "../headers/dpm_calibrator.h"
 #include "../headers/pipeline.h"
+#include "../headers/training_set_creator.h"
+
 void show_body_parts(cv::Mat image, tmd::player_t* p);
 void extract_player_image(void);
 
@@ -30,6 +32,7 @@ int main(int argc, char *argv[]) {
                                    "./res/xmls/person.xml", true, true,
                "./res/dpm-samples/alone-green-no-ball/"
                        "/");
+
     pipeline.set_frame_step_size(10);
     pipeline.set_start_frame(150);
 

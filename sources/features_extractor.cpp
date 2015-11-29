@@ -7,7 +7,7 @@
 namespace tmd {
 
     FeaturesExtractor::FeaturesExtractor(std::string model_file) : m_detector
-                                                               (model_file) {
+                                                                           (model_file) {
     }
 
     FeaturesExtractor::~FeaturesExtractor() {
@@ -21,12 +21,12 @@ namespace tmd {
         size_t i = 0;
         for (i = 0; i < players.size(); i++) {
             extractFeatures(players[i]);
-            if (players[i]->features.body_parts.size() == 0){
+            if (players[i]->features.body_parts.size() == 0) {
                 tmd::debug("FeaturesExtractor", "extractFeaturesFromPlayers",
                            "Player " + std::to_string(i) + " has no body "
-                                                                   "parts !");
-                players.erase(players.begin()+i);
-                i --;
+                                   "parts !");
+                players.erase(players.begin() + i);
+                i--;
             }
         }
     }
@@ -34,7 +34,7 @@ namespace tmd {
     void FeaturesExtractor::extractFeatures(player_t *player) {
         if (player == NULL) {
             throw std::invalid_argument("Error : Null pointer in "
-                                        "FeaturesExtractor::extractFeatures()");
+                                                "FeaturesExtractor::extractFeatures()");
         }
         extractBodyParts(player);
         if (player->features.body_parts.size() > 0) {
@@ -47,7 +47,8 @@ namespace tmd {
     void FeaturesExtractor::extractBodyParts(player_t *p) {
         m_detector.extractBodyParts(p);
         tmd::debug("FeaturesExtractor", "extractBodyParts", "Result : " +
-                std::to_string(p->features.body_parts.size()) + "body parts.");
+                                                            std::to_string(p->features.body_parts.size()) +
+                                                            "body parts.");
     }
 
     void FeaturesExtractor::convertToHSV(player_t *p) {
@@ -56,7 +57,7 @@ namespace tmd {
         p->features.torso = hsv_tmp;
     }
 
-    bool FeaturesExtractor::withinThresholds(double h, double s, double v){
+    bool FeaturesExtractor::withinThresholds(double h, double s, double v) {
         float th_red_low = TMD_FEATURE_EXTRACTOR_TH_RED_LOW;
         float th_red_high = TMD_FEATURE_EXTRACTOR_TH_RED_HIGH;
         float th_green_low = TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW;
@@ -78,12 +79,12 @@ namespace tmd {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 cv::Vec3b color = img.at<cv::Vec3b>(i, j);
-                bool in_mask = p->features.torso_mask.at<uchar>(i,j) > 127;
-                if (withinThresholds(color[0], color[1], color[2]) && in_mask){
-                    p->features.torso_mask.at<uchar>(i,j) = 255;
+                bool in_mask = p->features.torso_mask.at<uchar>(i, j) > 127;
+                if (withinThresholds(color[0], color[1], color[2]) && in_mask) {
+                    p->features.torso_mask.at<uchar>(i, j) = 255;
                 }
-                else{
-                    p->features.torso_mask.at<uchar>(i,j) = 0;
+                else {
+                    p->features.torso_mask.at<uchar>(i, j) = 0;
                 }
             }
         }
@@ -105,10 +106,10 @@ namespace tmd {
         cv::split(p->features.torso_mask, maskchannels);
         tmd::debug("FeaturesExtractor", "createHistogram",
                    "p->features.torso.channels() = " +
-                           std::to_string(p->features.torso.channels()));
+                   std::to_string(p->features.torso.channels()));
         tmd::debug("FeaturesExtractor", "createHistogram",
                    "p->features.torso_mask.channels() = " +
-                           std::to_string(p->features.torso_mask.channels()));
+                   std::to_string(p->features.torso_mask.channels()));
         cv::calcHist(&images[0], 1, 0, maskchannels[0],
                      p->features.torso_color_histogram, dim, &bins_count,
                      (const float **) range,
@@ -116,6 +117,6 @@ namespace tmd {
                      accumulate);
         cv::Mat histCpy = p->features.torso_color_histogram.clone();
         normalize(histCpy, p->features
-                          .torso_color_histogram, 0, 1.0, cv::NORM_MINMAX, -1);
+                .torso_color_histogram, 0, 1.0, cv::NORM_MINMAX, -1);
     }
 }
