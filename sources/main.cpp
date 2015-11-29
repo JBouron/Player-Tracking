@@ -9,6 +9,8 @@
 #include "../headers/feature_comparator.h"
 #include "../headers/dpm_calibrator.h"
 #include "../headers/pipeline.h"
+#include "../headers/training_set_creator.h"
+
 void show_body_parts(cv::Mat image, tmd::player_t* p);
 void extract_player_image(void);
 
@@ -25,11 +27,34 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
-    tmd::Pipeline pipeline("./res/videos/alone-red-no-ball/ace_0.mp4",""
+    /*
+    tmd::TrainingSetCreator trainingSetCreator("./res/videos/alone-red-no-ball/ace_0.mp4",""
+            "./res/bgs_masks/mask_ace0.jpg", 0, ""
+            "./res/xmls/gperson.xml", false, true,
+            "./res/pipeline_results/complete_pipeline/alone-red-no-ball/");
+
+    trainingSetCreator.set_frame_step_size(60);
+
+    tmd::frame_t* frame = trainingSetCreator.next_frame();
+    while (frame != NULL){
+        delete frame;
+        frame = trainingSetCreator.next_frame();
+    }
+
+    trainingSetCreator.set_new_video_path("./res/videos/alone-green-no-ball/ace_0.mp4");
+    frame = trainingSetCreator.next_frame();
+    while (frame != NULL){
+        delete frame;
+        frame = trainingSetCreator.next_frame();
+    }
+
+    trainingSetCreator.write_centers();
+    return 0;*/
+
+    tmd::Pipeline pipeline("./res/videos/two-red-ball/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/gperson.xml", false, true,
-               "./res/pipeline_results/complete_pipeline/alone-red-no-ball/"
-                       "/");
+               "./res/pipeline_results/complete_pipeline/two-red-ball/");
     pipeline.set_frame_step_size(10);
     //pipeline.set_start_frame(0);
 

@@ -81,7 +81,6 @@ namespace tmd{
         void set_end_frame(int frame_index);
 
     private:
-
         cv::VideoCapture *m_video;
         tmd::BGSubstractor *m_bgSubstractor;
         tmd::PlayerExtractor *m_playerExtractor;
