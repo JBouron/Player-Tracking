@@ -27,7 +27,6 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
-<<<<<<< HEAD
     /*
     tmd::TrainingSetCreator trainingSetCreator("./res/videos/alone-red-no-ball/ace_0.mp4",""
             "./res/bgs_masks/mask_ace0.jpg", 0, ""
@@ -52,11 +51,11 @@ int main(int argc, char *argv[]) {
     trainingSetCreator.write_centers();
     return 0;*/
 
-    tmd::Pipeline pipeline("./res/videos/two-red-no-ball/ace_2.mp4",""
-                                   "./res/bgs_masks/mask_ace2.jpg", 0, ""
+    tmd::Pipeline pipeline("./res/videos/two-red-ball/ace_0.mp4",""
+                                   "./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/gperson.xml", false, true,
-               "./res/pipeline_results/complete_pipeline/two-red-no-ball/ace_2/");
-    //pipeline.set_frame_step_size(1);
+               "./res/pipeline_results/complete_pipeline/two-red-ball/ace_0/");
+    pipeline.set_frame_step_size(10);
     //pipeline.set_start_frame(0);
 
     tmd::frame_t* frame = pipeline.next_frame();

@@ -9,8 +9,6 @@ namespace tmd {
                                  int history, float learning_rate) {
         m_bgs = new cv::BackgroundSubtractorMOG2(history, threshold,
                                                  TMD_BGS_DETECTS_SHADOWS);
-        m_start = true;
-
         if (m_bgs == NULL) {
             throw std::bad_alloc();
         }
@@ -60,12 +58,6 @@ namespace tmd {
             return NULL;
         }
         frame->frame_index = m_frame_index;
-        cv::Mat mask;
-
-        if(m_start){
-            frame->original_frame = cv::imread("./res/emptyroom.jpg");
-            m_start = false;
-        }
         m_bgs->operator()(frame->original_frame,
                                         frame->mask_frame,
                           m_learning_rate);
