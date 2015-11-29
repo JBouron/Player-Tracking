@@ -80,14 +80,7 @@ namespace tmd{
          */
         void set_end_frame(int frame_index);
 
-
-        void cluster();
-
     private:
-        /**
-         * Returns the team of the player given the closest_center.
-         */
-        team_t get_team_from_center(cv::Mat closest_center);
 
         cv::VideoCapture *m_video;
         tmd::BGSubstractor *m_bgSubstractor;
