@@ -2,6 +2,7 @@
 #include "../headers/feature_comparator.h"
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
+#include "../headers/debug.h"
 #include <iostream>
 #include <fstream>
 #include <bits/stream_iterator.h>
@@ -66,7 +67,7 @@ namespace tmd {
         m_data.push_back(sample);
     }
 
-    cv::Mat FeatureComparator::getClosestCenter(cv::Mat sample) {
+    int FeatureComparator::getClosestCenter(cv::Mat sample) {
         if (m_data.cols != sample.cols || sample.rows != 1) {
             throw std::invalid_argument(
             "Sample doesn't have the same amount of dimensions as the data !");
@@ -87,10 +88,10 @@ namespace tmd {
             }
         }
 
-        return m_centers.row(max_area_center);
+        return max_area_center;
     }
 
-    cv::Mat FeatureComparator::getClosestCenter(player_t *player) {
+    int FeatureComparator::getClosestCenter(player_t *player) {
         return getClosestCenter(getMatForPlayerFeature(player));
     }
 
@@ -114,15 +115,6 @@ namespace tmd {
     cv::Mat FeatureComparator::getMatForPlayerFeature(player_t *player) {
         cv::Mat t;
         cv::transpose(player->features.torso_color_histogram, t);
-        float max = 0;
-        for (int i = 0 ; i < t.cols ; i ++){
-            if (t.at<float>(0, i) > t.at<float>(0, max)){
-                max = i;
-            }
-        }
-        std::cout << "Max in player hist = " << max << std::endl;
-        std::cout << t.rows << std::endl;
-        std::cout << t.cols << std::endl;
         return t;
     }
 
@@ -195,23 +187,64 @@ namespace tmd {
             return;
         }
 
-        float max_value = 0;
+        /*float max_value = 0;
         int max_hue = 0;
         for (int i = 0 ; i < m_centers.row(0).cols ; i ++) {
             if (m_centers.at<float>(0, i) > max_value) {
                 max_value = m_centers.at<float>(0, i);
                 max_hue = i;
             }
-        }
+        }*/
 
-        if (TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW <= max_hue && max_hue <=
-                                         TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH){
-            m_greenCenterIndex = 0;
-            m_redCenterIndex = 1;
+        float mean0 = 0;
+        float total0 = 0;
+        for (int i = 0 ; i < m_centers.row(0).cols ; i ++){
+            mean0 += m_centers.at<float>(0, i) * i;
+            total0 += m_centers.at<float>(0, i);
+        }
+        mean0 = mean0 / total0;
+
+        float mean1 = 0;
+        float total1 = 0;
+        for (int i = 0 ; i < m_centers.row(1).cols ; i ++){
+            mean1 += m_centers.at<float>(1, i) * i;
+            total1 += m_centers.at<float>(1, i);
+        }
+        mean1 = mean1 / total1;
+
+        tmd::debug("FeatureComparator", "computeColorCentersIndexes",
+                   "mean0 = " + std::to_string(mean0));
+        tmd::debug("FeatureComparator", "computeColorCentersIndexes",
+                   "mean1 = " + std::to_string(mean1));
+
+        if (mean0 < mean1){
+            m_redCenterIndex = 0;
+            m_greenCenterIndex = 1;
         }
         else{
-            m_greenCenterIndex = 1;
-            m_redCenterIndex = 0;
+            m_redCenterIndex = 1;
+            m_greenCenterIndex = 0;
         }
+
+        tmd::debug("FeatureComparator", "computeColorCentersIndexes",
+               "m_greenCenterIndex = " + std::to_string(m_greenCenterIndex));
+        tmd::debug("FeatureComparator", "computeColorCentersIndexes",
+                   "m_redCenterIndex = " + std::to_string(m_redCenterIndex));
+    }
+
+    void FeatureComparator::detectTeamForPlayers(std::vector<player_t*>
+                                                 players){
+        size_t player_count = players.size();
+        for (size_t i = 0 ; i < player_count ; i ++){
+            detectTeamForPlayer(players[i]);
+        }
+    }
+
+    void FeatureComparator::detectTeamForPlayer(player_t* player){
+        if (player->features.body_parts.size() == 0){
+            player->team = TEAM_UNKNOWN;
+        }
+        player->team = getClosestCenter(player) == m_redCenterIndex ?
+                       TEAM_A : TEAM_B;
     }
 }
