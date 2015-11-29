@@ -27,6 +27,7 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
+<<<<<<< HEAD
     /*
     tmd::TrainingSetCreator trainingSetCreator("./res/videos/alone-red-no-ball/ace_0.mp4",""
             "./res/bgs_masks/mask_ace0.jpg", 0, ""
@@ -58,7 +59,6 @@ int main(int argc, char *argv[]) {
     //pipeline.set_frame_step_size(1);
     //pipeline.set_start_frame(0);
 
-    pipeline.set_end_frame(1200);
     tmd::frame_t* frame = pipeline.next_frame();
     while (frame != NULL){
         delete frame;
