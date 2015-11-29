@@ -2,6 +2,7 @@
 #include "../headers/dpm_player_extractor.h"
 #include "../headers/debug.h"
 #include "../headers/blob_player_extractor.h"
+#include "../headers/frame_t.h"
 
 namespace tmd {
     Pipeline::Pipeline(std::string video_path, std::string static_mask_path,
@@ -119,6 +120,10 @@ namespace tmd {
             tmd::debug("Pipeline", "next_frame", "Save frame to : " +
                                                  file_name);
             cv::imwrite(m_output_folder+ "/" +file_name,frame->original_frame);
+
+            file_name = "mask" + std::to_string
+                    (m_bgSubstractor->get_current_frame_index()) + ".jpg";
+            cv::imwrite(m_output_folder+ "/" +file_name,frame->mask_frame);
         }
 
         return frame;

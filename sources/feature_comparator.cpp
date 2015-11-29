@@ -61,37 +61,55 @@ namespace tmd {
     void FeatureComparator::addSampleToData(cv::Mat sample) {
         if (m_sampleCols != sample.cols || sample.rows != 1) {
             throw std::invalid_argument(
-            "Sample doesn't have the same amount of dimensions as the data !");
+                    "Sample doesn't have the same amount of dimensions as the data !");
         }
 
         m_data.push_back(sample);
     }
 
-    int FeatureComparator::getClosestCenter(cv::Mat sample) {
+    double FeatureComparator::getClosestCenter(cv::Mat sample) {
         if (m_data.cols != sample.cols || sample.rows != 1) {
             throw std::invalid_argument(
-            "Sample doesn't have the same amount of dimensions as the data !");
+                    "Sample doesn't have the same amount of dimensions as the data !");
         }
+
+        double distances[m_centers.rows];
+        double max = 0;
+        int index_max = -1;
+        for (int i = 0; i < m_centers.rows; i++) {
+            distances[i] = compareHist(m_centers.row(i), sample, CV_COMP_CORREL);
+            std::cout << "Correlation with center = " << distances[i] << std::endl;
+            std::cout << "Center index = " << i << std::endl;
+            if(distances[i] > max){
+                max = distances[i];
+                index_max = i;
+            }
+        }
+        std::cout << "max = " << max << std::endl;
+        return index_max;
+
+        /*
 
         float max_diff_area = 0.0;
         int max_area_center = 0;
-        for (int i = 0 ; i < m_centers.rows ; i ++){
+        for (int i = 0; i < m_centers.rows; i++) {
             float area = 0;
-            for (int h = 0 ; h < m_centers.row(i).cols ; h ++){
+            for (int h = 0; h < m_centers.row(i).cols; h++) {
                 area += MIN(m_centers.at<float>(i, h), sample.at<float>(0, h));
             }
             std::cout << "Area with center " << i << " = " << area <<
-                    std::endl;
-            if (area > max_diff_area){
+            std::endl;
+            if (area > max_diff_area) {
                 max_diff_area = area;
                 max_area_center = i;
             }
         }
 
         return max_area_center;
+         */
     }
 
-    int FeatureComparator::getClosestCenter(player_t *player) {
+    double FeatureComparator::getClosestCenter(player_t *player) {
         return getClosestCenter(getMatForPlayerFeature(player));
     }
 
@@ -144,7 +162,7 @@ namespace tmd {
     Mat FeatureComparator::readCentersFromFile(int rows, int cols) {
         std::cout << "readCentersFromFile :" << std::endl;
         std::ifstream clustersFile("./res/cluster/clusterCenters.txt");
-        if (! clustersFile.is_open()){
+        if (!clustersFile.is_open()) {
             throw std::runtime_error("Error couldn't load clusterCenters.txt");
         }
         Mat toReturn(rows, cols, CV_32F);
@@ -182,8 +200,8 @@ namespace tmd {
         return m_data;
     }
 
-    void FeatureComparator::computeColorCentersIndexes(){
-        if (m_centers.rows == 0){
+    void FeatureComparator::computeColorCentersIndexes() {
+        if (m_centers.rows == 0) {
             return;
         }
 
@@ -198,7 +216,7 @@ namespace tmd {
 
         float mean0 = 0;
         float total0 = 0;
-        for (int i = 0 ; i < m_centers.row(0).cols ; i ++){
+        for (int i = 0; i < m_centers.row(0).cols; i++) {
             mean0 += m_centers.at<float>(0, i) * i;
             total0 += m_centers.at<float>(0, i);
         }
@@ -206,7 +224,7 @@ namespace tmd {
 
         float mean1 = 0;
         float total1 = 0;
-        for (int i = 0 ; i < m_centers.row(1).cols ; i ++){
+        for (int i = 0; i < m_centers.row(1).cols; i++) {
             mean1 += m_centers.at<float>(1, i) * i;
             total1 += m_centers.at<float>(1, i);
         }
@@ -217,31 +235,31 @@ namespace tmd {
         tmd::debug("FeatureComparator", "computeColorCentersIndexes",
                    "mean1 = " + std::to_string(mean1));
 
-        if (mean0 < mean1){
+        if (mean0 < mean1) {
             m_redCenterIndex = 0;
             m_greenCenterIndex = 1;
         }
-        else{
+        else {
             m_redCenterIndex = 1;
             m_greenCenterIndex = 0;
         }
 
         tmd::debug("FeatureComparator", "computeColorCentersIndexes",
-               "m_greenCenterIndex = " + std::to_string(m_greenCenterIndex));
+                   "m_greenCenterIndex = " + std::to_string(m_greenCenterIndex));
         tmd::debug("FeatureComparator", "computeColorCentersIndexes",
                    "m_redCenterIndex = " + std::to_string(m_redCenterIndex));
     }
 
-    void FeatureComparator::detectTeamForPlayers(std::vector<player_t*>
-                                                 players){
+    void FeatureComparator::detectTeamForPlayers(std::vector<player_t *>
+                                                 players) {
         size_t player_count = players.size();
-        for (size_t i = 0 ; i < player_count ; i ++){
+        for (size_t i = 0; i < player_count; i++) {
             detectTeamForPlayer(players[i]);
         }
     }
 
-    void FeatureComparator::detectTeamForPlayer(player_t* player){
-        if (player->features.body_parts.size() == 0){
+    void FeatureComparator::detectTeamForPlayer(player_t *player) {
+        if (player->features.body_parts.size() == 0) {
             player->team = TEAM_UNKNOWN;
         }
         player->team = getClosestCenter(player) == m_redCenterIndex ?
