@@ -25,9 +25,9 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
-    tmd::Pipeline pipeline("./res/videos/two-green-ball/ace_0.mp4","./res/bgs_masks/mask_ace0.jpg", 0, ""
+    tmd::Pipeline pipeline("./res/videos/alone-green-ball/ace_0.mp4","./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/person.xml", false, true,
-               "./res/pipeline_results/complete_pipeline/two-green-ball/");
+               "./res/pipeline_results/complete_pipeline/alone-green-ball/");
 
     pipeline.set_frame_step_size(10);
     //pipeline.set_start_frame(0);
@@ -46,7 +46,7 @@ void create_training_set(void){
     std::string basic_path = "./res/videos/";
 
     std::string video_folders[8];
-    std::string mask_folder[8];
+    std::string mask_folder[6];
 
     video_folders[0] = basic_path + "alone-green-ball/";
     video_folders[1] = basic_path + "alone-green-no-ball/";
@@ -56,6 +56,20 @@ void create_training_set(void){
     video_folders[5] = basic_path + "two-green-no-ball/";
     video_folders[6] = basic_path + "two-red-ball/";
     video_folders[7] = basic_path + "two-red-no-ball/";
+
+    cv::VideoCapture videos[48];
+
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 6; j++){
+            std::string video_path = video_folders[i] + "ace_" + std::to_string(j) + ".mp4";
+            videos[i+j].open(video_path);
+        }
+    }
+
+    cv::Mat centers;
+    tmd::FeatureComparator* comparator = new tmd::FeatureComparator(2, 180, centers);
+
+
 }
 
 void pipeline_class_tests(void){
