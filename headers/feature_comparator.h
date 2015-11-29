@@ -47,21 +47,6 @@ namespace tmd {
         void runClustering();
 
         /**
-         * Adds a sample to the data will be used for the clustering algorithm.
-         */
-        void addSampleToData(cv::Mat sample);
-
-        /**
-         * Gets the closest center of the clusters for a sample.
-         */
-        cv::Mat getClosestCenter(cv::Mat sample);
-
-        /**
-         * Gets the closest center of the clusters for a player.
-         */
-        cv::Mat getClosestCenter(player_t *player);
-
-        /**
          * Adds the player's features to the data that will be used for the
          * clustering  algorithm.
          */
@@ -98,8 +83,15 @@ namespace tmd {
          */
         static cv::Mat readCentersFromFile(int rows, int cols);
 
-        cv::Mat getRedCenter(){return m_centers.row(0);}
-        cv::Mat getGreenCenter(){return m_centers.row(1);}
+        /**
+         * Detects the teams of a collection of players.
+         */
+        void detectTeamForPlayers(std::vector<player_t*> players);
+
+        /**
+         * Detects the team of the given player.
+         */
+        void detectTeamForPlayer(player_t* player);
 
     private:
         int m_sampleCols;
@@ -127,6 +119,23 @@ namespace tmd {
          * Make the mapping between colors and centers.
          */
         void computeColorCentersIndexes();
+
+        /**
+         * Adds a sample to the data will be used for the clustering algorithm.
+         */
+        void addSampleToData(cv::Mat sample);
+
+        /**
+         * Gets the closest center of the clusters for a sample.
+         * Returns the index of the closest center in m_centers.
+         */
+        int getClosestCenter(cv::Mat sample);
+
+        /**
+         * Gets the closest center of the clusters for a player.
+         * Returns the index of the closest center in m_centers.
+         */
+        int getClosestCenter(player_t *player);
     };
 }
 
