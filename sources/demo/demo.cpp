@@ -79,35 +79,6 @@ namespace tmd {
             }
         }
 
-        /*tmd::player_t* green = new player_t;
-        green->features.torso = cv::imread("./res/images/greentorso.jpg");
-        const int rows = green->features.torso.rows;
-        const int cols = green->features.torso.cols;
-        green->features.torso_mask = cv::Mat(rows, cols, CV_8U);
-        for (int l = 0; l < rows; l++) {
-            for (int j = 0; j < cols; j++) {
-                green->features.torso_mask.at<uchar>(l, j) = 255;
-            }
-        }
-
-        tmd::player_t* red = new player_t;
-        red->features.torso = cv::imread("./res/images/redtorso.jpg");
-        const int rowsR = red->features.torso.rows;
-        const int colsR = red->features.torso.cols;
-        red->features.torso_mask = cv::Mat(rowsR, colsR, CV_8U);
-        for (int l = 0; l < rowsR; l++) {
-            for (int j = 0; j < colsR; j++) {
-                red->features.torso_mask.at<uchar>(l, j) = 255;
-            }
-        }
-
-        FeaturesExtractor fe("./res/xmls/person.xml");
-        fe.createHistogram(green);
-        fe.createHistogram(red);
-
-        comparator.addPlayerFeatures(green);
-        comparator.addPlayerFeatures(red);*/
-
         comparator.runClustering();
         comparator.writeCentersToFile();
 
@@ -158,16 +129,18 @@ namespace tmd {
                         bgs_two_green[i]->next_frame());
                 for (int l = 0; l < playersExtractedGreen.size(); l++) {
                     featuresExtractor.extractFeatures(playersExtractedGreen[l]);
-                    cv::Mat closest = comparator.getClosestCenter(playersExtractedGreen[i]);
-                    compareCenters(center1, closest);
+                    /*cv::Mat closest = comparator.getClosestCenter
+                            (playersExtractedGreen[i]);
+                    compareCenters(center1, closest);*/
                 }
 
                 std::vector<player_t *> playersExtractedRed = playerExtractor.extract_player_from_frame(
                         bgs_two_red[i]->next_frame());
                 for (int l = 0; l < playersExtractedRed.size(); l++) {
                     featuresExtractor.extractFeatures(playersExtractedRed[l]);
-                    cv::Mat closest = comparator.getClosestCenter(playersExtractedRed[i]);
-                    compareCenters(center1, closest);
+                    /*cv::Mat closest = comparator.getClosestCenter
+                            (playersExtractedRed[i]);
+                    compareCenters(center1, closest);*/
                 }
             }
         }

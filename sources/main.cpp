@@ -27,17 +27,12 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
-    /*cv::Mat centers = tmd::FeatureComparator::readCentersFromFile(2, 180);
-    cv::Mat center1 = centers.row(0);
-    for (int i = 0; i < 180; i++) {
-        std::cout << center1.at<float>(0, i) << ", ";
-    }
+    /*tmd::run_demo_feature_comparator();
     return EXIT_SUCCESS;*/
-    tmd::run_demo_feature_comparator();
-    return EXIT_SUCCESS;
-    tmd::Pipeline pipeline("./res/videos/two-red-no-ball/ace_0.mp4","./res/bgs_masks/mask_ace0.jpg", 0, ""
+    tmd::Pipeline pipeline("./res/videos/alone-red-no-ball/ace_0.mp4",""
+                                   "./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/person.xml", true, true,
-               "./res/pipeline_results/complete_pipeline/two-red-no-ball/"
+               "./res/pipeline_results/complete_pipeline/alone-red-no-ball/"
                        "/");
     pipeline.set_frame_step_size(10);
     pipeline.set_start_frame(200);
