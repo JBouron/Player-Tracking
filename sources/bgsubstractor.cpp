@@ -9,8 +9,6 @@ namespace tmd {
                                  int history, float learning_rate) {
         m_bgs = new cv::BackgroundSubtractorMOG2(history, threshold,
                                                  TMD_BGS_DETECTS_SHADOWS);
-        m_start = true;
-
         if (m_bgs == NULL) {
             throw std::bad_alloc();
         }
@@ -26,7 +24,7 @@ namespace tmd {
         m_input_video = input_video;
         if (m_input_video == NULL || !m_input_video->isOpened()) {
             throw std::invalid_argument("Error in BGSubstractor constructor, "
-                            "input video is not valid (NULL or not opened).");
+                                                "input video is not valid (NULL or not opened).");
         }
 
         tmd::debug("BGSubstractor", "BGSubstractor", "valid input video.");
@@ -41,7 +39,7 @@ namespace tmd {
         m_frame_index = 0;
         m_total_frame_count =  (m_input_video->get(CV_CAP_PROP_FRAME_COUNT));
         tmd::debug("BGSubstractor", "BGSubstractor", "m_total_frame_count = "
-                                     + std::to_string(m_total_frame_count));
+                                                     + std::to_string(m_total_frame_count));
         tmd::debug("BGSubstractor", "BGSubstractor", "exiting method");
     }
 
@@ -54,20 +52,15 @@ namespace tmd {
         bool frame_extracted = m_input_video->read(frame->original_frame);
         if (!frame_extracted){
             tmd::debug("BGSubstractor", "next_frame", "No frame left, "
-                    "returning NULL after " + std::to_string(m_frame_index) +
-                    " frames");
+                                                              "returning NULL after " + std::to_string(m_frame_index) +
+                                                      " frames");
             delete frame;
             return NULL;
         }
         frame->frame_index = m_frame_index;
         cv::Mat mask;
-
-        if(m_start){
-            frame->original_frame = cv::imread("./res/emptyroom.jpg");
-            m_start = false;
-        }
         m_bgs->operator()(frame->original_frame,
-                                        frame->mask_frame,
+                          frame->mask_frame,
                           m_learning_rate);
         frame->camera_index = m_camera_index;
 
