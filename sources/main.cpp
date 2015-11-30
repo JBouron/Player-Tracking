@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
     pipeline.set_frame_step_size(10);
     pipeline.set_start_frame(5000);
 
+
     tmd::frame_t* frame = pipeline.next_frame();
     while (frame != NULL){
         delete frame;
