@@ -51,10 +51,10 @@ int main(int argc, char *argv[]) {
     trainingSetCreator.write_centers();
     return 0;*/
 
-    tmd::Pipeline pipeline("./res/videos/two-red-ball/ace_0.mp4",""
-                                   "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/gperson.xml", false, true,
-               "./res/pipeline_results/complete_pipeline/two-red-ball/ace_0/");
+    tmd::Pipeline pipeline("./res/videos/unihockey/out2.mp4",
+                           "./res/bgs_masks/mask_ace0.jpg", 0,
+                           "./res/xmls/person.xml", true, true,
+                           "./res/pipeline_results/complete_pipeline/unihockey/");
     pipeline.set_frame_step_size(10);
     //pipeline.set_start_frame(0);
 
