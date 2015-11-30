@@ -27,15 +27,14 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
-    // TODO TODOTODOTODOTODOTODOTODOTODOTODOTDOTODOTODOTDOTODOTODOTO
-    tmd::Pipeline pipeline("./res/videos/two-red-ball/ace_0.mp4",""
+    tmd::Pipeline pipeline("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", true, true,
-               "./res/dpm-samples/two-red-ball/ace_0/"
+                                   "./res/xmls/person.xml", false, true,
+               "./res/pipeline_results/complete_pipeline/uni"
                        "/");
 
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(0);
+    pipeline.set_start_frame(5000);
 
     tmd::frame_t* frame = pipeline.next_frame();
     while (frame != NULL){
