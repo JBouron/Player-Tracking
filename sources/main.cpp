@@ -27,14 +27,14 @@ void create_true_cluster(void){
 }
 
 int main(int argc, char *argv[]) {
-    tmd::Pipeline pipeline("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/ace_0.mp4",""
+    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", false, true,
-               "./res/pipeline_results/complete_pipeline/uni"
+                                   "./res/xmls/person.xml", true, true,
+               "./res/pipeline_results/complete_pipeline/alone-green-no-ball"
                        "/");
 
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(5000);
+    pipeline.set_start_frame(290);
 
 
     tmd::frame_t* frame = pipeline.next_frame();
@@ -120,8 +120,10 @@ void dpm_whole_frame(void){
 }
 
 void extract_player_image(void) {
-    cv::VideoCapture capt("./misc/ace_0.mp4");
-    tmd::BGSubstractor bgs(&capt, cv::imread("./res/bgs_masks/mask_ace0.jpg"), 0);
+    cv::VideoCapture capt("./res/videos/alone-green-no-ball/ace_0.mp4");
+    tmd::BGSubstractor bgs(&capt, cv::imread("./res/bgs_masks/mask_ace0.jpg", 0
+    ), 0);
+    bgs.jump_to_frame(800);
     int keyboard = 0;
     cv::namedWindow("Extraction");
     tmd::frame_t *frame;
