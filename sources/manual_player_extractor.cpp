@@ -37,6 +37,14 @@ namespace tmd {
             players.push_back(new player_t);
             players[i]->original_image = cpy(mBoxes[i]);
             players[i]->mask_image = (frame->mask_frame.clone())(mBoxes[i]);
+            std::string file_name = "./res/manual_extraction/frame" +
+                    std::to_string(frame->frame_index) + "_originalimage" +
+                    std::to_string(i) + ".jpg";
+            cv::imwrite(file_name, players[i]->original_image);
+            file_name = "./res/manual_extraction/frame" +
+                        std::to_string(frame->frame_index) + "_maskimage" +
+                        std::to_string(i) + ".jpg";
+            cv::imwrite(file_name, players[i]->mask_image);
         }
         return players;
     }

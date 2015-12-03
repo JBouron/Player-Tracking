@@ -10,6 +10,9 @@
 #include "../headers/dpm_calibrator.h"
 #include "../headers/pipeline.h"
 #include "../headers/training_set_creator.h"
+#include "../headers/player_t.h"
+#include "../headers/debug.h"
+#include "../headers/features_t.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t* p);
 void extract_player_image(void);
@@ -22,19 +25,17 @@ void pipeline_class_tests(void);
 
 void dpm_whole_frame(void);
 
-void create_true_cluster(void){
-
-}
+void dpm_multiple_players_test(void);
 
 int main(int argc, char *argv[]) {
-    tmd::Pipeline pipeline("/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/misc/ace_0.mp4",""
+    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", false, true,
-               "./res/pipeline_results/complete_pipeline/uni"
+                                   "./res/xmls/person.xml", true, true,
+               "./res/pipeline_results/complete_pipeline/alone-green-no-ball"
                        "/");
 
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(5000);
+    pipeline.set_start_frame(290);
 
 
     tmd::frame_t* frame = pipeline.next_frame();
@@ -42,6 +43,7 @@ int main(int argc, char *argv[]) {
         delete frame;
         frame = pipeline.next_frame();
     }
+    //pm_multiple_players_test();
     return EXIT_SUCCESS;
 }
 
@@ -121,7 +123,9 @@ void dpm_whole_frame(void){
 
 void extract_player_image(void) {
     cv::VideoCapture capt("./misc/ace_0.mp4");
-    tmd::BGSubstractor bgs(&capt, cv::imread("./res/bgs_masks/mask_ace0.jpg"), 0);
+    tmd::BGSubstractor bgs(&capt, cv::imread("./res/bgs_masks/mask_ace0.jpg", 0
+    ), 0);
+    bgs.jump_to_frame(5000);
     int keyboard = 0;
     cv::namedWindow("Extraction");
     tmd::frame_t *frame;
@@ -152,6 +156,8 @@ void show_body_parts(cv::Mat image, tmd::player_t* p) {
     const int thickness = 1;
     const int line_type = 8; // 8 connected line.
     const int shift = 0;
+    tmd::debug("Main", "show_body_parts", "Body parts count = " +
+            std::to_string(parts.size()));
     for (int i = 0; i < parts.size(); i++) {
         CvRect r;
         r.x = parts[i].x;
@@ -159,14 +165,19 @@ void show_body_parts(cv::Mat image, tmd::player_t* p) {
         r.width = parts[i].width;
         r.height = parts[i].height;
         cv::rectangle(image, r, color, thickness, line_type, shift);
+        cv::imshow("Body parts", image);
+        cv::waitKey(0);
     }
+    cv::rectangle(image, p->features.torso_pos, torso, thickness, line_type,
+                  shift);
     cv::imshow("Body parts", image);
     cv::waitKey(0);
 }
 
 void pipeline(void){
     cv::VideoCapture capture("./res/videos/alone-green-no-ball/ace_0.mp4");
-    tmd::BGSubstractor bgSubstractor(&capture, cv::imread("./res/bgs_masks/mask_ace0.jpg"), 0);
+    tmd::BGSubstractor bgSubstractor(&capture,
+                         cv::imread("./res/bgs_masks/mask_ace0.jpg", 0), 0);
     tmd::DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
     tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
@@ -273,4 +284,17 @@ void pipeline(void){
         cv::waitKey(0);
     }
     cv::destroyAllWindows();
+}
+
+void dpm_multiple_players_test(void){
+    tmd::player_t* player = new tmd::player_t;
+    player->original_image = cv::imread("./res/manual_extraction/frame5451,"
+                                                "000000_originalimage0.jpg");
+    player->mask_image = cv::imread("./res/manual_extraction/frame5451,"
+                                            "000000_maskimage0.jpg", 0);
+    tmd::DPMDetector dpmDetector("./res/xmls/person.xml");
+    tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
+    featuresExtractor.extractFeatures(player);
+    //dpmDetector.extractBodyParts(player);
+    show_body_parts(player->original_image, player);
 }

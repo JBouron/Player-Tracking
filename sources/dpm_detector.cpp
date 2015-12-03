@@ -41,6 +41,10 @@ namespace tmd {
         }
     }
 
+    /**
+     * Redefinition of EstimateBoxes, because the code couldn't find it.
+     * This is the exact same as the openCV implementation.
+     */
     int DPMDetector::customEstimateBoxes(CvPoint *points, int *levels,
                                          int kPoints,
                                          int sizeX, int sizeY,
@@ -110,6 +114,11 @@ namespace tmd {
                 max_score_for_level = scores[i];
         }
 
+        tmd::debug("DPMDetector", "detectBestPartBoxes", "KPoint (i max) = "
+                                                     + std::to_string(kPoints));
+        tmd::debug("DPMDetector", "detectBestPartBoxes", "n (j max) = "
+                                                     + std::to_string(n));
+
         for (i = 0; i < kPoints; i++) {
             for (j = 0; j < n; j++) {
                 getOppositePoint(partsDisplacement[i][j],
@@ -127,6 +136,7 @@ namespace tmd {
         return LATENT_SVM_OK;
     }
 
+    // Custom definition of cvLatentSvmDetectObjects (latentsvmDetector.cpp)
     std::vector<cv::Rect> DPMDetector::getPartBoxesForImage(IplImage *image) {
         CvLSVMFeaturePyramid *H = 0;
         CvPoint *points = 0, *oppPoints = 0;
@@ -156,7 +166,8 @@ namespace tmd {
         // Search object
         std::vector<cv::Rect> parts;
         error = preparePartDetection(parts, image, H,
-                                     (const CvLSVMFilterObject **) (m_detector->filters),
+                                     (const CvLSVMFilterObject **) (m_detector
+                                             ->filters),
                                      m_detector->num_components,
                                      m_detector->num_part_filters,
                                      m_detector->b,
@@ -168,6 +179,28 @@ namespace tmd {
             parts.clear();
             return parts;
         }
+
+        // removed from original source : (modified a bit (no CvSeq))
+            float overlap_threshold =
+                    0.0; //(added)
+            // Clipping boxes
+            clippingBoxes(image->width, image->height, points, kPoints);
+            clippingBoxes(image->width, image->height, oppPoints, kPoints);
+            // NMS procedure
+            nonMaximumSuppression(kPoints, points, oppPoints, score, overlap_threshold,
+                        &numBoxesOut, &pointsOut, &oppPointsOut, &scoreOut);
+
+            for (int i = 0; i < numBoxesOut; i++)
+            {
+                CvRect bounding_box = {0, 0, 0, 0};
+                bounding_box.x = pointsOut[i].x;
+                bounding_box.y = pointsOut[i].y;
+                bounding_box.width = oppPointsOut[i].x - pointsOut[i].x;
+                bounding_box.height = oppPointsOut[i].y - pointsOut[i].y;
+                cv::Rect rect = bounding_box;
+                //parts.push_back(rect);
+            }
+         // End of removed block.
 
         if (image->nChannels == 3)
             cvCvtColor(image, image, CV_RGB2BGR);
@@ -223,6 +256,7 @@ namespace tmd {
     }
 
 
+    // Custom definition of searchObjectThresholdSomeComponents (latentsvm.cpp)
     int DPMDetector::preparePartDetection(std::vector<cv::Rect> &parts,
                                           IplImage *image,
                                           const CvLSVMFeaturePyramid *H,
@@ -263,6 +297,7 @@ namespace tmd {
         for (i = 0; i < kComponents; i++) {
             tmd::debug("DPMDetector", "preparePartDetection",
                        "Call searchObjectThreshold");
+                    // Same impl.
             int error = customSearchObjectThreshold(H,
                                                     &(filters[componentIndex]),
                                                     kPartFilters[i],
@@ -292,6 +327,7 @@ namespace tmd {
                 }
                 return LATENT_SVM_SEARCH_OBJECT_FAILED;
             }
+            // Same impl.
             customEstimateBoxes(pointsArr[i], levelsArr[i], kPointsArr[i],
                                 filters[componentIndex]->sizeX,
                                 filters[componentIndex]->sizeY,
@@ -305,6 +341,26 @@ namespace tmd {
                             partsDisplacementArr[i_max],
                             levelsArr[i_max], kPointsArr[i_max],
                             scoreArr[i_max]);
+
+        // Removed from original sources :
+            *points = (CvPoint *)malloc(sizeof(CvPoint) * (*kPoints));
+            *oppPoints = (CvPoint *)malloc(sizeof(CvPoint) * (*kPoints));
+            *score = (float *)malloc(sizeof(float) * (*kPoints));
+            s = 0;
+            for (i = 0; i < kComponents; i++)
+            {
+                f = s + kPointsArr[i];
+                for (j = s; j < f; j++)
+                {
+                    (*points)[j].x = pointsArr[i][j - s].x;
+                    (*points)[j].y = pointsArr[i][j - s].y;
+                    (*oppPoints)[j].x = oppPointsArr[i][j - s].x;
+                    (*oppPoints)[j].y = oppPointsArr[i][j - s].y;
+                    (*score)[j] = scoreArr[i][j - s];
+                }
+                s = f;
+            }
+         // End of removed block.
 
         // Release allocated memory
         for (i = 0; i < kComponents; i++) {

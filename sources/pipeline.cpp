@@ -3,6 +3,8 @@
 #include "../headers/debug.h"
 #include "../headers/blob_player_extractor.h"
 #include "../headers/frame_t.h"
+#include "../headers/player_t.h"
+#include "../headers/features_t.h"
 
 namespace tmd {
     Pipeline::Pipeline(std::string video_path, std::string static_mask_path,
@@ -110,6 +112,21 @@ namespace tmd {
         for (int i = 0; i < player_count; i++) {
             cv::rectangle(frame->original_frame, players[i]->pos_frame,
                           get_team_color(players[i]->team), thickness,
+                          line_type, shift);
+            CvScalar torsoColor;
+            torsoColor.val[0] = 255;
+            torsoColor.val[1] = 255;
+            torsoColor.val[2] = 0;
+            torsoColor.val[3] = 255;
+            cv::Rect torso;
+            torso.x = players[i]->pos_frame.x + players[i]->features
+                                                        .torso_pos.x;
+            torso.y = players[i]->pos_frame.y + players[i]->features
+                                                        .torso_pos.y;
+            torso.width = players[i]->features.torso_pos.width;
+            torso.height = players[i]->features.torso_pos.height;
+            cv::rectangle(frame->original_frame, torso,
+                          torsoColor, thickness,
                           line_type, shift);
             delete players[i];
         }
