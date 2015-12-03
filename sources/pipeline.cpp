@@ -71,14 +71,29 @@ namespace tmd {
         const int shift = 0;
         for (int i = 0; i < parts.size(); i++) {
             CvRect r;
-            r.x = parts[i].x;
-            r.y = parts[i].y;
+            r.x = parts[i].x + p->pos_frame.x;
+            r.y = parts[i].y + p->pos_frame.y;
             r.width = parts[i].width;
             r.height = parts[i].height;
             cv::rectangle(image, r, color, thickness, line_type, shift);
         }
-        cv::imshow("Body parts", image);
-        cv::waitKey(0);
+    }
+
+    cv::Mat get_colored_mask_for_frame(frame_t* frame){
+        cv::Mat resulting_image;
+        frame->original_frame.copyTo(resulting_image);
+        cv::Vec3b black;
+        black.val[0] = 0;
+        black.val[1] = 0;
+        black.val[2] = 0;
+        for (int c = 0; c < frame->mask_frame.cols; c++) {
+            for (int r = 0; r < frame->mask_frame.rows; r++) {
+                if (frame->mask_frame.at<uchar>(r, c) == 0) {
+                    resulting_image.at<cv::Vec3b>(r, c) = black;
+                }
+            }
+        }
+        return resulting_image;
     }
 
     frame_t* Pipeline::next_frame() {
@@ -93,8 +108,14 @@ namespace tmd {
             return NULL;
         }
 
+        cv::imwrite(m_output_folder + "/original_frames/frame" +
+                    std::to_string((int) frame->frame_index) + ".jpg",
+                frame->original_frame);
+
         std::vector<tmd::player_t *> players =
                 m_playerExtractor->extract_player_from_frame(frame);
+
+        frame->original_frame = get_colored_mask_for_frame(frame);
 
         tmd::debug("Pipeline", "next_frame", "Frame " + std::to_string
                 (m_bgSubstractor->get_current_frame_index()) + " : " +
@@ -108,26 +129,30 @@ namespace tmd {
 
         m_featuresComparator->detectTeamForPlayers(players);
 
+        CvScalar torso_color;
+        torso_color.val[0] = 255;
+        torso_color.val[1] = 255;
+        torso_color.val[2] = 0;
+        torso_color.val[3] = 255;
         size_t player_count = players.size();
         for (int i = 0; i < player_count; i++) {
+            player_t* p = players[i];
             cv::rectangle(frame->original_frame, players[i]->pos_frame,
                           get_team_color(players[i]->team), thickness,
                           line_type, shift);
-            CvScalar torsoColor;
-            torsoColor.val[0] = 255;
-            torsoColor.val[1] = 255;
-            torsoColor.val[2] = 0;
-            torsoColor.val[3] = 255;
+            show_body_parts(frame->original_frame, p);
             cv::Rect torso;
-            torso.x = players[i]->pos_frame.x + players[i]->features
-                                                        .torso_pos.x;
-            torso.y = players[i]->pos_frame.y + players[i]->features
-                                                        .torso_pos.y;
-            torso.width = players[i]->features.torso_pos.width;
-            torso.height = players[i]->features.torso_pos.height;
+            torso.x = p->pos_frame.x + p->features.torso_pos.x;
+            torso.y = p->pos_frame.y + p->features.torso_pos.y;
+            torso.width = p->features.torso_pos.width;
+            torso.height = p->features.torso_pos.height;
             cv::rectangle(frame->original_frame, torso,
-                          torsoColor, thickness,
+                          torso_color, thickness,
                           line_type, shift);
+            std::string file_name = m_output_folder + "/torsos/torso" +
+                    std::to_string((int)frame->frame_index + 1) + "-" +
+                    std::to_string(i) + ".jpg";
+            cv::imwrite(file_name, frame->original_frame(torso));
             delete players[i];
         }
 

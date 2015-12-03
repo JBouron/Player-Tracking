@@ -122,10 +122,10 @@ void dpm_whole_frame(void){
 }
 
 void extract_player_image(void) {
-    cv::VideoCapture capt("./misc/ace_0.mp4");
+    cv::VideoCapture capt("./res/videos/alone-green-no-ball/ace_0.mp4");
     tmd::BGSubstractor bgs(&capt, cv::imread("./res/bgs_masks/mask_ace0.jpg", 0
     ), 0);
-    bgs.jump_to_frame(5000);
+    bgs.jump_to_frame(800);
     int keyboard = 0;
     cv::namedWindow("Extraction");
     tmd::frame_t *frame;

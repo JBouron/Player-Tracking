@@ -164,7 +164,7 @@ namespace tmd {
     }
 
     void run_demo_dpm(void) {
-        const int player_count = 4;
+        const int player_count = 5;
         player_t **players = new player_t *[player_count];
         for (int i = 0; i < player_count; i++) {
             players[i] = new player_t;
@@ -172,6 +172,10 @@ namespace tmd {
             std::cout << path << std::endl;
             players[i]->original_image = cv::imread(path);
             player_t *player = players[i];
+            player->pos_frame.x = 0;
+            player->pos_frame.y = 0;
+            player->pos_frame.width = player->original_image.cols;
+            player->pos_frame.height = player->original_image.rows;
             const int rows = player->original_image.rows;
             const int cols = player->original_image.cols;
             player->mask_image = cv::Mat(rows, cols, CV_8U);
@@ -186,6 +190,10 @@ namespace tmd {
             std::cout << "image " << i << " ";
             dpm.extractBodyParts(players[i]);
             std::cout << "done" << std::endl;
+            cv::Rect torsoPos = players[i]->features.torso_pos;
+            cv::Mat torso = players[i]->original_image(torsoPos);
+            cv::imwrite("./res/demo/dpm/torso" + std::to_string(i) + ".jpg",
+                        torso);
         }
 
         for (int i = 0; i < player_count; i++) {
@@ -200,8 +208,10 @@ namespace tmd {
 
     void run_demo_pipeline(void) {
         tmd::player_t *player = new player_t;
-        player->original_image = cv::imread("./res/demo/playerimagegreen.jpg");
-        cv::Mat mask = cv::imread("./res/demo/playerimagemaskgreen.jpg");
+        player->original_image = cv::imread("./res/manual_extraction/playeror"
+                                                    ".jpg");
+        cv::Mat mask = cv::imread("./res/manual_extraction/playermk"
+                                          ".jpg");
         const int rows = player->original_image.rows;
         const int cols = player->original_image.cols;
         player->mask_image = cv::Mat(rows, cols, CV_8U);

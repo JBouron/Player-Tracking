@@ -29,14 +29,17 @@ namespace tmd {
             throw std::invalid_argument("Error in DPMDetector : NULL pointer in"
                                                 " extractBodyParts method.");
         }
+        // (If you're using CLion as an IDE, the following will be underline
+        // in red as if it was not correct. However this is a bug from Clion,
+        // you can safely ignore it, the line typechecks and compile just fine.
         IplImage playerImage = player->original_image;
         player->features.body_parts = getPartBoxesForImage(&playerImage);
-        // Clip the boxes if needed.
-        clipBoxes(player);
-        // Shrink the player box to the minimum size.
-        shrinkBox(player);
-        // If there is a player on the image, we compute its torso box.
         if (player->features.body_parts.size() > 0) {
+            // Clip the boxes if needed.
+            clipBoxes(player);
+            // Shrink the player box to the minimum size.
+            shrinkBox(player);
+            // If there is a player on the image, we compute its torso box.
             extractTorsoForPlayer(player);
         }
     }
@@ -407,6 +410,18 @@ namespace tmd {
         int oppoY = ((torso1.y + torso1.height) + (torso2.y + torso2.height))/2;
         mean.width = oppoX - mean.x;
         mean.height = oppoY - mean.y;
+        std::cout << "Player box = " << player->pos_frame << std::endl;
+        std::cout << "Mean box = " << mean << std::endl;
+        std::cout << "Body parts 1 = " << torso1 << std::endl;
+        std::cout << "Body parts 2 = " << torso2 << std::endl;
+        assert(mean.x >= 0);
+        assert(mean.y >= 0);
+        assert(mean.y + mean.height < player->pos_frame.height);
+        assert(mean.x + mean.width < player->pos_frame.width);
+        cv::Rect roi = mean;
+        cv::Rect m = player->pos_frame;
+        assert(0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= m.width &&
+               0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= m.height);
         player->features.torso = (player->original_image.clone())(mean);
         player->features.torso_mask = (player->mask_image.clone())(mean);
         player->features.torso_pos = mean;
@@ -423,12 +438,18 @@ namespace tmd {
             if (part->y < 0) part->y = 0;
 
             // Right and bottom boundaries.
-            if (part->x + part->width > player->original_image.cols){
-                part->width = player->original_image.cols - part->x - 1;
+            if (part->x + part->width > player->pos_frame.width){
+                part->width = player->pos_frame.width - part->x;
             }
-            if (part->y + part->height > player->original_image.rows){
-                part->height = player->original_image.rows - part->y - 1;
+            if (part->y + part->height > player->pos_frame.height){
+                part->height = player->pos_frame.height - part->y;
             }
+            assert(part->x >= 0);
+            assert(part->y >= 0);
+            /*assert(part->width >= 0);
+            assert(part->height >= 0);*/
+            assert(part->x + part->width <= player->pos_frame.width);
+            assert(part->y + part->height <= player->pos_frame.height);
         }
     }
 
@@ -440,19 +461,55 @@ namespace tmd {
 
         for (int i = 0 ; i < player->features.body_parts.size() ; i ++){
             cv::Rect part = player->features.body_parts[i];
+            assert(part.x >= 0);
+            assert(part.y >= 0);
+            assert(part.x + part.width <= player->pos_frame.width);
+            assert(part.y + part.height <= player->pos_frame.height);
             if (part.x < min_x) min_x = part.x;
             if (part.y < min_y) min_y = part.y;
             if (part.x + part.width > max_x) max_x = part.x + part.width;
             if (part.y + part.height > max_y) max_y = part.y + part.height;
         }
-        cv::Rect shrank_box;
-        shrank_box.x = min_x;
-        shrank_box.y = min_y;
-        shrank_box.width = max_x;
-        shrank_box.height = max_y;
+        std::cout << "DPMDetector::shrinkBox() : pos_frame = " <<
+                player->pos_frame << std::endl;
+
+        assert(min_x >= 0);
+        assert(min_y >= 0);
+        assert(max_x <= player->pos_frame.width);
+        assert(max_y <= player->pos_frame.height);
         player->pos_frame.x += min_x;
         player->pos_frame.y += min_y;
         player->pos_frame.width = max_x - min_x;
         player->pos_frame.height = max_y - min_y;
+
+        size_t boxes_count = player->features.body_parts.size();
+        for (size_t i = 0 ; i < boxes_count ; i ++) {
+            cv::Rect *part = &(player->features.body_parts[i]);
+            part->x -= min_x;
+            part->y -= min_y;
+        }
+
+            tmd::debug("DPMDetector", "shrinkBox", "min_x = " + std::to_string
+                                                                    (min_x));
+        tmd::debug("DPMDetector", "shrinkBox", "max_x = " + std::to_string
+                (max_x));
+        tmd::debug("DPMDetector", "shrinkBox", "min_y = " + std::to_string
+                (min_y));
+        tmd::debug("DPMDetector", "shrinkBox", "max_y = " + std::to_string
+                (max_y));
+
+        cv::Rect new_player_image_rect;
+        new_player_image_rect.x = min_x;
+        new_player_image_rect.y = min_y;
+        new_player_image_rect.width = max_x - min_x;
+        new_player_image_rect.height = max_y - min_y;
+
+        cv::Mat new_player_image = player->original_image.clone()
+                (new_player_image_rect);
+        cv::Mat new_player_mask = player->mask_image.clone()
+                (new_player_image_rect);
+
+        player->original_image = new_player_image;
+        player->mask_image = new_player_mask;
     }
 }
