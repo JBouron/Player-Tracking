@@ -88,6 +88,9 @@ namespace tmd {
     // RESULT
     // Error status
     */
+    float delta(float a, float b){
+        return static_cast<float> (fabs(a -b));
+    }
     int DPMDetector::detectBestPartBoxes(std::vector<cv::Rect> &parts,
                                          IplImage *image,
                                          const CvLSVMFilterObject **filters,
@@ -106,21 +109,19 @@ namespace tmd {
             if (levels[i] > max_level)
                 max_level = levels[i];
         }
-        float max_score_for_level = -2.f;
+        float max_score = -999999;
         for (int i = 0; i < kPoints; i++) {
-            if (levels[i] == max_level &&
-                scores[i] > max_score_for_level)
-                max_score_for_level = scores[i];
+            if (scores[i] > max_score)
+                max_score = scores[i];
         }
-
+        float epsilon = 0.01;
         for (i = 0; i < kPoints; i++) {
             for (j = 0; j < n; j++) {
                 getOppositePoint(partsDisplacement[i][j],
                                  filters[j + 1]->sizeX, filters[j + 1]->sizeY,
                                  step, levels[i] - 2 * LAMBDA, &oppositePoint);
 
-                if (levels[i] == max_level &&
-                    scores[i] == max_score_for_level) {
+                if (delta(scores[i], max_score) < epsilon) {
                     cv::Rect r(partsDisplacement[i][j], oppositePoint);
                     parts.push_back(r);
                 }
