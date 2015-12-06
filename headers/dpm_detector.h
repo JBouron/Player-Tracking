@@ -2,6 +2,7 @@
 #define BACHELOR_PROJECT_DPM_DETECTOR_H_H
 
 #include <string>
+#include <cmath>
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
 #include "../headers/openCV/_latentsvm.h"
