@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
                        "/");
 
     pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(290);
+    pipeline.set_start_frame(590);
 
 
     tmd::frame_t* frame = pipeline.next_frame();
