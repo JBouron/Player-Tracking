@@ -360,8 +360,8 @@ namespace tmd {
         std::cout << "Body parts 2 = " << torso2 << std::endl;
         assert(mean.x >= 0);
         assert(mean.y >= 0);
-        assert(mean.y + mean.height < player->pos_frame.height);
-        assert(mean.x + mean.width < player->pos_frame.width);
+        assert(mean.y + mean.height <= player->pos_frame.height);
+        assert(mean.x + mean.width <= player->pos_frame.width);
         cv::Rect roi = mean;
         cv::Rect m = player->pos_frame;
         assert(0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= m.width &&
