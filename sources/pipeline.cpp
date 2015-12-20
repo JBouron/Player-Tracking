@@ -79,7 +79,7 @@ namespace tmd {
         }
     }
 
-    cv::Mat get_colored_mask_for_frame(frame_t* frame){
+    cv::Mat Pipeline::get_colored_mask_for_frame(frame_t* frame){
         cv::Mat resulting_image;
         frame->original_frame.copyTo(resulting_image);
         cv::Vec3b black;
