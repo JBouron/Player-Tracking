@@ -92,6 +92,9 @@ namespace tmd {
     // RESULT
     // Error status
     */
+    float delta(float a, float b){
+        return static_cast<float> (fabs(a -b));
+    }
     int DPMDetector::detectBestPartBoxes(std::vector<cv::Rect> &parts,
                                          IplImage *image,
                                          const CvLSVMFilterObject **filters,
@@ -110,26 +113,30 @@ namespace tmd {
             if (levels[i] > max_level)
                 max_level = levels[i];
         }
-        float max_score_for_level = -2.f;
+        float max_score = -999999;
+        std::vector<float> score_vector;
         for (int i = 0; i < kPoints; i++) {
-            if (levels[i] == max_level &&
-                scores[i] > max_score_for_level)
-                max_score_for_level = scores[i];
+            score_vector.push_back(scores[i]);
+            if (scores[i] > max_score)
+                max_score = scores[i];
         }
+        std::sort(score_vector.begin(), score_vector.end());
+        float max_score_1 = score_vector[score_vector.size()-1];
+        float max_score_2 = score_vector[score_vector.size()-2];
+        float max_score_3 = score_vector[score_vector.size()-3];
 
         tmd::debug("DPMDetector", "detectBestPartBoxes", "KPoint (i max) = "
                                                      + std::to_string(kPoints));
         tmd::debug("DPMDetector", "detectBestPartBoxes", "n (j max) = "
                                                      + std::to_string(n));
-
+        float epsilon = 0.01;
         for (i = 0; i < kPoints; i++) {
             for (j = 0; j < n; j++) {
                 getOppositePoint(partsDisplacement[i][j],
                                  filters[j + 1]->sizeX, filters[j + 1]->sizeY,
                                  step, levels[i] - 2 * LAMBDA, &oppositePoint);
 
-                if (levels[i] == max_level &&
-                    scores[i] == max_score_for_level) {
+                if (scores[i] > -10) {
                     cv::Rect r(partsDisplacement[i][j], oppositePoint);
                     parts.push_back(r);
                 }
@@ -416,8 +423,8 @@ namespace tmd {
         std::cout << "Body parts 2 = " << torso2 << std::endl;
         assert(mean.x >= 0);
         assert(mean.y >= 0);
-        assert(mean.y + mean.height < player->pos_frame.height);
-        assert(mean.x + mean.width < player->pos_frame.width);
+        assert(mean.y + mean.height <= player->pos_frame.height);
+        assert(mean.x + mean.width <= player->pos_frame.width);
         cv::Rect roi = mean;
         cv::Rect m = player->pos_frame;
         assert(0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= m.width &&

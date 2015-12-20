@@ -28,6 +28,16 @@ void dpm_whole_frame(void);
 void dpm_multiple_players_test(void);
 
 int main(int argc, char *argv[]) {
+    tmd::player_t* player = new tmd::player_t;
+    player->original_image = cv::imread("./res/manual_extraction/frame5847,000000_originalimage0.jpg");
+    player->mask_image = cv::imread("./res/manual_extraction/frame5847,000000_maskimage0.jpg");
+    player->pos_frame.x = 0;
+    player->pos_frame.y = 0;
+    player->pos_frame.width = player->original_image.cols;
+    player->pos_frame.height = player->original_image.rows;
+    tmd::DPMDetector detector("./res/xmls/person.xml");
+    detector.extractBodyParts(player);
+    show_body_parts(player->original_image, player);
     tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/person.xml", true, true,
@@ -156,22 +166,22 @@ void show_body_parts(cv::Mat image, tmd::player_t* p) {
     const int thickness = 1;
     const int line_type = 8; // 8 connected line.
     const int shift = 0;
-    tmd::debug("Main", "show_body_parts", "Body parts count = " +
-            std::to_string(parts.size()));
+    cv::Mat destImg = image.clone();
+    std::cout << "Parts count = " << parts.size() << std::endl;
     for (int i = 0; i < parts.size(); i++) {
+        if (i % 6 == 0){
+            std::cout << "i = " << i << std::endl;
+            destImg = image.clone();
+        }
         CvRect r;
         r.x = parts[i].x;
         r.y = parts[i].y;
         r.width = parts[i].width;
         r.height = parts[i].height;
-        cv::rectangle(image, r, color, thickness, line_type, shift);
-        cv::imshow("Body parts", image);
+        cv::rectangle(destImg, r, color, thickness, line_type, shift);
+        cv::imshow("Body parts", destImg);
         cv::waitKey(0);
     }
-    cv::rectangle(image, p->features.torso_pos, torso, thickness, line_type,
-                  shift);
-    cv::imshow("Body parts", image);
-    cv::waitKey(0);
 }
 
 void pipeline(void){
