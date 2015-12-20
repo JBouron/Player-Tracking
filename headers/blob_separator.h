@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "player_t.h"
-#include "dpm_player_extractor.h
+#include "dpm_player_extractor.h"
 
 namespace tmd{
     class BlobSeparator{
