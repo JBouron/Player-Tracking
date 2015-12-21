@@ -20,6 +20,12 @@ namespace tmd {
         cv::Mat mask_frame;             // Frame after applying background substraction.
         unsigned char camera_index;     // Index of the camera which took the frame.
     } frame_t;
+
+    inline void free_frame(frame_t* frame){
+        frame->original_frame.release();
+        frame->mask_frame.release();
+        delete frame;
+    }
 }
 
 #endif //TEAM_MEMBERSHIP_DETECTOR_FRAME_T_H

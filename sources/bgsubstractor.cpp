@@ -1,6 +1,7 @@
 #include <opencv2/core/core.hpp>
 #include "../headers/bgsubstractor.h"
 #include "../headers/debug.h"
+#include "../headers/frame_t.h"
 
 namespace tmd {
     BGSubstractor::BGSubstractor(cv::VideoCapture *input_video, cv::Mat static_mask,
@@ -101,7 +102,7 @@ namespace tmd {
                 }
             }
         }
-
+        frame->mask_frame.release();
         mask_copy.copyTo(frame->mask_frame);
         m_frame_index++;
         return frame;

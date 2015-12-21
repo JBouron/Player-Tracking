@@ -11,6 +11,12 @@ namespace tmd{
         cv::Mat torso_mask;                 // Mask for the torso.
         cv::Mat torso_color_histogram;      // Color histogram of the torso.
     }features_t;
+
+    inline void free_features(features_t* features){
+        features->torso.release();
+        features->torso_mask.release();
+        features->torso_color_histogram.release();
+    }
 }
 
 #endif //BACHELOR_PROJECT_FEATURES_T_H

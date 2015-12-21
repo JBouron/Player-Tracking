@@ -20,6 +20,13 @@ namespace tmd{
         float likelihood;           // Likelihood of the team membership.
         features_t features;
     }player_t;
+
+    inline void free_player(player_t* player){
+        player->original_image.release();
+        player->mask_image.release();
+        free_features(&player->features);
+        delete player;
+    }
 }
 
 #endif //TEAM_MEMBERSHIP_DETECTOR_PLAYER_T_H
