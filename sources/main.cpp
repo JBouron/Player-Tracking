@@ -28,10 +28,10 @@ void create_true_cluster(void) {
 }
 
 int main(int argc, char *argv[]) {
-    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4",
+    tmd::Pipeline pipeline("./res/videos/Unihockey/outputWithEmpty.mp4",
                            "./res/bgs_masks/mask_ace0.jpg", 0,
                            "./res/xmls/person.xml", false, true,
-                           "./res/pipeline_results/complete_pipeline/alone-green-no-ball/");
+                           "./res/pipeline_results/complete_pipeline/unihockey/");
 
     pipeline.set_frame_step_size(6);
     //pipeline.set_start_frame(5000);
