@@ -5,6 +5,8 @@
 #include "player_t.h"
 #include "features_extractor.h" // Threshold values
 
+#define CORR_THRESHOLD 0.4
+
 namespace tmd {
 
     /**
@@ -86,12 +88,12 @@ namespace tmd {
         /**
          * Detects the teams of a collection of players.
          */
-        void detectTeamForPlayers(std::vector<player_t*> players);
+        void detectTeamForPlayers(std::vector<player_t *> players);
 
         /**
          * Detects the team of the given player.
          */
-        void detectTeamForPlayer(player_t* player);
+        void detectTeamForPlayer(player_t *player);
 
     private:
         int m_sampleCols;
@@ -129,13 +131,13 @@ namespace tmd {
          * Gets the closest center of the clusters for a sample.
          * Returns the index of the closest center in m_centers.
          */
-        double getClosestCenter(cv::Mat sample);
+        int getClosestCenter(cv::Mat sample);
 
         /**
          * Gets the closest center of the clusters for a player.
          * Returns the index of the closest center in m_centers.
          */
-        double getClosestCenter(player_t *player);
+        int getClosestCenter(player_t *player);
     };
 }
 
