@@ -12,7 +12,8 @@
 #include "../headers/training_set_creator.h"
 #include "../headers/player_t.h"
 
-void show_body_parts(cv::Mat image, tmd::player_t* p);
+void show_body_parts(cv::Mat image, tmd::player_t *p);
+
 void extract_player_image(void);
 
 void dpm_feature_extractor_test(void);
@@ -23,74 +24,32 @@ void pipeline_class_tests(void);
 
 void dpm_whole_frame(void);
 
-void create_true_cluster(void){
+void create_true_cluster(void) {
 
 }
 
 int main(int argc, char *argv[]) {
-    /*tmd::player_t* player = new tmd::player_t;
-    player->original_image = cv::imread("./res/manual_extraction/playeror.jpg");
-    player->mask_image = cv::imread("./res/manual_extraction/playermk.jpg");
-    player->pos_frame.x = 0;
-    player->pos_frame.y = 0;
-    player->pos_frame.width = player->original_image.cols;
-    player->pos_frame.height = player->original_image.rows;
-    tmd::DPMDetector detector("./res/xmls/person.xml");
-    detector.extractBodyParts(player);
-    show_body_parts(player->original_image, player);*/
-    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4",""
-                                   "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", true, true,
-               "./res/pipeline_results/complete_pipeline/alone-green-no-ball"
-                       "/");
+    tmd::Pipeline pipeline("./res/videos/Unihockey/outputWithEmpty.mp4",
+                           "./res/bgs_masks/mask_ace0.jpg", 0,
+                           "./res/xmls/person.xml", false, true,
+                           "./res/pipeline_results/complete_pipeline/unihockey/");
 
-    pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(290);
+    pipeline.set_frame_step_size(6);
+    //pipeline.set_start_frame(5000);
 
-
-    tmd::frame_t* frame = pipeline.next_frame();
-    while (frame != NULL){
+    tmd::frame_t *frame = pipeline.next_frame();
+    while (frame != NULL) {
         delete frame;
         frame = pipeline.next_frame();
     }
     return EXIT_SUCCESS;
 }
 
-void create_training_set(void){
 
-    std::string basic_path = "./res/videos/";
-
-    std::string video_folders[8];
-    std::string mask_folder[6];
-
-    video_folders[0] = basic_path + "alone-green-ball/";
-    video_folders[1] = basic_path + "alone-green-no-ball/";
-    video_folders[2] = basic_path + "alone-red-ball/";
-    video_folders[3] = basic_path + "alone-red-no-ball/";
-    video_folders[4] = basic_path + "two-green-ball/";
-    video_folders[5] = basic_path + "two-green-no-ball/";
-    video_folders[6] = basic_path + "two-red-ball/";
-    video_folders[7] = basic_path + "two-red-no-ball/";
-
-    cv::VideoCapture videos[48];
-
-    for(int i = 0; i < 8; i++){
-        for(int j = 0; j < 6; j++){
-            std::string video_path = video_folders[i] + "ace_" + std::to_string(j) + ".mp4";
-            videos[i+j].open(video_path);
-        }
-    }
-
-    cv::Mat centers;
-    tmd::FeatureComparator* comparator = new tmd::FeatureComparator(2, 180, centers);
-
-
-}
-
-void pipeline_class_tests(void){
+void pipeline_class_tests(void) {
     tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", "./res/bgs_masks/mask_ace0.jpg", 0, ""
             "./res/xmls/person.xml", false, true, ""
-            "./res/pipeline_results/complete_pipeline/alone-green-no-ball/");
+                                   "./res/pipeline_results/complete_pipeline/alone-green-no-ball/");
 
     pipeline.set_frame_step_size(10);
     pipeline.set_start_frame(0);
@@ -99,8 +58,8 @@ void pipeline_class_tests(void){
 
     int keyboard = 0;
     std::string win_name = "Pipeline frame";
-    tmd::frame_t* frame = pipeline.next_frame();
-    while (keyboard != 27 && frame != NULL){
+    tmd::frame_t *frame = pipeline.next_frame();
+    while (keyboard != 27 && frame != NULL) {
         cv::imshow(win_name, frame->original_frame);
         keyboard = cv::waitKey(0);
 
@@ -113,8 +72,8 @@ void pipeline_class_tests(void){
     delete frame;
 }
 
-void dpm_whole_frame(void){
-    tmd::player_t* player = new tmd::player_t;
+void dpm_whole_frame(void) {
+    tmd::player_t *player = new tmd::player_t;
     player->original_image = cv::imread("./res/images/uni0.jpg");
     const int rows = player->original_image.rows;
     const int cols = player->original_image.cols;
@@ -150,7 +109,7 @@ void extract_player_image(void) {
     mp.extract_player_from_frame(frame);
 }
 
-void show_body_parts(cv::Mat image, tmd::player_t* p) {
+void show_body_parts(cv::Mat image, tmd::player_t *p) {
     std::vector<cv::Rect> parts = p->features.body_parts;
     CvScalar color;
     color.val[0] = 255;
@@ -183,7 +142,7 @@ void show_body_parts(cv::Mat image, tmd::player_t* p) {
     }
 }
 
-void pipeline(void){
+void pipeline(void) {
     cv::VideoCapture capture("./res/videos/alone-green-no-ball/ace_0.mp4");
     tmd::BGSubstractor bgSubstractor(&capture, cv::imread("./res/bgs_masks/mask_ace0.jpg"), 0);
     tmd::DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
@@ -214,32 +173,36 @@ void pipeline(void){
     const int line_type = 8; // 8 connected line.
     const int shift = 0;
 
-    while (frame_idx < frame_limit){
+    while (frame_idx < frame_limit) {
         std::cout << "In frame " << frame_idx << " : " << std::endl;
 
         // Fetch next frame.
-        tmd::frame_t* frame = bgSubstractor.next_frame();
+        tmd::frame_t *frame = bgSubstractor.next_frame();
 
         cv::Vec3b black;
-        black.val[0] = 0; black.val[1] = 0; black.val[2] = 0;
+        black.val[0] = 0;
+        black.val[1] = 0;
+        black.val[2] = 0;
         cv::Vec3b white;
-        white.val[0] = 255; white.val[1] = 255; white.val[2] = 255;
-        for (int c = 0 ; c < frame->mask_frame.cols ; c ++){
-            for (int r = 0 ; r < frame->mask_frame.rows ; r ++){
-                if (frame->mask_frame.at<uchar>(r,c) == 0){
+        white.val[0] = 255;
+        white.val[1] = 255;
+        white.val[2] = 255;
+        for (int c = 0; c < frame->mask_frame.cols; c++) {
+            for (int r = 0; r < frame->mask_frame.rows; r++) {
+                if (frame->mask_frame.at<uchar>(r, c) == 0) {
                     frame->original_frame.at<cv::Vec3b>(r, c) = black;
                 }
             }
         }
         // Extract players from the frame.
-        std::vector<tmd::player_t*> players = dpmPlayerExtractor
+        std::vector<tmd::player_t *> players = dpmPlayerExtractor
                 .extract_player_from_frame(frame);
         std::cout << players.size() << " players detected." << std::endl;
 
         cv::Mat frame_cpy(frame->original_frame);
         // For each player
-        for (size_t i = 0 ; i < players.size() ; i ++){
-            tmd::player_t* player = players[i];
+        for (size_t i = 0; i < players.size(); i++) {
+            tmd::player_t *player = players[i];
             // Draw detection rectangle
             cv::rectangle(frame_cpy, player->pos_frame, color, thickness,
                           line_type, shift);
@@ -248,7 +211,7 @@ void pipeline(void){
             featuresExtractor.extractFeatures(player);
 
             // Draw the parts rectangles
-            for (size_t j = 0 ; j < player->features.body_parts.size() ; j ++){
+            for (size_t j = 0; j < player->features.body_parts.size(); j++) {
                 cv::Rect part = player->features.body_parts[j];
                 part.x += player->pos_frame.x;
                 part.y += player->pos_frame.y;
@@ -267,19 +230,19 @@ void pipeline(void){
 
         // Increment index.
         frame_idx += frame_step;
-        for (int i = 0; i < frame_step ; i ++){
+        for (int i = 0; i < frame_step; i++) {
             delete bgSubstractor.next_frame();
         }
 
-        if (save_results){
+        if (save_results) {
             cv::imwrite("./res/pipeline_results/dpm-two-persons-1.0-"
-        "threshold/frame" + std::to_string(frame_idx) + ".jpg", frame_cpy);
+                                "threshold/frame" + std::to_string(frame_idx) + ".jpg", frame_cpy);
         }
 
         frames_results.push_back(frame_cpy.clone());
 
         // Free the player vector.
-        for (size_t i = 0 ; i < players.size() ; i ++){
+        for (size_t i = 0; i < players.size(); i++) {
             delete players[i];
         }
         // Free the frame.
@@ -287,7 +250,7 @@ void pipeline(void){
     }
 
     size_t results_count = frames_results.size();
-    for (size_t i = 0 ; i < results_count ; i ++){
+    for (size_t i = 0; i < results_count; i++) {
         cv::imshow("Result", frames_results[i]);
         cv::waitKey(0);
     }

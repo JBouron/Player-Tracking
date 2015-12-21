@@ -19,14 +19,12 @@ namespace tmd {
             std::vector<player_t *> &players) {
         size_t size = players.size();
         size_t i = 0;
-        for (i = 0; i < players.size(); i++) {
+        for (i = 0; i < size; i++) {
             extractFeatures(players[i]);
             if (players[i]->features.body_parts.size() == 0) {
                 tmd::debug("FeaturesExtractor", "extractFeaturesFromPlayers",
                            "Player " + std::to_string(i) + " has no body "
                                    "parts !");
-                players.erase(players.begin() + i);
-                i--;
             }
         }
     }
