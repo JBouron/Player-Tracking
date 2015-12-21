@@ -80,7 +80,7 @@ namespace tmd {
         }
     }
 
-    cv::Mat Pipeline::get_colored_mask_for_frame(frame_t* frame){
+    cv::Mat Pipeline::get_colored_mask_for_frame(frame_t *frame) {
 
         cv::Mat resulting_image;
         frame->original_frame.copyTo(resulting_image);
@@ -119,11 +119,11 @@ namespace tmd {
                 m_playerExtractor->extract_player_from_frame(frame);
 
         tmd::debug("Pipeline", "next_frame", std::to_string(players.size()) +
-                " players/blobs extracted.");
+                                             " players/blobs extracted.");
 
         frame->original_frame = get_colored_mask_for_frame(frame);
 
-        if (!m_using_dpm){
+        if (!m_using_dpm) {
             tmd::debug("Pipeline", "next_frame", "Separate blobs.");
             players = BlobSeparator::separate_blobs(players);
             tmd::debug("Pipeline", "next_frame", "Done");
@@ -149,22 +149,25 @@ namespace tmd {
         size_t player_count = players.size();
         for (int i = 0; i < player_count; i++) {
             player_t *p = players[i];
-            cv::rectangle(frame->original_frame, players[i]->pos_frame,
-                          get_team_color(players[i]->team), thickness,
-                          line_type, shift);
-            //show_body_parts(frame->original_frame, p);
-            cv::Rect torso;
-            torso.x = p->pos_frame.x + p->features.torso_pos.x;
-            torso.y = p->pos_frame.y + p->features.torso_pos.y;
-            torso.width = p->features.torso_pos.width;
-            torso.height = p->features.torso_pos.height;
-            cv::rectangle(frame->original_frame, torso,
-                          torso_color, thickness,
-                          line_type, shift);
-            std::string file_name = m_output_folder + "/torsos/torso" +
-                                    std::to_string((int) frame->frame_index + 1) + "-" +
-                                    std::to_string(i) + ".jpg";
-            cv::imwrite(file_name, frame->original_frame(torso));
+            if (players[i]->team != TEAM_UNKNOWN) {
+                cv::rectangle(frame->original_frame, players[i]->pos_frame,
+                              get_team_color(players[i]->team), thickness,
+                              line_type, shift);
+
+                //show_body_parts(frame->original_frame, p);
+                cv::Rect torso;
+                torso.x = p->pos_frame.x + p->features.torso_pos.x;
+                torso.y = p->pos_frame.y + p->features.torso_pos.y;
+                torso.width = p->features.torso_pos.width;
+                torso.height = p->features.torso_pos.height;
+                cv::rectangle(frame->original_frame, torso,
+                              torso_color, thickness,
+                              line_type, shift);
+                std::string file_name = m_output_folder + "/torsos/torso" +
+                                        std::to_string((int) frame->frame_index + 1) + "-" +
+                                        std::to_string(i) + ".jpg";
+                cv::imwrite(file_name, frame->original_frame(torso));
+            }
             free_player(players[i]);
         }
 

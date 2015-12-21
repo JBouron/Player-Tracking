@@ -67,7 +67,7 @@ namespace tmd {
         m_data.push_back(sample);
     }
 
-    double FeatureComparator::getClosestCenter(cv::Mat sample) {
+    int FeatureComparator::getClosestCenter(cv::Mat sample) {
         if (m_data.cols != sample.cols || sample.rows != 1) {
             throw std::invalid_argument(
                     "Sample doesn't have the same amount of dimensions as the data !");
@@ -89,10 +89,14 @@ namespace tmd {
         }
         tmd::debug("FeatureComparator", "getClosestCenter", "max = " +
                 std::to_string(max));
+
+        if(max < CORR_THRESHOLD){
+            index_max = -1;
+        }
         return index_max;
     }
 
-    double FeatureComparator::getClosestCenter(player_t *player) {
+    int FeatureComparator::getClosestCenter(player_t *player) {
         return getClosestCenter(getMatForPlayerFeature(player));
     }
 
@@ -240,8 +244,20 @@ namespace tmd {
             player->team = TEAM_UNKNOWN;
         }
         else {
-            player->team = getClosestCenter(player) == m_redCenterIndex ?
-                           TEAM_A : TEAM_B;
+            int team_index = getClosestCenter(player);
+
+            if(team_index == -1){
+                player->team = TEAM_UNKNOWN;
+            }
+            else if(team_index == m_redCenterIndex){
+                player->team = TEAM_A;
+            }
+            else if(team_index == m_greenCenterIndex){
+                player->team = TEAM_B;
+            }
+            else{
+                player->team = TEAM_UNKNOWN;
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 #include <opencv2/core/core.hpp>
 #include "../headers/bgsubstractor.h"
 #include "../headers/debug.h"
-#include "../headers/frame_t.h"
 
 namespace tmd {
     BGSubstractor::BGSubstractor(cv::VideoCapture *input_video, cv::Mat static_mask,
@@ -79,7 +78,7 @@ namespace tmd {
         checked_pixels = cv::Mat::zeros(m_static_mask.rows, m_static_mask.cols, CV_8U);
         frame->mask_frame.copyTo(mask_copy);
         int buffer_size = 2;
-        int count_threshold = 4;
+        int count_threshold = 10;
 
         for (int row = 0; row < m_static_mask.rows; row++) {
             for (int col = 0; col < m_static_mask.cols; col++) {
@@ -93,6 +92,9 @@ namespace tmd {
                                     if (count_neighbours_in_fg(frame->mask_frame, col + neighbour_col,
                                                                row + neighbour_row, buffer_size) > count_threshold) {
                                         mask_copy.at<uchar>(row + neighbour_row, col + neighbour_col) = 255;
+                                    }
+                                    else {
+                                        mask_copy.at<uchar>(row + neighbour_row, col + neighbour_col) = 0;
                                     }
                                     checked_pixels.at<uchar>(row + neighbour_row, col + neighbour_col) = 255;
                                 }
