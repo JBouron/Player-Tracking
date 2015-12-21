@@ -39,9 +39,9 @@ namespace tmd{
                 break;
 
             case TEAM_UNKNOWN:
-                color.val[0] = 0;
-                color.val[1] = 0;
-                color.val[2] = 0;
+                color.val[0] = 1;
+                color.val[1] = 1;
+                color.val[2] = 1;
                 color.val[3] = 255;
                 break;
 

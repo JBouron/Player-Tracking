@@ -90,26 +90,6 @@ namespace tmd {
         tmd::debug("FeatureComparator", "getClosestCenter", "max = " +
                 std::to_string(max));
         return index_max;
-
-        /*
-
-        float max_diff_area = 0.0;
-        int max_area_center = 0;
-        for (int i = 0; i < m_centers.rows; i++) {
-            float area = 0;
-            for (int h = 0; h < m_centers.row(i).cols; h++) {
-                area += MIN(m_centers.at<float>(i, h), sample.at<float>(0, h));
-            }
-            std::cout << "Area with center " << i << " = " << area <<
-            std::endl;
-            if (area > max_diff_area) {
-                max_diff_area = area;
-                max_area_center = i;
-            }
-        }
-
-        return max_area_center;
-         */
     }
 
     double FeatureComparator::getClosestCenter(player_t *player) {
@@ -259,7 +239,9 @@ namespace tmd {
         if (player->features.body_parts.size() == 0) {
             player->team = TEAM_UNKNOWN;
         }
-        player->team = getClosestCenter(player) == m_redCenterIndex ?
-                       TEAM_A : TEAM_B;
+        else {
+            player->team = getClosestCenter(player) == m_redCenterIndex ?
+                           TEAM_A : TEAM_B;
+        }
     }
 }
