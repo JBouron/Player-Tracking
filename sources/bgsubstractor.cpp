@@ -73,7 +73,9 @@ namespace tmd {
         }
 
         //second pass
-        cv::Mat mask_copy(frame->mask_frame.rows, frame->mask_frame.cols, CV_8U);
+        cv::Mat mask_copy(m_static_mask.rows, m_static_mask.cols, CV_8U);
+        cv::Mat checked_pixels;
+        checked_pixels = cv::Mat::zeros(m_static_mask.rows, m_static_mask.cols, CV_8U);
         frame->mask_frame.copyTo(mask_copy);
         unsigned int buffer_size = 2;
         unsigned int count_threshold = 0;
@@ -81,9 +83,21 @@ namespace tmd {
         for (int row = 0; row < m_static_mask.rows; row++) {
             for (int col = 0; col < m_static_mask.cols; col++) {
                 int current_value = frame->mask_frame.at<uchar>(row, col);
-                if (current_value == 0) {
-                    if (count_neighbours_in_fg(frame->mask_frame, col, row, buffer_size) > count_threshold) {
-                        mask_copy.at<uchar>(row, col) = 255;
+                if (current_value != 0) {
+                    std::cout << "LOL" << std::endl;
+                    for (int neighbour_col = -buffer_size; neighbour_col <= buffer_size; neighbour_col++) {
+                        for (int neighbour_row = -buffer_size; neighbour_row <= buffer_size; neighbour_row++) {
+                            if (col + neighbour_col > 0 && col + neighbour_col < m_static_mask.cols
+                                && row + neighbour_row > 0 && row + neighbour_row < m_static_mask.rows) {
+                                if (checked_pixels.at<uchar>(row + neighbour_row, col + neighbour_col) == 0) {
+                                    if (count_neighbours_in_fg(frame->mask_frame, col + neighbour_col,
+                                                               row + neighbour_row, buffer_size) > count_threshold) {
+                                        mask_copy.at<uchar>(row, col) = 255;
+                                    }
+                                    checked_pixels.at<uchar>(row + neighbour_row, col + neighbour_col) = 255;
+                                }
+                            }
+                        }
                     }
                 }
                 /*
