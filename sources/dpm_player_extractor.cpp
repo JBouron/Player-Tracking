@@ -2,6 +2,7 @@
 #include "../headers/dpm_player_extractor.h"
 #include "../headers/frame_t.h"
 #include "../headers/player_t.h"
+#include "../headers/debug.h"
 
 namespace tmd{
     DPMPlayerExtractor::DPMPlayerExtractor(std::string model_file, float
@@ -30,7 +31,10 @@ namespace tmd{
             frame_t *frame){
         cv::Mat image = get_colored_mask_for_frame(frame);
         std::vector<cv::LatentSvmDetector::ObjectDetection> results;
+        tmd::debug("DPMPlayerExtractor", "extract_player_from_frame", "Call "
+                "detect on image");
         m_detector->detect(image, results, m_overlap_threshold, 4);
+        tmd::debug("DPMPlayerExtractor", "extract_player_from_frame", "Done");
 
         std::vector<tmd::player_t*> players;
 
@@ -39,7 +43,6 @@ namespace tmd{
                 players.push_back(new player_t);
                 tmd::player_t *p = players[players.size()-1];
                 p->likelihood = results[i].score;
-                std::cout << results[i].score << std::endl;
                 p->frame_index = static_cast<int> (frame->frame_index);
 
                 cv::Rect playerRect = results[i].rect;

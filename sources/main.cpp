@@ -11,6 +11,7 @@
 #include "../headers/pipeline.h"
 #include "../headers/training_set_creator.h"
 #include "../headers/player_t.h"
+#include "../headers/blob_separator.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -24,27 +25,83 @@ void pipeline_class_tests(void);
 
 void dpm_whole_frame(void);
 
-void create_true_cluster(void) {
-
-}
+void test_blob_separation(void);
 
 int main(int argc, char *argv[]) {
-    tmd::Pipeline pipeline("./res/videos/Unihockey/outputWithEmpty.mp4",
-                           "./res/bgs_masks/mask_ace0.jpg", 0,
-                           "./res/xmls/person.xml", false, true,
-                           "./res/pipeline_results/complete_pipeline/unihockey/");
+    tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4",""
+                                   "./res/bgs_masks/mask_ace0.jpg", 0, ""
+                                   "./res/xmls/person.xml", false, true,
+               "./res/pipeline_results/complete_pipeline/uni/with blob "
+                       "separator/");
 
-    pipeline.set_frame_step_size(6);
-    //pipeline.set_start_frame(5000);
+    pipeline.set_frame_step_size(2);
+    pipeline.set_start_frame(0);
 
     tmd::frame_t *frame = pipeline.next_frame();
+    int count = 0;
+    double t1 = cv::getTickCount();
     while (frame != NULL) {
+        count ++;
         delete frame;
         frame = pipeline.next_frame();
     }
+    double t2 = cv::getTickCount();
+    std::cout << "Time = " << (t1 - t2)/ cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
 }
 
+void test_blob_separation(void){
+    tmd::player_t* player = new tmd::player_t;
+    player->original_image = cv::imread(
+                    "./res/manual_extraction/frame5847_originalimage0.jpg");
+    player->mask_image = cv::imread(
+            "./res/manual_extraction/frame5847_maskimage0.jpg", 0);
+    player->frame_index = 0;
+
+    std::vector<tmd::player_t*> players;
+    players.push_back(player);
+
+    std::vector<tmd::player_t*> new_players =tmd::BlobSeparator::separate_blobs
+            (players);
+
+    std::cout << "new_player size = " << new_players.size() << std::endl;
+
+    for (int i = 0 ; i < new_players.size() ; i ++){
+        cv::imshow("Player", new_players[i]->original_image);
+        cv::waitKey(0);
+    }
+}
+
+void create_training_set(void){
+
+    std::string basic_path = "./res/videos/";
+
+    std::string video_folders[8];
+    std::string mask_folder[6];
+
+    video_folders[0] = basic_path + "alone-green-ball/";
+    video_folders[1] = basic_path + "alone-green-no-ball/";
+    video_folders[2] = basic_path + "alone-red-ball/";
+    video_folders[3] = basic_path + "alone-red-no-ball/";
+    video_folders[4] = basic_path + "two-green-ball/";
+    video_folders[5] = basic_path + "two-green-no-ball/";
+    video_folders[6] = basic_path + "two-red-ball/";
+    video_folders[7] = basic_path + "two-red-no-ball/";
+
+    cv::VideoCapture videos[48];
+
+    for(int i = 0; i < 8; i++){
+        for(int j = 0; j < 6; j++){
+            std::string video_path = video_folders[i] + "ace_" + std::to_string(j) + ".mp4";
+            videos[i+j].open(video_path);
+        }
+    }
+
+    cv::Mat centers;
+    tmd::FeatureComparator* comparator = new tmd::FeatureComparator(2, 180, centers);
+
+
+}
 
 void pipeline_class_tests(void) {
     tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", "./res/bgs_masks/mask_ace0.jpg", 0, ""

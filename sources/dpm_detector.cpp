@@ -355,10 +355,6 @@ namespace tmd {
         int oppoY = ((torso1.y + torso1.height) + (torso2.y + torso2.height))/2;
         mean.width = oppoX - mean.x;
         mean.height = oppoY - mean.y;
-        std::cout << "Player box = " << player->pos_frame << std::endl;
-        std::cout << "Mean box = " << mean << std::endl;
-        std::cout << "Body parts 1 = " << torso1 << std::endl;
-        std::cout << "Body parts 2 = " << torso2 << std::endl;
         assert(mean.x >= 0);
         assert(mean.y >= 0);
         assert(mean.y + mean.height <= player->pos_frame.height);
@@ -415,8 +411,6 @@ namespace tmd {
             if (part.x + part.width > max_x) max_x = part.x + part.width;
             if (part.y + part.height > max_y) max_y = part.y + part.height;
         }
-        std::cout << "DPMDetector::shrinkBox() : pos_frame = " <<
-                player->pos_frame << std::endl;
 
         assert(min_x >= 0);
         assert(min_y >= 0);
