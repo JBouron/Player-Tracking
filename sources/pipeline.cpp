@@ -10,7 +10,8 @@
 namespace tmd {
     Pipeline::Pipeline(std::string video_path, std::string static_mask_path,
                        unsigned char camera_index, std::string model_file,
-                       bool dpm, bool save_frames, std::string output_folder) {
+                       bool dpm, bool save_frames, bool save_mask, std::string
+                       output_folder) {
         m_video_path = video_path;
 
         m_video = new cv::VideoCapture;
@@ -37,6 +38,8 @@ namespace tmd {
 
         m_featuresExtractor = new FeaturesExtractor("./res/xmls/person.xml");
 
+        m_write_buffer = new tmd::WriteBuffer(output_folder, 5, save_mask);
+
         m_running = false;
         m_using_dpm = dpm;
         m_start = 0;
@@ -53,6 +56,8 @@ namespace tmd {
         delete m_playerExtractor;
         delete m_featuresExtractor;
         delete m_featuresComparator;
+        m_write_buffer->force_write();
+        delete m_write_buffer;
     }
 
     void show_body_parts(cv::Mat image, tmd::player_t *p) {
@@ -110,10 +115,6 @@ namespace tmd {
             return NULL;
         }
 
-        cv::imwrite(m_output_folder + "/original_frames/frame" +
-                    std::to_string((int) frame->frame_index) + ".jpg",
-                    frame->original_frame);
-
         tmd::debug("Pipeline", "next_frame", "Extracting players.");
         std::vector<tmd::player_t *> players =
                 m_playerExtractor->extract_player_from_frame(frame);
@@ -169,16 +170,13 @@ namespace tmd {
         }
 
         if (m_save) {
-            std::string file_name = "frame" + std::to_string
-                    (m_bgSubstractor->get_current_frame_index()) + ".jpg";
-            tmd::debug("Pipeline", "next_frame", "Save frame to : " +
-                                                 file_name);
-            cv::imwrite(m_output_folder + "/" + file_name, frame->original_frame);
-            file_name = "mask" + std::to_string
-                    (m_bgSubstractor->get_current_frame_index()) + ".jpg";
-            tmd::debug("Pipeline", "next_frame", "Save mask to : " +
-                                                 file_name);
-            cv::imwrite(m_output_folder + "/" + file_name, frame->mask_frame);
+            tmd::debug("Pipeline", "next_frame", "Write frame " +
+                    std::to_string((int) frame->frame_index));
+            //m_write_buffer->add_to_buffer(frame);
+            int file_idx = static_cast<int>(frame->frame_index);
+            std::string file_name = m_output_folder+ "/frame" + std::to_string(file_idx) +
+                                    ".jpg";
+            cv::imwrite(file_name, frame->original_frame);
         }
 
         return frame;

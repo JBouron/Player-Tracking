@@ -7,6 +7,7 @@
 #include "player_extractor.h"
 #include "features_extractor.h"
 #include "feature_comparator.h"
+#include "write_buffer.h"
 
 namespace tmd{
 
@@ -36,7 +37,7 @@ namespace tmd{
         Pipeline(std::string video_path, std::string static_mask_path, unsigned char camera_index,
                  std::string model_file, bool dpm
         = false, bool save_frames = false,
-                 std::string output_folder = "");
+                 bool save_mask = false, std::string output_folder = "");
 
         ~Pipeline();
 
@@ -88,6 +89,7 @@ namespace tmd{
         tmd::PlayerExtractor *m_playerExtractor;
         tmd::FeaturesExtractor *m_featuresExtractor;
         tmd::FeatureComparator *m_featuresComparator;
+        tmd::WriteBuffer *m_write_buffer;
         std::string m_video_path;
         unsigned char m_camera_index;
         std::string m_output_folder;

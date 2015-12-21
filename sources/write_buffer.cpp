@@ -23,10 +23,11 @@ namespace tmd{
     }
 
     void WriteBuffer::add_to_buffer(tmd::frame_t *frame){
-        if (m_buffer.size() == m_buffer_max_size){
+        if (m_buffer.size() >= m_buffer_max_size){
             flush_buffer();
         }
         frame_t* copy = new frame_t;
+        copy->frame_index = frame->frame_index;
         copy->original_frame = frame->original_frame.clone();
         if (m_save_mask){
             copy->mask_frame = frame->mask_frame.clone();
@@ -36,6 +37,9 @@ namespace tmd{
 
     void WriteBuffer::force_write(){
         flush_buffer();
+        if (m_write_flag){
+            m_writing_thread.join();
+        }
     }
 
     void _write_buffer_to_disk(std::vector<frame_t*> frames,
@@ -43,7 +47,7 @@ namespace tmd{
                                std::atomic<bool> &write_flag){
         size_t size = frames.size();
         for (size_t i = 0 ; i < size ; i ++){
-            size_t file_idx = i + *elements_count;
+            int file_idx = static_cast<int>(frames[i]->frame_index);
             std::string file_name = dest_folder + "/frame" + std::to_string(file_idx) +
                     ".jpg";
             tmd::debug("WriteBuffer", "_write_buffer_to_disk", "Thread : "
@@ -72,7 +76,7 @@ namespace tmd{
          *
          *  TODO : Change the implementation, not really critical though.
          */
-        while (m_write_flag){
+        if (m_write_flag){
             tmd::debug("WriteBuffer", "flush_buffer", "Waiting for writing "
                     "thread to finish.");
             m_writing_thread.join();

@@ -31,11 +31,9 @@ void test_blob_separation(void);
 void test_write_buffer(void);
 
 int main(int argc, char *argv[]) {
-    test_write_buffer();
-    return 0;
     tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", false, true,
+                                   "./res/xmls/person.xml", false, true, true,
                "./res/pipeline_results/complete_pipeline/uni/with blob "
                        "separator/");
 
@@ -44,18 +42,16 @@ int main(int argc, char *argv[]) {
     tmd::frame_t *frame = pipeline.next_frame();
     int count = 0;
     double t1 = cv::getTickCount();
-    cv::VideoWriter writer("Test.avi", -1, 30, cv::Size(100, 100), true);
     while (frame != NULL) {
         count ++;
-        if (count == 4){
+        if (count > 5){
             break;
         }
-        writer.write(frame->original_frame);
         delete frame;
         frame = pipeline.next_frame();
     }
     double t2 = cv::getTickCount();
-    std::cout << "Time = " << (t1 - t2)/ cv::getTickFrequency() << std::endl;
+    std::cout << "Time = " << (t2 - t1)/ cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
 }
 
