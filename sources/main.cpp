@@ -12,6 +12,7 @@
 #include "../headers/training_set_creator.h"
 #include "../headers/player_t.h"
 #include "../headers/blob_separator.h"
+#include "../headers/write_buffer.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -27,7 +28,10 @@ void dpm_whole_frame(void);
 
 void test_blob_separation(void);
 
+void test_write_buffer(void);
+
 int main(int argc, char *argv[]) {
+    test_write_buffer();
     return 0;
     tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
@@ -40,17 +44,34 @@ int main(int argc, char *argv[]) {
     tmd::frame_t *frame = pipeline.next_frame();
     int count = 0;
     double t1 = cv::getTickCount();
+    cv::VideoWriter writer("Test.avi", -1, 30, cv::Size(100, 100), true);
     while (frame != NULL) {
         count ++;
-        if (count == 1){
+        if (count == 4){
             break;
         }
+        writer.write(frame->original_frame);
         delete frame;
         frame = pipeline.next_frame();
     }
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t1 - t2)/ cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
+}
+
+void test_write_buffer(void){
+    tmd::WriteBuffer writeBuffer("./", 5, false);
+    tmd::frame_t* frame = new tmd::frame_t;
+    frame->original_frame = cv::imread("./res/images/uni0.jpg");
+
+    for (int i = 0 ; i < 10 ; i ++){
+        writeBuffer.add_to_buffer(frame);
+    }
+
+    for (int i = 0 ; i < 10 ; i ++){
+        writeBuffer.add_to_buffer(frame);
+    }
+    writeBuffer.force_write();
 }
 
 void test_blob_separation(void){
