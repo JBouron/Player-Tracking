@@ -43,8 +43,6 @@ int main(int argc, char *argv[]) {
     }
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t2 - t1)/ cv::getTickFrequency() << std::endl;
-    std::cout << "Time per frame = " << (t2 - t1)/ (cv::getTickFrequency() *
-            count) << std::endl;
     return EXIT_SUCCESS;
 }
 
