@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.3)
 project(Bachelor_Project)
 
 # Note : -MM and -H can only build, not run the program.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -D VALGRIND=ON")
 set(OpenCV_FOUND TRUE)
 find_package(OpenCV REQUIRED)
 set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h

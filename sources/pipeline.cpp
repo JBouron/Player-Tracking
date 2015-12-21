@@ -2,13 +2,10 @@
 #include "../headers/dpm_player_extractor.h"
 #include "../headers/debug.h"
 #include "../headers/blob_player_extractor.h"
-<<<<<<< HEAD
-=======
 #include "../headers/frame_t.h"
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
 #include "../headers/blob_separator.h"
->>>>>>> blob-separation
 
 namespace tmd {
     Pipeline::Pipeline(std::string video_path, std::string static_mask_path,
@@ -168,7 +165,7 @@ namespace tmd {
                                     std::to_string((int) frame->frame_index + 1) + "-" +
                                     std::to_string(i) + ".jpg";
             cv::imwrite(file_name, frame->original_frame(torso));
-            delete players[i];
+            free_player(players[i]);
         }
 
         if (m_save) {
