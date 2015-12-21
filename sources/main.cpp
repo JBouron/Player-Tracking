@@ -28,7 +28,6 @@ void dpm_whole_frame(void);
 void test_blob_separation(void);
 
 int main(int argc, char *argv[]) {
-    return 0;
     tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/person.xml", false, true,
@@ -39,17 +38,20 @@ int main(int argc, char *argv[]) {
     pipeline.set_start_frame(0);
     tmd::frame_t *frame = pipeline.next_frame();
     int count = 0;
+    int max_frames = -1;
     double t1 = cv::getTickCount();
     while (frame != NULL) {
         count ++;
-        if (count == 1){
+        if (count == max_frames){
             break;
         }
         delete frame;
         frame = pipeline.next_frame();
     }
     double t2 = cv::getTickCount();
-    std::cout << "Time = " << (t1 - t2)/ cv::getTickFrequency() << std::endl;
+    std::cout << "Time = " << (t2 - t1)/ cv::getTickFrequency() << std::endl;
+    std::cout << "Time per frame = " << (t2 - t1)/ (cv::getTickFrequency() *
+            count) << std::endl;
     return EXIT_SUCCESS;
 }
 
