@@ -5,6 +5,7 @@
 #include "../headers/frame_t.h"
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
+#include "../headers/blob_separator.h"
 
 namespace tmd {
     Pipeline::Pipeline(std::string video_path, std::string static_mask_path,
@@ -88,7 +89,7 @@ namespace tmd {
         black.val[2] = 0;
         for (int c = 0; c < frame->mask_frame.cols; c++) {
             for (int r = 0; r < frame->mask_frame.rows; r++) {
-                if (frame->mask_frame.at<uchar>(r, c) == 0) {
+                if (frame->mask_frame.at<uchar>(r, c) < 127) {
                     resulting_image.at<cv::Vec3b>(r, c) = black;
                 }
             }
@@ -112,10 +113,20 @@ namespace tmd {
                     std::to_string((int) frame->frame_index) + ".jpg",
                 frame->original_frame);
 
+        tmd::debug("Pipeline", "next_frame", "Extracting players.");
         std::vector<tmd::player_t *> players =
                 m_playerExtractor->extract_player_from_frame(frame);
 
+        tmd::debug("Pipeline", "next_frame", std::to_string(players.size()) +
+                " players/blobs extracted.");
+
         frame->original_frame = get_colored_mask_for_frame(frame);
+
+        if (!m_using_dpm){
+            tmd::debug("Pipeline", "next_frame", "Separate blobs.");
+            players = BlobSeparator::separate_blobs(players);
+            tmd::debug("Pipeline", "next_frame", "Done");
+        }
 
         tmd::debug("Pipeline", "next_frame", "Frame " + std::to_string
                 (m_bgSubstractor->get_current_frame_index()) + " : " +
@@ -140,7 +151,7 @@ namespace tmd {
             cv::rectangle(frame->original_frame, players[i]->pos_frame,
                           get_team_color(players[i]->team), thickness,
                           line_type, shift);
-            show_body_parts(frame->original_frame, p);
+            //show_body_parts(frame->original_frame, p);
             cv::Rect torso;
             torso.x = p->pos_frame.x + p->features.torso_pos.x;
             torso.y = p->pos_frame.y + p->features.torso_pos.y;
@@ -162,6 +173,12 @@ namespace tmd {
             tmd::debug("Pipeline", "next_frame", "Save frame to : " +
                                                  file_name);
             cv::imwrite(m_output_folder+ "/" +file_name,frame->original_frame);
+
+            /*file_name = "mask" + std::to_string
+                    (m_bgSubstractor->get_current_frame_index()) + ".jpg";
+            tmd::debug("Pipeline", "next_frame", "Save mask to : " +
+                                                 file_name);
+            cv::imwrite(m_output_folder+ "/" +file_name,frame->mask_frame);*/
         }
 
         return frame;
@@ -195,6 +212,7 @@ namespace tmd {
                                   "frame to " + std::to_string(frame_index));
             m_start = frame_index;
             m_bgSubstractor->jump_to_frame(frame_index);
+            tmd::debug("Pipeline", "set_frame_step_size", "Done");
         }
     }
 
