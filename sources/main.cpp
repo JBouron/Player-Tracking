@@ -27,7 +27,6 @@ void dpm_whole_frame(void);
 void test_blob_separation(void);
 
 int main(int argc, char *argv[]) {
-    test_blob_separation();
     /*tmd::player_t* player = new tmd::player_t;
     player->original_image = cv::imread("./res/manual_extraction/playeror.jpg");
     player->mask_image = cv::imread("./res/manual_extraction/playermk.jpg");
@@ -39,21 +38,21 @@ int main(int argc, char *argv[]) {
     detector.extractBodyParts(player);
     show_body_parts(player->original_image, player);*/
 
-    /*tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4",""
+    tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", true, true,
-               "./res/pipeline_results/complete_pipeline/alone-green-no-ball"
-                       "/");
+                                   "./res/xmls/person.xml", false, true,
+               "./res/pipeline_results/complete_pipeline/uni/with blob "
+                       "separator/");
 
-    pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(290);
+    pipeline.set_frame_step_size(2);
+    pipeline.set_start_frame(0);
 
 
     tmd::frame_t* frame = pipeline.next_frame();
     while (frame != NULL){
         delete frame;
         frame = pipeline.next_frame();
-    }*/
+    }
     return EXIT_SUCCESS;
 }
 
