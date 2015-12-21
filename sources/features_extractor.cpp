@@ -27,8 +27,6 @@ namespace tmd {
                 tmd::debug("FeaturesExtractor", "extractFeaturesFromPlayers",
                            "Player " + std::to_string(i) + " has no body "
                                    "parts !");
-                players.erase(players.begin() + i);
-                i--;
             }
         }
     }

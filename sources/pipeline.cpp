@@ -22,7 +22,7 @@ namespace tmd {
         }
 
         m_camera_index = camera_index;
-        cv::Mat mask = cv::imread(static_mask_path,0);
+        cv::Mat mask = cv::imread(static_mask_path, 0);
         m_bgSubstractor = new BGSubstractor(m_video, mask, camera_index);
 
         if (dpm) {
@@ -33,7 +33,7 @@ namespace tmd {
         }
 
         m_featuresComparator = new FeatureComparator(2, 180,
-                             FeatureComparator::readCentersFromFile(2, 180));
+                                                     FeatureComparator::readCentersFromFile(2, 180));
 
         m_featuresExtractor = new FeaturesExtractor("./res/xmls/person.xml");
 
@@ -55,7 +55,7 @@ namespace tmd {
         delete m_featuresComparator;
     }
 
-    void show_body_parts(cv::Mat image, tmd::player_t* p) {
+    void show_body_parts(cv::Mat image, tmd::player_t *p) {
         std::vector<cv::Rect> parts = p->features.body_parts;
         CvScalar color;
         color.val[0] = 255;
@@ -97,7 +97,7 @@ namespace tmd {
         return resulting_image;
     }
 
-    frame_t* Pipeline::next_frame() {
+    frame_t *Pipeline::next_frame() {
         m_running = true;
 
         for (int i = 0; i < m_step - 1; i++) {
@@ -130,7 +130,7 @@ namespace tmd {
 
         tmd::debug("Pipeline", "next_frame", "Frame " + std::to_string
                 (m_bgSubstractor->get_current_frame_index()) + " : " +
-                         std::to_string(players.size()) + " players detected");
+                                             std::to_string(players.size()) + " players detected");
 
         m_featuresExtractor->extractFeaturesFromPlayers(players);
 
@@ -174,11 +174,11 @@ namespace tmd {
                                                  file_name);
             cv::imwrite(m_output_folder+ "/" +file_name,frame->original_frame);
 
-            /*file_name = "mask" + std::to_string
+            file_name = "mask" + std::to_string
                     (m_bgSubstractor->get_current_frame_index()) + ".jpg";
             tmd::debug("Pipeline", "next_frame", "Save mask to : " +
                                                  file_name);
-            cv::imwrite(m_output_folder+ "/" +file_name,frame->mask_frame);*/
+            cv::imwrite(m_output_folder+ "/" +file_name,frame->mask_frame);
         }
 
         return frame;
@@ -209,7 +209,7 @@ namespace tmd {
     void Pipeline::set_start_frame(int frame_index) {
         if (!m_running) {
             tmd::debug("Pipeline", "set_frame_step_size", "Setting starting "
-                                  "frame to " + std::to_string(frame_index));
+                                                                  "frame to " + std::to_string(frame_index));
             m_start = frame_index;
             m_bgSubstractor->jump_to_frame(frame_index);
             tmd::debug("Pipeline", "set_frame_step_size", "Done");

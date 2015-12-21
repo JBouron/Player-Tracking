@@ -76,6 +76,8 @@ namespace tmd {
         double m_frame_index;
         double m_total_frame_count;
         float m_learning_rate;
+
+        int count_neighbours_in_fg(cv::Mat frame, int x, int y, int buffer_size);
     };
 }
 
