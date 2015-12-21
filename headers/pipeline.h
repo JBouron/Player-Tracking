@@ -80,6 +80,8 @@ namespace tmd{
          */
         void set_end_frame(int frame_index);
 
+        static cv::Mat get_colored_mask_for_frame(frame_t* frame);
+
     private:
         cv::VideoCapture *m_video;
         tmd::BGSubstractor *m_bgSubstractor;

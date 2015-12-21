@@ -78,14 +78,17 @@ namespace tmd {
         int index_max = -1;
         for (int i = 0; i < m_centers.rows; i++) {
             distances[i] = compareHist(m_centers.row(i), sample, CV_COMP_CORREL);
-            std::cout << "Correlation with center = " << distances[i] << std::endl;
-            std::cout << "Center index = " << i << std::endl;
+            tmd::debug("FeatureComparator", "getClosestCenter", "Correlation "
+                    "with center = " + std::to_string(distances[i]));
+            tmd::debug("FeatureComparator", "getClosestCenter", "Center "
+                                            "index = " + std::to_string(i));
             if(distances[i] > max){
                 max = distances[i];
                 index_max = i;
             }
         }
-        std::cout << "max = " << max << std::endl;
+        tmd::debug("FeatureComparator", "getClosestCenter", "max = " +
+                std::to_string(max));
         return index_max;
     }
 
@@ -118,12 +121,10 @@ namespace tmd {
 
     void FeatureComparator::writeCentersToFile() {
         std::ofstream clustersFile("./res/cluster/clusterCenters.txt");
-        std::cout << "Write centers " << std::endl;
         if (clustersFile.is_open()) {
             for (int i = 0; i < m_centers.rows; i++) {
                 for (int j = 0; j < m_centers.cols; j++) {
                     Mat row = m_centers.row(i);
-                    std::cout << row.at<float>(j) << ", ";
                     if (j < m_centers.cols - 1) {
                         clustersFile << row.at<float>(j) << " ";
                     }
@@ -131,7 +132,6 @@ namespace tmd {
                         clustersFile << row.at<float>(j);
                     }
                 }
-                std::cout << std::endl;
                 clustersFile << "\n";
             }
             clustersFile.flush();
@@ -140,7 +140,6 @@ namespace tmd {
     }
 
     Mat FeatureComparator::readCentersFromFile(int rows, int cols) {
-        std::cout << "readCentersFromFile :" << std::endl;
         std::ifstream clustersFile("./res/cluster/clusterCenters.txt");
         if (!clustersFile.is_open()) {
             throw std::runtime_error("Error couldn't load clusterCenters.txt");
@@ -152,10 +151,8 @@ namespace tmd {
                 getline(clustersFile, line);
                 vector<float> floatVector = getFloatsFromString(line);
                 for (int i = 0; i < cols; i++) {
-                    std::cout << floatVector[i] << ", ";
                     toReturn.at<float>(j, i) = floatVector[i];
                 }
-                std::cout << std::endl;
             }
             clustersFile.close();
         }
