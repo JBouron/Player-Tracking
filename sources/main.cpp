@@ -49,10 +49,15 @@ int main(int argc, char *argv[]) {
     pipeline.set_start_frame(0);
 
     tmd::frame_t *frame = pipeline.next_frame();
+    int count = 0;
+    double t1 = cv::getTickCount();
     while (frame != NULL) {
+        count ++;
         delete frame;
         frame = pipeline.next_frame();
     }
+    double t2 = cv::getTickCount();
+    std::cout << "Time = " << (t1 - t2)/ cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
 }
 
