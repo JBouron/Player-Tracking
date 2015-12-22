@@ -44,7 +44,7 @@ int main(int argc, char *argv[]) {
                                    "./res/xmls/person.xml", false, true,
                            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
 
-    pipeline.set_frame_step_size(10);
+    pipeline.set_frame_step_size(2);
     pipeline.set_start_frame(0);
     tmd::frame_t *frame = pipeline.next_frame();
 
