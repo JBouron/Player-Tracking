@@ -48,6 +48,7 @@ namespace tmd {
     }
 
     Pipeline::~Pipeline() {
+        m_video->release();
         delete m_video;
         delete m_bgSubstractor;
         delete m_playerExtractor;
