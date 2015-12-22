@@ -39,25 +39,6 @@ void memleak_video_capture(void) {
 }
 
 int main(int argc, char *argv[]) {
-    /*tmd::TrainingSetCreator trainer("./res/videos/uni-hockey/ace_0.mp4",
-                                    "./res/bgs_masks/mask_ace0.jpg", 0,
-                                    "./res/xmls/person.xml", false, true,
-                                    "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
-
-    trainer.set_frame_step_size(2);
-    tmd::frame_t *frame = trainer.next_frame();
-
-    int count = 0;
-    while (frame != NULL && count < 300) {
-        tmd::free_frame(frame);
-        frame = trainer.next_frame();
-        count++;
-    }
-
-    trainer.write_centers();
-    return 0;*/
-
-
     tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4", ""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/person.xml", false, true,
@@ -81,7 +62,6 @@ int main(int argc, char *argv[]) {
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
-
 }
 
 void test_blob_separation(void) {
