@@ -4,8 +4,9 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include "player_extractor.h"
 
-#define TMD_DEFAULT_DMP_EXTRACTOR_SCORE_THRESHOLD -10000
-#define TMD_DEFAULT_DMP_EXTRACTOR_OVERLAPPING_THRESHOLD 0.0
+#define TMD_DEFAULT_DMP_EXTRACTOR_SCORE_THRESHOLD -1.0
+#define TMD_DEFAULT_DMP_EXTRACTOR_OVERLAPPING_THRESHOLD 0.2
+
 
 namespace tmd{
 
