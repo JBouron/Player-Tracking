@@ -26,10 +26,10 @@ void dpm_whole_frame(void);
 
 void test_blob_separation(void);
 
-void memleak_video_capture(void){
-    cv::VideoCapture* capture = new cv::VideoCapture();
+void memleak_video_capture(void) {
+    cv::VideoCapture *capture = new cv::VideoCapture();
     capture->open("./res/videos/alone-green-ball/ace_0.mp4");
-    for (int i = 0 ; i < 1000 ; i ++){
+    for (int i = 0; i < 1000; i++) {
         cv::Mat frame;
         capture->read(frame);
     }
@@ -39,7 +39,26 @@ void memleak_video_capture(void){
 }
 
 int main(int argc, char *argv[]) {
-    tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4",""
+    tmd::TrainingSetCreator trainer("./res/videos/uni-hockey/ace_0.mp4",
+                                    "./res/bgs_masks/mask_ace0.jpg", 0,
+                                    "./res/xmls/person.xml", false, true,
+                                    "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
+
+    trainer.set_frame_step_size(2);
+    tmd::frame_t *frame = trainer.next_frame();
+
+    int count = 0;
+    while (frame != NULL && count < 300) {
+        tmd::free_frame(frame);
+        frame = trainer.next_frame();
+        count++;
+    }
+
+    trainer.write_centers();
+    return 0;
+
+    /*
+    tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4", ""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/person.xml", false, true,
                            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
@@ -54,14 +73,15 @@ int main(int argc, char *argv[]) {
     while (frame != NULL) {
         tmd::free_frame(frame);
         frame = pipeline.next_frame();
-        count ++;
-        if (count == max_frames){
+        count++;
+        if (count == max_frames) {
             break;
         }
     }
     double t2 = cv::getTickCount();
-    std::cout << "Time = " << (t2 - t1)/ cv::getTickFrequency() << std::endl;
+    std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
+    */
 }
 
 void test_blob_separation(void) {
@@ -113,8 +133,6 @@ void create_training_set(void) {
 
     cv::Mat centers;
     tmd::FeatureComparator *comparator = new tmd::FeatureComparator(2, 180, centers);
-
-
 }
 
 void pipeline_class_tests(void) {

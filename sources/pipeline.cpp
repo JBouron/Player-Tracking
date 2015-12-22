@@ -2,9 +2,6 @@
 #include "../headers/dpm_player_extractor.h"
 #include "../headers/debug.h"
 #include "../headers/blob_player_extractor.h"
-#include "../headers/frame_t.h"
-#include "../headers/player_t.h"
-#include "../headers/features_t.h"
 #include "../headers/blob_separator.h"
 
 namespace tmd {
@@ -151,25 +148,24 @@ namespace tmd {
         size_t player_count = players.size();
         for (int i = 0; i < player_count; i++) {
             player_t *p = players[i];
-            if (players[i]->team != TEAM_UNKNOWN) {
-                cv::rectangle(frame->original_frame, players[i]->pos_frame,
-                              get_team_color(players[i]->team), thickness,
-                              line_type, shift);
+            cv::rectangle(frame->original_frame, players[i]->pos_frame,
+                          get_team_color(players[i]->team), thickness,
+                          line_type, shift);
 
-                //show_body_parts(frame->original_frame, p);
-                cv::Rect torso;
-                torso.x = p->pos_frame.x + p->features.torso_pos.x;
-                torso.y = p->pos_frame.y + p->features.torso_pos.y;
-                torso.width = p->features.torso_pos.width;
-                torso.height = p->features.torso_pos.height;
-                cv::rectangle(frame->original_frame, torso,
-                              torso_color, thickness,
-                              line_type, shift);
-                std::string file_name = m_output_folder + "/torsos/torso" +
-                                        std::to_string((int) frame->frame_index + 1) + "-" +
-                                        std::to_string(i) + ".jpg";
-                cv::imwrite(file_name, frame->original_frame(torso));
-            }
+            //show_body_parts(frame->original_frame, p);
+            cv::Rect torso;
+            torso.x = p->pos_frame.x + p->features.torso_pos.x;
+            torso.y = p->pos_frame.y + p->features.torso_pos.y;
+            torso.width = p->features.torso_pos.width;
+            torso.height = p->features.torso_pos.height;
+            cv::rectangle(frame->original_frame, torso,
+                          torso_color, thickness,
+                          line_type, shift);
+            std::string file_name = m_output_folder + "/torsos/torso" +
+                                    std::to_string((int) frame->frame_index + 1) + "-" +
+                                    std::to_string(i) + ".jpg";
+            cv::imwrite(file_name, frame->original_frame(torso));
+
             free_player(players[i]);
         }
 
