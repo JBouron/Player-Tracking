@@ -165,7 +165,6 @@ namespace tmd {
                                     std::to_string((int) frame->frame_index + 1) + "-" +
                                     std::to_string(i) + ".jpg";
             cv::imwrite(file_name, frame->original_frame(torso));
-
             free_player(players[i]);
         }
 
