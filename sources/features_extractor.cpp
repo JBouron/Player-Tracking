@@ -118,6 +118,7 @@ namespace tmd {
         cv::Mat histCpy = p->features.torso_color_histogram.clone();
         normalize(histCpy, p->features
                 .torso_color_histogram, 0, 1.0, cv::NORM_MINMAX, -1);
+        delete[](range[0]);
         delete[](range);
     }
 }

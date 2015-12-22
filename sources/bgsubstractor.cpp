@@ -57,7 +57,6 @@ namespace tmd {
             return NULL;
         }
         frame->frame_index = m_frame_index;
-        cv::Mat mask;
         m_bgs->operator()(frame->original_frame,
                           frame->mask_frame,
                           m_learning_rate);

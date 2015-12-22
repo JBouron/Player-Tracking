@@ -120,10 +120,10 @@ namespace tmd {
                 int btX = (maxCol + 20) > cols ? cols : (maxCol + 20);
                 int btY = (maxRow + 20) > rows ? rows: (maxRow + 20);
                 cv::Rect myRect(tpX, tpY, btX - tpX , btY - tpY);
-                player->mask_image = frame->mask_frame.clone()(myRect);
+                player->mask_image = frame->mask_frame(myRect);
                 player->pos_frame = myRect;
                 player->team = TEAM_UNKNOWN;
-                player->original_image = frame->original_frame.clone()(myRect);
+                player->original_image = frame->original_frame(myRect);
                 player->frame_index = frame->frame_index;
                 players.push_back(player);
             }

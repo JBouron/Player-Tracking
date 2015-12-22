@@ -14,8 +14,7 @@ namespace tmd {
         m_video_path = video_path;
 
         m_video = new cv::VideoCapture;
-        m_video->open(video_path);
-
+        m_video->open(video_path); // TODO : Valkyrie reports a memleak here ...
         if (!m_video->isOpened()) {
             throw std::invalid_argument("Error couldn't load the video in the"
                                                 " pipeline.");
@@ -122,7 +121,9 @@ namespace tmd {
         tmd::debug("Pipeline", "next_frame", std::to_string(players.size()) +
                                              " players/blobs extracted.");
 
-        frame->original_frame = get_colored_mask_for_frame(frame);
+        cv::Mat coloredMask = get_colored_mask_for_frame(frame);
+        frame->original_frame.release();
+        frame->original_frame = coloredMask;
 
         if (!m_using_dpm) {
             tmd::debug("Pipeline", "next_frame", "Separate blobs.");
@@ -184,7 +185,7 @@ namespace tmd {
                                                  file_name);
             cv::imwrite(m_output_folder + "/" + file_name, frame->mask_frame);
         }
-
+        coloredMask.release();
         return frame;
     }
 
