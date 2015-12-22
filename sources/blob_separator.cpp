@@ -18,16 +18,10 @@ namespace tmd{
         std::vector<player_t*> new_player_vector;
 
         size_t size = players.size();
-        cv::LatentSvmDetector* detector = new cv::LatentSvmDetector(); // freed
-        std::string xml = "./res/xmls/person.xml";
-        std::vector<std::string> model_files;
-        model_files.push_back(xml);
-        detector->load(model_files);
 
-        /*for (size_t i = 0 ; i < size ; i ++){
-            cv::imshow("Player", players[i]->original_image);
-            cv::waitKey(0);
-        }*/
+        // freed
+        DPMPlayerExtractor* playerExtractor = new DPMPlayerExtractor(
+                "./res/xmls/person.xml");
 
         for (size_t i = 0 ; i < size ; i ++){
             player_t* p = players[i]; // freed
@@ -43,8 +37,6 @@ namespace tmd{
             blob_frame->original_frame =
                     tmd::Pipeline::get_colored_mask_for_frame(blob_frame);
 
-            DPMPlayerExtractor* playerExtractor = new DPMPlayerExtractor(
-                                                    "./res/xmls/person.xml");
 
             tmd::debug("BlobSeparator", "separate_blobs", "Extract players "
                     "from blob.");
@@ -89,7 +81,7 @@ namespace tmd{
             }
             free_frame(blob_frame);
         }
-        delete detector;
+        delete playerExtractor;
         return new_player_vector;
     }
 }
