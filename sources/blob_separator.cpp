@@ -18,7 +18,7 @@ namespace tmd{
         std::vector<player_t*> new_player_vector;
 
         size_t size = players.size();
-        cv::LatentSvmDetector* detector = new cv::LatentSvmDetector();
+        cv::LatentSvmDetector* detector = new cv::LatentSvmDetector(); // freed
         std::string xml = "./res/xmls/person.xml";
         std::vector<std::string> model_files;
         model_files.push_back(xml);
@@ -30,13 +30,13 @@ namespace tmd{
         }*/
 
         for (size_t i = 0 ; i < size ; i ++){
-            player_t* p = players[i];
+            player_t* p = players[i]; // freed
             cv::imwrite("./res/debug/last_player_image_blob_separator.jpg ",
                         p->original_image);
             if (p->original_image.rows < 100 || p->original_image.cols < 50){
                 continue;
             }
-            frame_t* blob_frame = new frame_t;
+            frame_t* blob_frame = new frame_t; // freed
             blob_frame->original_frame = p->original_image;
             blob_frame->mask_frame = p->mask_image;
             blob_frame->frame_index = p->frame_index;
@@ -50,16 +50,18 @@ namespace tmd{
                     "from blob.");
             std::vector<player_t*> players_in_blob =
                     playerExtractor->extract_player_from_frame(blob_frame);
+            // freed
             tmd::debug("BlobSeparator", "separate_blobs", "Done : " +
                     std::to_string(players_in_blob.size()) + " players "
                                                                  "extracted.");
 
             if (players_in_blob.size() == 1){
                 new_player_vector.push_back(p);
+                free_player(players_in_blob[0]);
             }
             else{
                 // Here the blob has multiple players in it.
-                cv::Mat frame = p->original_image;
+                cv::Mat frame = p->original_image.clone();
                 for (size_t j = 0 ; j < players_in_blob.size() ; j ++){
                     cv::Rect pos = players_in_blob[j]->pos_frame;
                     pos.x -= 20;
@@ -80,9 +82,14 @@ namespace tmd{
                     pos.y += p->pos_frame.y;
                     pi->pos_frame = pos;
                     new_player_vector.push_back(pi);
+                    free_player(players_in_blob[j]);
                 }
+                free_player(p);
+                frame.release();
             }
+            free_frame(blob_frame);
         }
+        delete detector;
         return new_player_vector;
     }
 }
