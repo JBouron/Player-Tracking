@@ -33,6 +33,7 @@ namespace tmd{
         std::vector<cv::LatentSvmDetector::ObjectDetection> results;
         tmd::debug("DPMPlayerExtractor", "extract_player_from_frame", "Call "
                 "detect on image");
+        // TODO : Valkyrie reports a memleak below.
         m_detector->detect(image, results, m_overlap_threshold, 4);
         tmd::debug("DPMPlayerExtractor", "extract_player_from_frame", "Done");
 

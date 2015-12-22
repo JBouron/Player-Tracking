@@ -2,6 +2,7 @@
 #include "../headers/blob_separator.h"
 #include "../headers/pipeline.h"
 #include "../headers/debug.h"
+#include "../headers/frame_t.h"
 
 namespace tmd{
 
@@ -28,14 +29,17 @@ namespace tmd{
             cv::imwrite("./res/debug/last_player_image_blob_separator.jpg ",
                         p->original_image);
             if (p->original_image.rows < 100 || p->original_image.cols < 50){
+                free_player(p);
                 continue;
             }
             frame_t* blob_frame = new frame_t; // freed
             blob_frame->original_frame = p->original_image;
             blob_frame->mask_frame = p->mask_image;
             blob_frame->frame_index = p->frame_index;
-            blob_frame->original_frame =
+            cv::Mat colored_mask =
                     tmd::Pipeline::get_colored_mask_for_frame(blob_frame);
+            blob_frame->original_frame.release();
+            blob_frame->original_frame = colored_mask;
 
 
             tmd::debug("BlobSeparator", "separate_blobs", "Extract players "
