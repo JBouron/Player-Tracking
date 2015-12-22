@@ -26,6 +26,18 @@ void dpm_whole_frame(void);
 
 void test_blob_separation(void);
 
+void memleak_video_capture(void){
+    cv::VideoCapture* capture = new cv::VideoCapture();
+    capture->open("./res/videos/alone-green-ball/ace_0.mp4");
+    for (int i = 0 ; i < 1000 ; i ++){
+        cv::Mat frame;
+        capture->read(frame);
+    }
+    capture->release();
+    delete capture;
+    std::cout << "Freed" << std::endl;
+}
+
 int main(int argc, char *argv[]) {
     tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4",""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
@@ -38,7 +50,7 @@ int main(int argc, char *argv[]) {
 
     double t1 = cv::getTickCount();
     int count = 0;
-    int max_frames = 1;
+    int max_frames = 1000;
     while (frame != NULL) {
         tmd::free_frame(frame);
         frame = pipeline.next_frame();
