@@ -34,7 +34,7 @@ namespace tmd{
         tmd::debug("DPMPlayerExtractor", "extract_player_from_frame", "Call "
                 "detect on image");
         // TODO : Valkyrie reports a memleak below.
-        m_detector->detect(image, results, m_overlap_threshold, 4);
+        m_detector->detect(image, results, m_overlap_threshold, 1);
         tmd::debug("DPMPlayerExtractor", "extract_player_from_frame", "Done");
 
         std::vector<tmd::player_t*> players;
