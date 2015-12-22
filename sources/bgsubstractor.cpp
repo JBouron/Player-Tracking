@@ -106,6 +106,8 @@ namespace tmd {
         }
         frame->mask_frame.release();
         mask_copy.copyTo(frame->mask_frame);
+        mask_copy.release();
+        checked_pixels.release();
         m_frame_index++;
         return frame;
     }
