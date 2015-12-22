@@ -3,6 +3,7 @@
 #include "../headers/debug.h"
 #include "../headers/blob_player_extractor.h"
 #include "../headers/blob_separator.h"
+#include "../headers/frame_t.h"
 
 namespace tmd {
     Pipeline::Pipeline(std::string video_path, std::string static_mask_path,
@@ -169,16 +170,16 @@ namespace tmd {
         }
 
         if (m_save) {
-            std::string file_name = "frame" + std::to_string
-                    (m_bgSubstractor->get_current_frame_index()) + ".jpg";
+            std::string index_string = std::to_string(static_cast<int>(frame->frame_index));
+            std::cout << "Write frame " << index_string << std::endl;
+            std::string file_name = "frame" + index_string + ".jpg";
             tmd::debug("Pipeline", "next_frame", "Save frame to : " +
                                                  file_name);
             cv::imwrite(m_output_folder + "/" + file_name, frame->original_frame);
-            file_name = "mask" + std::to_string
-                    (m_bgSubstractor->get_current_frame_index()) + ".jpg";
+            /*file_name = "mask" + index_string + ".jpg";
             tmd::debug("Pipeline", "next_frame", "Save mask to : " +
                                                  file_name);
-            cv::imwrite(m_output_folder + "/" + file_name, frame->mask_frame);
+            cv::imwrite(m_output_folder + "/" + file_name, frame->mask_frame);*/
         }
         coloredMask.release();
         return frame;

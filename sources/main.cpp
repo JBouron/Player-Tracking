@@ -39,7 +39,7 @@ void memleak_video_capture(void) {
 }
 
 int main(int argc, char *argv[]) {
-    tmd::TrainingSetCreator trainer("./res/videos/uni-hockey/ace_0.mp4",
+    /*tmd::TrainingSetCreator trainer("./res/videos/uni-hockey/ace_0.mp4",
                                     "./res/bgs_masks/mask_ace0.jpg", 0,
                                     "./res/xmls/person.xml", false, true,
                                     "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
@@ -55,21 +55,21 @@ int main(int argc, char *argv[]) {
     }
 
     trainer.write_centers();
-    return 0;
+    return 0;*/
 
-    /*
+
     tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4", ""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/person.xml", false, true,
                            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
 
-    pipeline.set_frame_step_size(10);
+    pipeline.set_frame_step_size(2);
     pipeline.set_start_frame(0);
     tmd::frame_t *frame = pipeline.next_frame();
 
     double t1 = cv::getTickCount();
     int count = 0;
-    int max_frames = 1;
+    int max_frames = -1;
     while (frame != NULL) {
         tmd::free_frame(frame);
         frame = pipeline.next_frame();
@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
-    */
+
 }
 
 void test_blob_separation(void) {
