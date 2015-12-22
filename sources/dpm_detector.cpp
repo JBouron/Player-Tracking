@@ -4,6 +4,8 @@
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
 
+// TODO : Some memory leaks in there (openCV ?)
+
 namespace tmd {
     DPMDetector::DPMDetector(std::string model_file) {
         m_detector = cvLoadLatentSvmDetector(model_file.c_str());
@@ -132,15 +134,15 @@ namespace tmd {
     }
 
     std::vector<cv::Rect> DPMDetector::getPartBoxesForImage(IplImage *image) {
-        CvLSVMFeaturePyramid *H = 0;
-        CvPoint *points = 0, *oppPoints = 0;
+        CvLSVMFeaturePyramid *H = 0; // freed
+        CvPoint *points = 0, *oppPoints = 0; // freed both
         int kPoints = 0;
-        float *score = 0;
+        float *score = 0; // freed
         unsigned int maxXBorder = 0, maxYBorder = 0;
         int numBoxesOut = 0;
         CvPoint *pointsOut = 0;
         CvPoint *oppPointsOut = 0;
-        float *scoreOut = 0;
+        float *scoreOut = 0; // freed.
         CvSeq *result_seq = 0;
         int error = 0;
 
@@ -244,9 +246,9 @@ namespace tmd {
         //int error = 0;
         int i, j, s, f, componentIndex;
         unsigned int maxXBorder, maxYBorder;
-        CvPoint **pointsArr, **oppPointsArr, ***partsDisplacementArr;
-        float **scoreArr;
-        int *kPointsArr, **levelsArr;
+        CvPoint **pointsArr, **oppPointsArr, ***partsDisplacementArr; // freed
+        float **scoreArr; // freed
+        int *kPointsArr, **levelsArr; // freed
 
         // Allocation memory
         pointsArr = (CvPoint **) malloc(sizeof(CvPoint *) * kComponents);
