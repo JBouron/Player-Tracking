@@ -93,7 +93,7 @@ namespace tmd {
     void FeaturesExtractor::createHistogram(player_t *p) {
         int bins_count = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
         int dim = 1; // One dimension : The hue.
-        float **range = new float *[1];
+        float **range = new float *[1]; // freed
         range[0] = new float[2];
         range[0][0] = 0;
         range[0][1] = static_cast<float>(180);
@@ -118,5 +118,6 @@ namespace tmd {
         cv::Mat histCpy = p->features.torso_color_histogram.clone();
         normalize(histCpy, p->features
                 .torso_color_histogram, 0, 1.0, cv::NORM_MINMAX, -1);
+        delete[](range);
     }
 }

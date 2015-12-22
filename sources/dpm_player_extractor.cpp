@@ -69,7 +69,7 @@ namespace tmd{
                 p->mask_image = frame->mask_frame(playerRect);
             }
         }
-
+        image.release();
         return players;
     }
 
