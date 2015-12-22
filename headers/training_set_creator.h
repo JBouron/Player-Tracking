@@ -18,7 +18,7 @@ namespace tmd {
 
         ~TrainingSetCreator();
 
-        frame_t* next_frame();
+        frame_t *next_frame();
 
         void set_new_video_path(std::string video_path);
 
@@ -27,6 +27,7 @@ namespace tmd {
         void set_frame_step_size(int step);
 
     private:
+        bool m_dpm;
         cv::VideoCapture *m_video;
         tmd::BGSubstractor *m_bgSubstractor;
         tmd::PlayerExtractor *m_playerExtractor;
@@ -35,6 +36,9 @@ namespace tmd {
         unsigned char m_camera_index;
         std::string m_mask_path;
         int m_step;
+
+        cv::Mat get_colored_mask_for_frame(frame_t *frame);
+
     };
 }
 

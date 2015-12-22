@@ -77,7 +77,7 @@ namespace tmd {
         checked_pixels = cv::Mat::zeros(m_static_mask.rows, m_static_mask.cols, CV_8U);
         frame->mask_frame.copyTo(mask_copy);
         int buffer_size = 2;
-        int count_threshold = 20;
+        int count_threshold = 10;
 
         for (int row = 0; row < m_static_mask.rows; row++) {
             for (int col = 0; col < m_static_mask.cols; col++) {
