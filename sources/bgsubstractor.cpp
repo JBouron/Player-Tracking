@@ -78,7 +78,7 @@ namespace tmd {
                 .rows, m_static_mask.cols, CV_8U);
         frame->mask_frame.copyTo(mask_copy);
         int buffer_size = 2;
-        int count_threshold = 6;
+        int count_threshold = 5;
 
         for (int row = 0; row < m_static_mask.rows; row++) {
             for (int col = 0; col < m_static_mask.cols; col++) {
