@@ -4,7 +4,7 @@
 #include "../headers/player_t.h"
 
 #define BUFFER_SIZE 5 //MUST BE ODD
-#define MIN_BLOB_SIZE 100 //USED TO FILTER BALL SIZE AND NOISE
+#define MIN_BLOB_SIZE 500 //USED TO FILTER BALL SIZE AND NOISE
 
 using namespace cv;
 
