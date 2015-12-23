@@ -11,6 +11,7 @@
 #include "../headers/pipeline.h"
 #include "../headers/training_set_creator.h"
 #include "../headers/blob_separator.h"
+#include "../headers/pipeline_visualizer.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -44,9 +45,14 @@ int main(int argc, char *argv[]) {
                                    "./res/xmls/person.xml", false, true,
                            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
 
-    pipeline.set_frame_step_size(2);
+    pipeline.set_frame_step_size(10);
     pipeline.set_start_frame(0);
+
     tmd::frame_t *frame = pipeline.next_frame();
+    tmd::PipelineVisualizer visualizer(&pipeline,
+            "./res/videos/uni-hockey/ace_0.mp4", 10);
+    visualizer.run();
+    return 0;
 
     double t1 = cv::getTickCount();
     int count = 0;

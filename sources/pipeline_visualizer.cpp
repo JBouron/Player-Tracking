@@ -12,7 +12,7 @@ namespace tmd{
         m_pipeline = pipeline;
         m_frame_pos = 0;
         m_paused = false;
-        cv::namedWindow(TMD_PIPELINE_VISUALIZER_WINDOW_NAME);
+        //cv::namedWindow(TMD_PIPELINE_VISUALIZER_WINDOW_NAME);
     }
 
     PipelineVisualizer::~PipelineVisualizer(){
@@ -33,14 +33,14 @@ namespace tmd{
                 m_players = m_next_players;
                 fetch_next_players();
             }
-            else{
-                if (!m_paused){
-                    draw_next_frame();
-                }
-                keyboard = cv::waitKey(1);
-                if (keyboard == 32){
-                    m_paused = ! m_paused;
-                }
+
+            if (!m_paused){
+                draw_next_frame();
+                m_frame_pos += 1;
+            }
+            keyboard = cv::waitKey(1);
+            if (keyboard == 32) {
+                m_paused = !m_paused;
             }
         }
     }
