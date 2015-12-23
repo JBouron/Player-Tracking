@@ -17,7 +17,8 @@ namespace tmd {
             std::string mask_path =
                     mask_foler_path + "mask_ace" + std::to_string(i) + ".jpg";
 
-            m_bgs[i] = new BGSubstractor(m_videos[i], cv::imread(mask_path), i);
+            m_bgs[i] = new BGSubstractor(m_videos[i], cv::imread(mask_path),
+                                         i, 1);
 
             m_params[i][THRESHOLD_IDX] = 256;
             m_params[i][HISTORY_SIZE_IDX] = 500;

@@ -20,7 +20,7 @@ namespace tmd {
 
         m_camera_index = camera_index;
         cv::Mat mask = cv::imread(static_mask_path, 0);
-        m_bgSubstractor = new BGSubstractor(m_video, mask, camera_index);
+        m_bgSubstractor = new BGSubstractor(m_video, mask, camera_index, 1);
 
         if (dpm) {
             m_playerExtractor = new DPMPlayerExtractor(model_file);
@@ -98,10 +98,6 @@ namespace tmd {
 
     frame_t *Pipeline::next_frame() {
         m_running = true;
-
-        for (int i = 0; i < m_step - 1; i++) {
-            delete m_bgSubstractor->next_frame();
-        }
 
         frame_t *frame = m_bgSubstractor->next_frame();
         if (frame == NULL) {
@@ -205,6 +201,7 @@ namespace tmd {
 
     void Pipeline::set_frame_step_size(int step) {
         m_step = step;
+        m_bgSubstractor->set_step_size(step);
     }
 
     void Pipeline::set_start_frame(int frame_index) {

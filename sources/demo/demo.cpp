@@ -32,8 +32,10 @@ namespace tmd {
         tmd::BGSubstractor *bgs_green[8];
         tmd::BGSubstractor *bgs_red[8];
         for (unsigned char i = 0; i < 8; i++) {
-            bgs_green[i] = new tmd::BGSubstractor(&videos_green[i], cv::imread(masks[i], 0), i);
-            bgs_red[i] = new tmd::BGSubstractor(&videos_red[i], cv::imread(masks[i], 0), i);
+            bgs_green[i] = new tmd::BGSubstractor(&videos_green[i],
+                                                  cv::imread(masks[i], 0), i,1);
+            bgs_red[i] = new tmd::BGSubstractor(&videos_red[i], cv::imread
+                    (masks[i], 0), i, 1);
         }
 
         int clusterCols = 180;
@@ -109,8 +111,12 @@ namespace tmd {
         tmd::BGSubstractor *bgs_two_green[8];
         tmd::BGSubstractor *bgs_two_red[8];
         for (unsigned char i = 0; i < 8; i++) {
-            bgs_two_green[i] = new tmd::BGSubstractor(&videos_two_green[i], cv::imread(masks[i], 0), i);
-            bgs_two_red[i] = new tmd::BGSubstractor(&videos_two_red[i], cv::imread(masks[i], 0), i);
+            bgs_two_green[i] = new tmd::BGSubstractor(&videos_two_green[i],
+                                                      cv::imread(masks[i], 0)
+                    , i, 1);
+            bgs_two_red[i] = new tmd::BGSubstractor(&videos_two_red[i],
+                                                    cv::imread(masks[i], 0),
+                                                    i, 1);
         }
 
         for (int i = 0; i < 8; i++) {

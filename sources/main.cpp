@@ -29,22 +29,30 @@ void test_blob_separation(void);
 void memleak_video_capture(void) {
     cv::VideoCapture *capture = new cv::VideoCapture();
     capture->open("./res/videos/alone-green-ball/ace_0.mp4");
-    for (int i = 0; i < 1000; i++) {
-        cv::Mat frame;
+    cv::Mat frame;
+    for (int i = 0; i < 40; i++) {
+        capture->set(CV_CAP_PROP_POS_MSEC, i * 1000);
         capture->read(frame);
+        cv::imshow("Frame " + std::to_string(i*10), frame);
+        cv::waitKey(0);
     }
+    capture->read(frame);
+    cv::imshow("Frame", frame);
+    cv::waitKey(0);
     capture->release();
     delete capture;
     std::cout << "Freed" << std::endl;
 }
 
 int main(int argc, char *argv[]) {
+    memleak_video_capture();
+    return 0;
     tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4", ""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
                                    "./res/xmls/person.xml", false, true,
                            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
 
-    pipeline.set_frame_step_size(2);
+    pipeline.set_frame_step_size(10);
     pipeline.set_start_frame(0);
     tmd::frame_t *frame = pipeline.next_frame();
 
@@ -161,7 +169,7 @@ void dpm_whole_frame(void) {
 void extract_player_image(void) {
     cv::VideoCapture capt("./res/videos/alone-green-no-ball/ace_0.mp4");
     tmd::BGSubstractor bgs(&capt, cv::imread("./res/bgs_masks/mask_ace0.jpg", 0
-    ), 0);
+    ), 0, 1);
     bgs.jump_to_frame(800);
     int keyboard = 0;
     cv::namedWindow("Extraction");
@@ -213,7 +221,8 @@ void show_body_parts(cv::Mat image, tmd::player_t *p) {
 
 void pipeline(void) {
     cv::VideoCapture capture("./res/videos/alone-green-no-ball/ace_0.mp4");
-    tmd::BGSubstractor bgSubstractor(&capture, cv::imread("./res/bgs_masks/mask_ace0.jpg"), 0);
+    tmd::BGSubstractor bgSubstractor(&capture, cv::imread(
+                                      "./res/bgs_masks/mask_ace0.jpg"), 0, 1);
     tmd::DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
     tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 

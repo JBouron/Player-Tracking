@@ -47,7 +47,7 @@ namespace tmd {
         const int shift = 0;
 
         DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
-        BGSubstractor bgSubstractor(&capture, cv::imread(mask_path, 0), 0);
+        BGSubstractor bgSubstractor(&capture, cv::imread(mask_path, 0), 0, 1);
         FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
 
         int keyboard = 0;

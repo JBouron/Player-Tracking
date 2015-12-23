@@ -1,11 +1,12 @@
 #include <opencv2/core/core.hpp>
 #include "../headers/bgsubstractor.h"
 #include "../headers/debug.h"
+#include "../headers/frame_t.h"
 
 namespace tmd {
     BGSubstractor::BGSubstractor(cv::VideoCapture *input_video, cv::Mat static_mask,
-                                 unsigned char camera_index, float threshold,
-                                 int history, float learning_rate) {
+                                 unsigned char camera_index, int step_size,
+                                 float threshold, int history, float learning_rate) {
         m_bgs = new cv::BackgroundSubtractorMOG2(history, threshold,
                                                  TMD_BGS_DETECTS_SHADOWS);
         if (m_bgs == NULL) {
@@ -39,6 +40,15 @@ namespace tmd {
         m_total_frame_count = (m_input_video->get(CV_CAP_PROP_FRAME_COUNT));
         tmd::debug("BGSubstractor", "BGSubstractor", "m_total_frame_count = "
                                                      + std::to_string(m_total_frame_count));
+
+        m_step_size = 1;
+        delete next_frame();
+
+        if (step_size <= 0){
+            throw std::invalid_argument("Error : step size of BGS should be >"
+                                                " 0");
+        }
+        m_step_size = step_size;
         tmd::debug("BGSubstractor", "BGSubstractor", "exiting method");
     }
 
@@ -47,8 +57,16 @@ namespace tmd {
     }
 
     frame_t *BGSubstractor::next_frame() {
+        if (m_step_size > 1) {
+            jump_to_frame(m_frame_index + m_step_size - 1);
+        }
         frame_t *frame = new frame_t;
-        bool frame_extracted = m_input_video->read(frame->original_frame);
+        //bool frame_extracted = m_input_video->read(frame->original_frame);
+        m_input_video->grab();
+        bool frame_extracted = m_input_video->retrieve(frame->original_frame,
+                                                       3);
+        cv::imshow("Frame",  frame->original_frame);
+        cv::waitKey(0);
         if (!frame_extracted) {
             tmd::debug("BGSubstractor", "next_frame", "No frame left, "
                                                               "returning NULL after " + std::to_string(m_frame_index) +
@@ -138,12 +156,20 @@ namespace tmd {
         m_learning_rate = lr;
     }
 
-    bool BGSubstractor::jump_to_frame(int index) {
+    void BGSubstractor::jump_to_frame(int index) {
         m_input_video->set(CV_CAP_PROP_POS_FRAMES, static_cast<double>(index));
         m_frame_index = index;
     }
 
     int BGSubstractor::get_current_frame_index() {
         return static_cast<int> (m_frame_index);
+    }
+
+    void BGSubstractor::set_step_size(int step){
+        if (step <= 0){
+            throw std::invalid_argument("Error : step size of BGS should be >"
+                                                " 0");
+        }
+        m_step_size = step;
     }
 }

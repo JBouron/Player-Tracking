@@ -65,7 +65,7 @@ namespace tmd {
         cv::Mat mat;
         mat = cv::Mat::zeros(0, 0, CV_32SC1);
 
-        tmd::BGSubstractor bgs(m_video, mat, 0);
+        tmd::BGSubstractor bgs(m_video, mat, 0, 1);
         frame_t *f = bgs.next_frame();
         while (f != NULL) {
             CPPUNIT_ASSERT(f->camera_index == 0);
@@ -81,7 +81,7 @@ namespace tmd {
         cv::Mat mat;
         mat = cv::Mat::zeros(0, 0, CV_32SC1);
 
-        tmd::BGSubstractor bgs(m_video, mat, 0);
+        tmd::BGSubstractor bgs(m_video, mat, 0, 1);
         int findex = 0;
         frame_t *f = bgs.next_frame();
         int c  = 0;
