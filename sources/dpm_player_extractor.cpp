@@ -27,20 +27,45 @@ namespace tmd{
         delete m_detector;
     }
 
+    int get_intersection_area(cv::Rect rect1, cv::Rect rect2){
+        cv::Rect intersection = rect1 & rect2;
+        std::cout << "rect1 = " << rect1 << std::endl;
+        std::cout << "rect2 = " << rect2 << std::endl;
+        std::cout << "intersection = " << intersection << std::endl;
+        return intersection.area();
+    }
+
+    bool is_duplicate(cv::Rect rect,
+                      std::vector<cv::LatentSvmDetector::ObjectDetection> &
+                      results){
+        size_t vector_size = results.size();
+        for (size_t i = 0 ; i < vector_size ; i ++){
+            if (rect != results[i].rect){
+                int inter_area = get_intersection_area(rect, results[i].rect);
+                float ratio = (float)inter_area / (float)rect.area();
+                std::cout << "Inter area = " << inter_area << "     rect area = "
+                << rect.area() << "    ratio = " << ratio << std::endl;
+                if (ratio > TMD_DPM_EXTRACTOR_DUPLICATE_AREA_THRESHOLD)
+                    return true;
+            }
+        }
+        return false;
+    }
+
     std::vector<player_t*> DPMPlayerExtractor::extract_player_from_frame(
             frame_t *frame){
         cv::Mat image = get_colored_mask_for_frame(frame);
         std::vector<cv::LatentSvmDetector::ObjectDetection> results;
         tmd::debug("DPMPlayerExtractor", "extract_player_from_frame", "Call "
                 "detect on image");
-        // TODO : Valkyrie reports a memleak below.
         m_detector->detect(image, results, m_overlap_threshold, 1);
         tmd::debug("DPMPlayerExtractor", "extract_player_from_frame", "Done");
 
         std::vector<tmd::player_t*> players;
 
         for (size_t i = 0 ; i < results.size() ; i ++){
-            if (results[i].score > m_score_threshold) {
+            if (results[i].score > m_score_threshold && !is_duplicate
+                        (results[i].rect, results)) {
                 players.push_back(new player_t);
                 tmd::player_t *p = players[players.size()-1];
                 p->likelihood = results[i].score;
