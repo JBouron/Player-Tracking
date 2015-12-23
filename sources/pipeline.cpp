@@ -4,6 +4,8 @@
 #include "../headers/blob_player_extractor.h"
 #include "../headers/blob_separator.h"
 #include "../headers/frame_t.h"
+#include "../headers/player_t.h"
+
 
 namespace tmd {
     Pipeline::Pipeline(std::string video_path, std::string static_mask_path,
@@ -108,6 +110,8 @@ namespace tmd {
             return NULL;
         }
 
+        std::vector<cv::Rect> blobs;
+
         cv::imwrite(m_output_folder + "/original_frames/frame" +
                     std::to_string((int) frame->frame_index) + ".jpg",
                     frame->original_frame);
@@ -115,6 +119,10 @@ namespace tmd {
         tmd::debug("Pipeline", "next_frame", "Extracting players.");
         std::vector<tmd::player_t *> players =
                 m_playerExtractor->extract_player_from_frame(frame);
+
+        for (int i = 0 ; i < players.size() ; i ++){
+            blobs.push_back(players[i]->pos_frame);
+        }
 
         tmd::debug("Pipeline", "next_frame", std::to_string(players.size()) +
                                              " players/blobs extracted.");
@@ -167,6 +175,16 @@ namespace tmd {
                                     std::to_string(i) + ".jpg";
             cv::imwrite(file_name, frame->original_frame(torso));
             free_player(players[i]);
+        }
+
+        torso_color.val[0] = 0;
+        torso_color.val[1] = 255;
+        torso_color.val[2] = 255;
+        torso_color.val[3] = 255;
+        for (int i = 0 ; i < blobs.size() ; i ++){
+            cv::rectangle(frame->original_frame, blobs[i],
+                          torso_color, thickness,
+                          line_type, shift);
         }
 
         if (m_save) {
