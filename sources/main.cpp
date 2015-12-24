@@ -13,6 +13,7 @@
 #include "../headers/blob_separator.h"
 
 #include "SDL2/SDL.h"
+#include "../headers/sdl_binds/sdl_binds.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -53,9 +54,11 @@ int main(int argc, char *argv[]){
     double t1 = cv::getTickCount();
     int count = 0;
     int max_frames = -1;
+    SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frames");
     while (frame != NULL) {
         tmd::free_frame(frame);
         frame = pipeline.next_frame();
+        tmd::SDLBinds::imshow(window, frame->original_frame);
         count++;
         if (count == max_frames) {
             break;
