@@ -12,8 +12,10 @@ namespace tmd{
            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
         m_pipeline->set_start_frame(m_id);
         m_pipeline->set_frame_step_size(m_step_size);
+        m_stop_request = false;
+
         m_worker = std::thread(&PipelineThread::extract_from_pipeline,
-                               std::ref(this));
+                               std::ref(*this));
     }
 
     PipelineThread::~PipelineThread(){
@@ -40,9 +42,15 @@ namespace tmd{
     }
 
     void PipelineThread::extract_from_pipeline(){
-        std::vector<tmd::player_t*> next_buffer_entry =
-                m_pipeline->next_players();
-        this->push_buffer(next_buffer_entry);
+        while (!m_stop_request){
+            tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
+                                                                  std::to_string(m_id) + " call ing next_players()");
+            std::vector<tmd::player_t*> next_buffer_entry =
+                    m_pipeline->next_players();
+            tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
+                                                                  std::to_string(m_id) + " : Done");
+            this->push_buffer(next_buffer_entry);
+        }
     }
 
     void PipelineThread::push_buffer(std::vector<tmd::player_t*> players){
@@ -50,5 +58,9 @@ namespace tmd{
         tmd::debug("PipelineThread", "push_buffer", "Thread " +
                 std::to_string(m_id) + " push entry in buffer");
         m_buffer.push_back(players);
+    }
+
+    void PipelineThread::request_stop(){
+        m_stop_request = true;
     }
 }

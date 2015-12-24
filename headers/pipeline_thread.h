@@ -6,6 +6,7 @@
 #include <vector>
 #include <mutex>
 #include <thread>
+#include <atomic>
 #include "player_t.h"
 #include "pipeline.h"
 #include "debug.h"
@@ -38,6 +39,8 @@ namespace tmd{
          */
         std::vector<tmd::player_t*> pop_buffer();
 
+        void request_stop();
+
     private:
         /**
          * Method executed by the working thread.
@@ -56,6 +59,8 @@ namespace tmd{
         int m_starting_frame;
         int m_step_size;
         int m_id;
+
+        std::atomic<bool> m_stop_request;
     };
 }
 
