@@ -2,12 +2,12 @@
 #include "../headers/blob_player_extractor.h"
 #include "../headers/debug.h"
 #include "../headers/blob_separator.h"
+#include "../headers/frame_t.h"
 
 namespace tmd {
     SimplePipeline::SimplePipeline(std::string video_path,
-                                   std::string model_file, bool save_frames,
-                                   std::string output_folder) : Pipeline
-                          (video_path, model_file, save_frames, output_folder){
+                                   std::string model_file) : Pipeline
+                          (video_path, model_file){
         // TODO : Remove place holders.
         std::string static_mask_path = "./res/bgs_masks/mask_ace0.jpg";
         cv::Mat mask = cv::imread(static_mask_path, 0);
@@ -34,57 +34,9 @@ namespace tmd {
         frame_t* frame = fetch_next_frame();
 
         tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
-        std::vector<tmd::player_t*> players = extract_players_from_frame(frame);
+        extract_players_from_frame(frame);
 
-        tmd::debug("SimplePipeline", "next_frame", "Draw frame.");
-        const int thickness = 1; // Thickness of the box.
-        const int line_type = 8; // 8 connected line.
-        const int shift = 0;
-        CvScalar torso_color;
-        torso_color.val[0] = 255;
-        torso_color.val[1] = 255;
-        torso_color.val[2] = 0;
-        torso_color.val[3] = 255;
-        size_t player_count = players.size();
-        for (int i = 0; i < player_count; i++) {
-            player_t *p = players[i];
-            cv::rectangle(frame->original_frame, players[i]->pos_frame,
-                          get_team_color(players[i]->team), thickness,
-                          line_type, shift);
-
-            cv::Rect torso;
-            torso.x = p->pos_frame.x + p->features.torso_pos.x;
-            torso.y = p->pos_frame.y + p->features.torso_pos.y;
-            torso.width = p->features.torso_pos.width;
-            torso.height = p->features.torso_pos.height;
-            cv::rectangle(frame->original_frame, torso,
-                          torso_color, thickness,
-                          line_type, shift);
-            free_player(players[i]);
-        }
-
-        if (m_save) {
-            std::string index_string = std::to_string(static_cast<int>(frame->frame_index));
-            std::cout << "Write frame " << index_string << std::endl;
-            std::string file_name = "frame" + index_string + ".jpg";
-            tmd::debug("SimplePipeline", "next_frame", "Save frame to : " +
-                                                 file_name);
-            cv::imwrite(m_output_folder + "/" + file_name, frame->original_frame);
-            /*file_name = "mask" + index_string + ".jpg";
-            tmd::debug("Pipeline", "next_frame", "Save mask to : " +
-                                                 file_name);
-            cv::imwrite(m_output_folder + "/" + file_name, frame->mask_frame);*/
-        }
         return frame;
-    }
-
-    std::vector<tmd::player_t*> SimplePipeline::next_players(){
-        m_running = true;
-
-        frame_t* frame = fetch_next_frame();
-
-        tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
-        return extract_players_from_frame(frame);
     }
 
     void SimplePipeline::set_bgs_properties(float threshold, int history_size,
@@ -103,7 +55,7 @@ namespace tmd {
         return frame;
     }
 
-    std::vector<tmd::player_t*> SimplePipeline::extract_players_from_frame
+    void SimplePipeline::extract_players_from_frame
             (tmd::frame_t* frame){
         tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
         std::vector<tmd::player_t *> players =
@@ -128,7 +80,7 @@ namespace tmd {
 
         m_featuresComparator->detectTeamForPlayers(players);
         coloredMask.release();
-        return players;
+        frame->players = players;
     }
 
     void SimplePipeline::set_frame_step_size(int step) {
