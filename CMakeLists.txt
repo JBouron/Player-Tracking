@@ -5,6 +5,13 @@ project(Bachelor_Project)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -D VALGRIND=ON")
 set(OpenCV_FOUND TRUE)
 find_package(OpenCV REQUIRED)
+
+INCLUDE(FindPkgConfig)
+
+PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+
+INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS})
+
 set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/team_t.h headers/position_t.h headers/box_t.h
         headers/bgsubstractor.h sources/bgsubstractor.cpp headers/debug.h
@@ -37,6 +44,6 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/blob_player_extractor.h
         sources/blob_player_extractor.cpp
         headers/pipeline.h
-        sources/pipeline.cpp sources/training_set_creator.cpp headers/training_set_creator.h headers/blob_separator.h sources/blob_separator.cpp)
+        sources/pipeline.cpp sources/training_set_creator.cpp headers/training_set_creator.h headers/blob_separator.h sources/blob_separator.cpp headers/sdl_binds/sdl_binds.h)
 add_executable(Bachelor_Project ${SOURCE_FILES})
-target_link_libraries(Bachelor_Project ${OpenCV_LIBS} cppunit)
+target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBRARIES} cppunit)
