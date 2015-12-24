@@ -40,7 +40,7 @@ namespace tmd{
          * /!\ Can lead to waiting time due to dependencies between the
          * caller and *this.
          */
-        std::vector<tmd::player_t*> pop_buffer();
+        tmd::frame_t* pop_buffer();
 
         void request_stop();
 
@@ -53,11 +53,11 @@ namespace tmd{
          * Add data to the end of the buffer.
          * Only used by the working thread.
          */
-        void push_buffer(std::vector<tmd::player_t*> players);
+        void push_buffer(tmd::frame_t* frame);
 
         tmd::Pipeline *m_pipeline;
         std::thread m_worker;
-        std::deque<std::vector<tmd::player_t*> > m_buffer;
+        std::deque<tmd::frame_t* > m_buffer;
         std::mutex m_buffer_lock;
         int m_starting_frame;
         int m_ending_frame;
