@@ -44,6 +44,12 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/blob_player_extractor.h
         sources/blob_player_extractor.cpp
         headers/pipeline.h
-        sources/pipeline.cpp sources/training_set_creator.cpp headers/training_set_creator.h headers/blob_separator.h sources/blob_separator.cpp headers/sdl_binds/sdl_binds.h)
+        sources/pipeline.cpp
+        sources/training_set_creator.cpp
+        headers/training_set_creator.h
+        headers/blob_separator.h
+        sources/blob_separator.cpp
+        headers/sdl_binds/sdl_binds.h
+        sources/sdl_binds/sdl_binds.cpp)
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBRARIES} cppunit)
