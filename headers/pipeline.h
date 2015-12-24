@@ -33,9 +33,7 @@ namespace tmd{
          * _ output_folder : Path to the folder which will contain all the
          * saved frames (if save_frame is enabled).
          */
-         Pipeline(std::string video_path,
-                 std::string model_file, bool save_frames = false,
-                 std::string output_folder = "");
+         Pipeline(std::string video_path, std::string model_file);
 
         ~Pipeline();
 
@@ -49,15 +47,6 @@ namespace tmd{
          * Note that the user has to take care of freeing the frames.
          */
         virtual frame_t* next_frame() = 0;
-
-
-        /**
-         * Extract the next frame from the input video.
-         * Run the full pipeline on it.
-         * Then returns a vector containing all the player for this frame.
-         * Along with their team, features, ...
-         */
-        virtual std::vector<tmd::player_t*> next_players() = 0;
 
         /**
          * Set the step size between to consecutive extracted frames.
@@ -74,12 +63,6 @@ namespace tmd{
          * Set the frame index
          */
         virtual void set_end_frame(int frame_index) = 0;
-
-        /**
-         * Create a 'colored mask' ie all pixel belonging to the foreground
-         * are in color whereas pixels from the background are black.
-         */
-        static cv::Mat get_colored_mask_for_frame(tmd::frame_t* frame);
 
     protected:
 
