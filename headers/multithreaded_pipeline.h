@@ -22,8 +22,9 @@ namespace tmd{
          * save_frames is asserted).
          */
         MultithreadedPipeline(std::string video_path, int thread_count,
-                              std::string model_file, bool save_frames = false,
-                              std::string output_folder = "");
+                              std::string model_file);
+
+        ~MultithreadedPipeline();
 
         /**
          * Extract the next frame from the input video.
@@ -35,15 +36,6 @@ namespace tmd{
          * Note that the user has to take care of freeing the frames.
          */
         frame_t* next_frame();
-
-
-        /**
-         * Extract the next frame from the input video.
-         * Run the full pipeline on it.
-         * Then returns a vector containing all the player for this frame.
-         * Along with their team, features, ...
-         */
-        std::vector<tmd::player_t*> next_players();
 
         /**
          * Set the step size between to consecutive extracted frames.
@@ -62,9 +54,12 @@ namespace tmd{
         void set_end_frame(int frame_index);
 
     private:
+        void create_threads();
+
         tmd::PipelineThread** m_pipeline_threads;
         bool m_threads_ready;
         int m_thread_count;
+        int m_frame_pos;
     };
 }
 
