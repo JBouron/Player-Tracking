@@ -14,6 +14,7 @@
 
 #include "SDL2/SDL.h"
 #include "../headers/sdl_binds/sdl_binds.h"
+#include "../headers/simple_pipeline.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -42,14 +43,14 @@ void memleak_video_capture(void) {
 }
 
 int main(int argc, char *argv[]){
-    tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4", ""
-                                   "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", false, false,
-                           "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
+    tmd::Pipeline *pipeline = new tmd::SimplePipeline(
+                                      "./res/videos/uni-hockey/ace_0.mp4", ""
+            "./res/xmls/person.xml", true, ""
+            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
 
-    pipeline.set_frame_step_size(2);
-    pipeline.set_start_frame(0);
-    tmd::frame_t *frame = pipeline.next_frame();
+    pipeline->set_frame_step_size(2);
+    pipeline->set_start_frame(0);
+    tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
     int count = 0;
@@ -57,7 +58,7 @@ int main(int argc, char *argv[]){
     SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frames");
     while (frame != NULL) {
         tmd::free_frame(frame);
-        frame = pipeline.next_frame();
+        frame = pipeline->next_frame();
         tmd::SDLBinds::imshow(window, frame->original_frame);
         count++;
         if (count == max_frames) {
@@ -118,32 +119,6 @@ void create_training_set(void) {
 
     cv::Mat centers;
     tmd::FeatureComparator *comparator = new tmd::FeatureComparator(2, 180, centers);
-}
-
-void pipeline_class_tests(void) {
-    tmd::Pipeline pipeline("./res/videos/alone-green-no-ball/ace_0.mp4", "./res/bgs_masks/mask_ace0.jpg", 0, ""
-            "./res/xmls/person.xml", false, true, ""
-                                   "./res/pipeline_results/complete_pipeline/alone-green-no-ball/");
-
-    pipeline.set_frame_step_size(10);
-    pipeline.set_start_frame(0);
-
-    pipeline.set_end_frame(1200);
-
-    int keyboard = 0;
-    std::string win_name = "Pipeline frame";
-    tmd::frame_t *frame = pipeline.next_frame();
-    while (keyboard != 27 && frame != NULL) {
-        cv::imshow(win_name, frame->original_frame);
-        keyboard = cv::waitKey(0);
-
-        if (keyboard == 'n') {
-            delete frame;
-            frame = pipeline.next_frame();
-        }
-    }
-    cv::destroyWindow(win_name);
-    tmd::free_frame(frame);
 }
 
 void dpm_whole_frame(void) {
