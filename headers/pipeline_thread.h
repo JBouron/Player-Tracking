@@ -20,12 +20,15 @@ namespace tmd{
     public:
         /**
          * Constructor of the PipelineThread.
-         * thread_id : the id of the thread, ie it's starting frame.
+         * thread_id : the id of the thread.
+         * global_starting_frame : The starting frame.
+         * global_ending_frame : The ending frame.
          * video_path : The video to operate on.
          * step_size : Frame count to jump over between 2 consecutive buffer
          * entries.
          */
-        PipelineThread(int thread_id, std::string video_path, int step_size);
+        PipelineThread(int thread_id, int starting_frame, int ending_frame,
+                       std::string video_path, int step_size);
 
         /**
          * Destructor of the PipelineThread.
@@ -57,6 +60,8 @@ namespace tmd{
         std::deque<std::vector<tmd::player_t*> > m_buffer;
         std::mutex m_buffer_lock;
         int m_starting_frame;
+        int m_ending_frame;
+        int m_frame_idx;
         int m_step_size;
         int m_id;
 

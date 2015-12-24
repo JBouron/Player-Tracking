@@ -54,6 +54,6 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/simple_pipeline.h
         sources/simple_pipeline.cpp
         headers/pipeline_thread.h
-        sources/pipeline_thread.cpp)
+        sources/pipeline_thread.cpp headers/multithreaded_pipeline.h sources/multithreaded_pipeline.cpp)
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBRARIES} cppunit)

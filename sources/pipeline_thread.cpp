@@ -1,14 +1,17 @@
 #include "../headers/pipeline_thread.h"
+#include "../headers/simple_pipeline.h"
 
 namespace tmd{
-    PipelineThread::PipelineThread(int thread_id, std::string video_path,
-                                   int step_size) {
+    PipelineThread::PipelineThread(int thread_id, int starting_frame, int
+    ending_frame, std::string video_path, int step_size) {
         m_id = thread_id;
         m_step_size = step_size;
-        m_starting_frame = m_id;
+        m_starting_frame = starting_frame;
+        m_frame_idx = m_starting_frame;
+        m_ending_frame = ending_frame;
         // TODO : Remove hard coded values using the config file.
-        m_pipeline = new tmd::Pipeline(video_path, "./res/bgs_masks/mask_ace0"
-                ".jpg", 0, "./res/xmls/person.xml", false, true,
+        m_pipeline = new tmd::SimplePipeline(video_path, "/res/xmls/person"
+                                                     ".xml", true,
            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
         m_pipeline->set_start_frame(m_id);
         m_pipeline->set_frame_step_size(m_step_size);
@@ -42,7 +45,7 @@ namespace tmd{
     }
 
     void PipelineThread::extract_from_pipeline(){
-        while (!m_stop_request){
+        while (!m_stop_request && m_frame_idx < m_ending_frame){
             tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
                                                                   std::to_string(m_id) + " call ing next_players()");
             std::vector<tmd::player_t*> next_buffer_entry =
@@ -50,6 +53,7 @@ namespace tmd{
             tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
                                                                   std::to_string(m_id) + " : Done");
             this->push_buffer(next_buffer_entry);
+            m_frame_idx  += m_step_size;
         }
     }
 
