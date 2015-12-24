@@ -2,6 +2,7 @@
 #define BACHELOR_PROJECT_PIPELINE_VISUALIZER_H
 
 #include <thread>
+#include "./sdl_binds/sdl_binds.h"
 #include "pipeline.h"
 
 #define TMD_PIPELINE_VISUALIZER_WINDOW_NAME "Pipeline Visualizer"
@@ -28,13 +29,14 @@ namespace tmd{
         void run();
 
     private:
-        cv::Mat draw_next_frame();
+        void draw_next_frame();
 
         void fetch_next_players();
 
         cv::VideoCapture *m_video;
         std::thread m_pipeline_thread;
         tmd::Pipeline *m_pipeline;
+        SDL_Window* m_window;
         int m_frame_step;
         int m_frame_pos;
         bool m_paused;
