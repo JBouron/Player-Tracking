@@ -72,26 +72,12 @@ namespace tmd{
                     tmd::debug("BlobSeparator", "separate_blobs", "Player " +
                             std::to_string(j) + " has score " +
                             std::to_string(players_in_blob[j]->likelihood));
-                    cv::Rect pos = players_in_blob[j]->pos_frame;
-                    pos.x -= 20;
-                    pos.y -= 20;
-                    pos.width += 40;
-                    pos.height += 40;
 
-                    pos.x = _max(0, pos.x);
-                    pos.y = _max(0, pos.y);
-                    pos.width = _min(frame.cols - pos.x, pos.width);
-                    pos.height = _min(frame.rows - pos.y, pos.height);
+                    player_t* pi = players_in_blob[j];
+                    pi->pos_frame.x += p->pos_frame.x;
+                    pi->pos_frame.y += p->pos_frame.y;
 
-                    player_t* pi = new player_t;
-                    pi->frame_index = p->frame_index;
-                    pi->original_image = frame.clone()(pos);
-                    pi->mask_image = p->mask_image.clone()(pos);
-                    pos.x += p->pos_frame.x;
-                    pos.y += p->pos_frame.y;
-                    pi->pos_frame = pos;
                     new_player_vector.push_back(pi);
-                    free_player(players_in_blob[j]);
                 }
                 free_player(p);
                 frame.release();

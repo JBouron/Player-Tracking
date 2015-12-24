@@ -13,6 +13,9 @@
 #include "../headers/blob_separator.h"
 #include "../headers/pipeline_visualizer.h"
 
+#include "SDL2/SDL.h"
+#include "../headers/sdl_binds/sdl_binds.h"
+
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
 void extract_player_image(void);
@@ -39,10 +42,10 @@ void memleak_video_capture(void) {
     std::cout << "Freed" << std::endl;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]){
     tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4", ""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", false, true,
+                                   "./res/xmls/person.xml", false, false,
                            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
 
     pipeline.set_frame_step_size(10);
@@ -57,9 +60,11 @@ int main(int argc, char *argv[]) {
     double t1 = cv::getTickCount();
     int count = 0;
     int max_frames = -1;
+    SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frames");
     while (frame != NULL) {
         tmd::free_frame(frame);
         frame = pipeline.next_frame();
+        tmd::SDLBinds::imshow(window, frame->original_frame);
         count++;
         if (count == max_frames) {
             break;

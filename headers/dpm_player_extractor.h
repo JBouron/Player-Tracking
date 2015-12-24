@@ -7,6 +7,9 @@
 #define TMD_DEFAULT_DMP_EXTRACTOR_SCORE_THRESHOLD -1.0
 #define TMD_DEFAULT_DMP_EXTRACTOR_OVERLAPPING_THRESHOLD 0.2
 
+// Percentage of shared area such that it is considered as a dupluicate.
+#define TMD_DPM_EXTRACTOR_DUPLICATE_AREA_THRESHOLD 0.7 // %
+
 
 namespace tmd{
 

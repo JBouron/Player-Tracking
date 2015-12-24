@@ -4,6 +4,8 @@
 #include "../headers/blob_player_extractor.h"
 #include "../headers/blob_separator.h"
 #include "../headers/frame_t.h"
+#include "../headers/player_t.h"
+
 
 namespace tmd {
     Pipeline::Pipeline(std::string video_path, std::string static_mask_path,
