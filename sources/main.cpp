@@ -15,6 +15,7 @@
 #include "SDL2/SDL.h"
 #include "../headers/sdl_binds/sdl_binds.h"
 #include "../headers/simple_pipeline.h"
+#include "../headers/pipeline_thread.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -40,6 +41,13 @@ void memleak_video_capture(void) {
     capture->release();
     delete capture;
     std::cout << "Freed" << std::endl;
+}
+
+void test_multithreading(void){
+    tmd::PipelineThread thread(0, "./res/videos/uni-hockey/ace_0.mp4", 10);
+    std::cout << "Entering Sleep" << std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(20000));
+    std::cout << "Sleep done" << std::endl;
 }
 
 int main(int argc, char *argv[]){
