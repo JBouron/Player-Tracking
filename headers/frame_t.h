@@ -6,6 +6,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/video/background_segm.hpp"
 #include "opencv2/highgui/highgui.hpp"
+#include "player_t.h"
 
 namespace tmd {
 
@@ -19,11 +20,15 @@ namespace tmd {
         double frame_index;             // Index of the frame in the video.
         cv::Mat mask_frame;             // Frame after applying background substraction.
         unsigned char camera_index;     // Index of the camera which took the frame.
+        std::vector<tmd::player_t*> players; // Players on the frame.
     } frame_t;
 
     inline void free_frame(frame_t* frame){
         frame->original_frame.release();
         frame->mask_frame.release();
+        for (size_t i = 0 ; i < frame->players.size() ; i ++){
+            free_player(frame->players[i]);
+        }
         delete frame;
     }
 }
