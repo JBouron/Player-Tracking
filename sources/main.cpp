@@ -12,6 +12,8 @@
 #include "../headers/training_set_creator.h"
 #include "../headers/blob_separator.h"
 
+#include "SDL2/SDL.h"
+
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
 void extract_player_image(void);
@@ -38,10 +40,10 @@ void memleak_video_capture(void) {
     std::cout << "Freed" << std::endl;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]){
     tmd::Pipeline pipeline("./res/videos/uni-hockey/ace_0.mp4", ""
                                    "./res/bgs_masks/mask_ace0.jpg", 0, ""
-                                   "./res/xmls/person.xml", false, true,
+                                   "./res/xmls/person.xml", false, false,
                            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
 
     pipeline.set_frame_step_size(2);

@@ -1,0 +1,8 @@
+//
+// Created by jbouron on 24/12/15.
+//
+
+#ifndef BACHELOR_PROJECT_SDL_BINDS_H
+#define BACHELOR_PROJECT_SDL_BINDS_H
+
+#endif //BACHELOR_PROJECT_SDL_BINDS_H
