@@ -53,6 +53,15 @@ namespace tmd{
 
 
         /**
+         * Extract the next frame from the input video.
+         * Run the full pipeline on it.
+         * Then returns a vector containing all the player for this frame.
+         * Along with their team, features, ...
+         */
+        std::vector<tmd::player_t*> next_players();
+
+
+        /**
          * Sets the properties of the bgs.
          */
         void set_bgs_properties(float threshold, int history_size, float
@@ -80,9 +89,25 @@ namespace tmd{
          */
         void set_end_frame(int frame_index);
 
-        static cv::Mat get_colored_mask_for_frame(frame_t* frame);
+        /**
+         * Create a 'colored mask' ie all pixel belonging to the foreground
+         * are in color whereas pixels from the background are black.
+         */
+        static cv::Mat get_colored_mask_for_frame(tmd::frame_t* frame);
 
     private:
+        /**
+         * Fetch the next frame from the BGS.
+         */
+        tmd::frame_t* fetch_next_frame();
+
+        /**
+         * Extract the players from the given frames, and set their property
+         * (team, features, ...)
+         */
+        std::vector<tmd::player_t*> extract_players_from_frame(tmd::frame_t*
+        frame);
+
         cv::VideoCapture *m_video;
         tmd::BGSubstractor *m_bgSubstractor;
         tmd::PlayerExtractor *m_playerExtractor;
