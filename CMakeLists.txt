@@ -50,6 +50,10 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/blob_separator.h
         sources/blob_separator.cpp
         headers/sdl_binds/sdl_binds.h
-        sources/sdl_binds/sdl_binds.cpp headers/simple_pipeline.h sources/simple_pipeline.cpp)
+        sources/sdl_binds/sdl_binds.cpp
+        headers/simple_pipeline.h
+        sources/simple_pipeline.cpp
+        headers/pipeline_thread.h
+        sources/pipeline_thread.cpp)
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBRARIES} cppunit)
