@@ -29,9 +29,6 @@ namespace tmd{
 
     int get_intersection_area(cv::Rect rect1, cv::Rect rect2){
         cv::Rect intersection = rect1 & rect2;
-        std::cout << "rect1 = " << rect1 << std::endl;
-        std::cout << "rect2 = " << rect2 << std::endl;
-        std::cout << "intersection = " << intersection << std::endl;
         return intersection.area();
     }
 
@@ -47,19 +44,8 @@ namespace tmd{
                 int inter_area = get_intersection_area(rect, results[i].rect);
                 float ratio = max((float)inter_area / (float)rect.area(),
                 (float)inter_area / (float)results[i].rect.area());
-                std::cout << "Inter area = " << inter_area << "     rect area = "
-                << rect.area() << "    ratio = " << ratio << std::endl;
                 if (ratio > TMD_DPM_EXTRACTOR_DUPLICATE_AREA_THRESHOLD)
                     return true;
-
-                /*float dist = sqrt(pow(rect.x - results[i].rect.x, 2) +
-                                          pow(rect.y - results[i].rect.y, 2));
-                std::cout << "rect1 = " << rect << std::endl;
-                std::cout << "rect2 = " << results[i].rect << std::endl;
-                std::cout << "dist = " << dist << std::endl;
-                if (dist < 10){
-                    return true;
-                }*/
             }
         }
         return false;
@@ -80,12 +66,7 @@ namespace tmd{
         for (size_t i = 0 ; i < results.size() ; i ++){
             if (results[i].score > m_score_threshold && !is_duplicate
                         (results[i].rect, filtered_results)) {
-                std::cout << "New rect = " << results[i].rect << std::endl;
                 filtered_results.push_back(results[i]);
-                /*if (static_cast<int>(frame->frame_index) == 37){
-                    cv::imshow("Frame 37", frame->original_frame(results[i].rect));
-                    cv::waitKey(0);
-                }*/
                 players.push_back(new player_t);
                 tmd::player_t *p = players[players.size()-1];
                 p->likelihood = results[i].score;
@@ -116,7 +97,6 @@ namespace tmd{
             }
         }
         image.release();
-        std::cout << "--------" << std::endl;
         return players;
     }
 
