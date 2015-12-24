@@ -4,5 +4,6 @@ misc/*
 res/videos/*
 res/pipeline_results/*
 res/dpm-samples/*
+res/pipeline_visualizer/*
 Bachelor_project
 res/debug/*
