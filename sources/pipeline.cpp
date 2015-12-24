@@ -101,54 +101,15 @@ namespace tmd {
     frame_t *Pipeline::next_frame() {
         m_running = true;
 
-        for (int i = 0; i < m_step - 1; i++) {
-            delete m_bgSubstractor->next_frame();
-        }
-
-        frame_t *frame = m_bgSubstractor->next_frame();
-        if (frame == NULL) {
-            return NULL;
-        }
-
-        std::vector<cv::Rect> blobs;
-
-        cv::imwrite(m_output_folder + "/original_frames/frame" +
-                    std::to_string((int) frame->frame_index) + ".jpg",
-                    frame->original_frame);
+        frame_t* frame = fetch_next_frame();
 
         tmd::debug("Pipeline", "next_frame", "Extracting players.");
-        std::vector<tmd::player_t *> players =
-                m_playerExtractor->extract_player_from_frame(frame);
+        std::vector<tmd::player_t*> players = extract_players_from_frame(frame);
 
-        for (int i = 0 ; i < players.size() ; i ++){
-            blobs.push_back(players[i]->pos_frame);
-        }
-
-        tmd::debug("Pipeline", "next_frame", std::to_string(players.size()) +
-                                             " players/blobs extracted.");
-
-        cv::Mat coloredMask = get_colored_mask_for_frame(frame);
-        frame->original_frame.release();
-        frame->original_frame = coloredMask;
-
-        if (!m_using_dpm) {
-            tmd::debug("Pipeline", "next_frame", "Separate blobs.");
-            players = BlobSeparator::separate_blobs(players);
-            tmd::debug("Pipeline", "next_frame", "Done");
-        }
-
-        tmd::debug("Pipeline", "next_frame", "Frame " + std::to_string
-                (m_bgSubstractor->get_current_frame_index()) + " : " +
-                                             std::to_string(players.size()) + " players detected");
-
-        m_featuresExtractor->extractFeaturesFromPlayers(players);
-
+        tmd::debug("Pipeline", "next_frame", "Draw frame.");
         const int thickness = 1; // Thickness of the box.
         const int line_type = 8; // 8 connected line.
         const int shift = 0;
-
-        m_featuresComparator->detectTeamForPlayers(players);
-
         CvScalar torso_color;
         torso_color.val[0] = 255;
         torso_color.val[1] = 255;
@@ -177,16 +138,6 @@ namespace tmd {
             free_player(players[i]);
         }
 
-        torso_color.val[0] = 0;
-        torso_color.val[1] = 255;
-        torso_color.val[2] = 255;
-        torso_color.val[3] = 255;
-        for (int i = 0 ; i < blobs.size() ; i ++){
-            cv::rectangle(frame->original_frame, blobs[i],
-                          torso_color, thickness,
-                          line_type, shift);
-        }
-
         if (m_save) {
             std::string index_string = std::to_string(static_cast<int>(frame->frame_index));
             std::cout << "Write frame " << index_string << std::endl;
@@ -199,8 +150,16 @@ namespace tmd {
                                                  file_name);
             cv::imwrite(m_output_folder + "/" + file_name, frame->mask_frame);*/
         }
-        coloredMask.release();
         return frame;
+    }
+
+    std::vector<tmd::player_t*> Pipeline::next_players(){
+        m_running = true;
+
+        frame_t* frame = fetch_next_frame();
+
+        tmd::debug("Pipeline", "next_frame", "Extracting players.");
+        return extract_players_from_frame(frame);
     }
 
     void Pipeline::set_bgs_properties(float threshold, int history_size,
@@ -239,5 +198,44 @@ namespace tmd {
         if (!m_running) {
             m_end = frame_index;
         }
+    }
+
+    tmd::frame_t* Pipeline::fetch_next_frame(){
+        for (int i = 0; i < m_step - 1; i++) {
+            // Throwing away the frames that are not important for us.
+            delete m_bgSubstractor->next_frame();
+        }
+        frame_t *frame = m_bgSubstractor->next_frame();
+        return frame;
+    }
+
+    std::vector<tmd::player_t*> Pipeline::extract_players_from_frame
+    (tmd::frame_t* frame) {
+        tmd::debug("Pipeline", "next_frame", "Extracting players.");
+        std::vector<tmd::player_t *> players =
+                m_playerExtractor->extract_player_from_frame(frame);
+
+        tmd::debug("Pipeline", "next_frame", std::to_string(players.size()) +
+                                             " players/blobs extracted.");
+
+        cv::Mat coloredMask = get_colored_mask_for_frame(frame);
+        frame->original_frame.release();
+        frame->original_frame = coloredMask;
+
+        if (!m_using_dpm) {
+            tmd::debug("Pipeline", "next_frame", "Separate blobs.");
+            players = BlobSeparator::separate_blobs(players);
+            tmd::debug("Pipeline", "next_frame", "Done");
+        }
+
+        tmd::debug("Pipeline", "next_frame", "Frame " + std::to_string
+                (m_bgSubstractor->get_current_frame_index()) + " : " +
+                     std::to_string(players.size()) + " players detected");
+
+        m_featuresExtractor->extractFeaturesFromPlayers(players);
+
+        m_featuresComparator->detectTeamForPlayers(players);
+        coloredMask.release();
+        return players;
     }
 }
