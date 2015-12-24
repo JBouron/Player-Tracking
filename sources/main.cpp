@@ -16,6 +16,7 @@
 #include "../headers/sdl_binds/sdl_binds.h"
 #include "../headers/simple_pipeline.h"
 #include "../headers/pipeline_thread.h"
+#include "../headers/multithreaded_pipeline.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -43,21 +44,15 @@ void memleak_video_capture(void) {
     std::cout << "Freed" << std::endl;
 }
 
-void test_multithreading(void){
-    tmd::PipelineThread thread(0, "./res/videos/uni-hockey/ace_0.mp4", 10);
-    std::cout << "Entering Sleep" << std::endl;
-    std::this_thread::sleep_for(std::chrono::milliseconds(20000));
-    std::cout << "Sleep done" << std::endl;
-}
 
 int main(int argc, char *argv[]){
-    tmd::Pipeline *pipeline = new tmd::SimplePipeline(
-                                      "./res/videos/uni-hockey/ace_0.mp4", ""
-            "./res/xmls/person.xml", true, ""
-            "./res/pipeline_results/complete_pipeline/uni/with blob separator/");
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
+                                      "./res/videos/uni-hockey/ace_0.mp4", 1,
+            "./res/xmls/person.xml");
 
-    pipeline->set_frame_step_size(2);
-    pipeline->set_start_frame(0);
+    pipeline->set_frame_step_size(10);
+    pipeline->set_start_frame(460);
+    pipeline->set_end_frame(1000);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
