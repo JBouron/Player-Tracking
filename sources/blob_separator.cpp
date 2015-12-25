@@ -40,7 +40,7 @@ namespace tmd{
             blob_frame->mask_frame = p->mask_image;
             blob_frame->frame_index = p->frame_index;
             cv::Mat colored_mask =
-                    tmd::Pipeline::get_colored_mask_for_frame(blob_frame);
+                    tmd::get_colored_mask_for_frame(blob_frame);
             blob_frame->original_frame.release();
             blob_frame->original_frame = colored_mask;
 

@@ -116,21 +116,4 @@ namespace tmd{
     float DPMPlayerExtractor::get_score_threshold(){
         return m_score_threshold;
     }
-
-    cv::Mat DPMPlayerExtractor::get_colored_mask_for_frame(frame_t* frame){
-        cv::Mat resulting_image;
-        frame->original_frame.copyTo(resulting_image);
-        cv::Vec3b black;
-        black.val[0] = 0;
-        black.val[1] = 0;
-        black.val[2] = 0;
-        for (int c = 0; c < frame->mask_frame.cols; c++) {
-            for (int r = 0; r < frame->mask_frame.rows; r++) {
-                if (frame->mask_frame.at<uchar>(r, c) == 0) {
-                    resulting_image.at<cv::Vec3b>(r, c) = black;
-                }
-            }
-        }
-        return resulting_image;
-    }
 }
