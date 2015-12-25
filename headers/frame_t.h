@@ -37,7 +37,7 @@ namespace tmd {
      * Create a 'colored mask' ie all pixel belonging to the foreground
      * are in color whereas pixels from the background are black.
      */
-    cv::Mat get_colored_mask_for_frame(tmd::frame_t *frame) {
+    inline cv::Mat get_colored_mask_for_frame(tmd::frame_t *frame) {
         cv::Mat resulting_image;
         frame->original_frame.copyTo(resulting_image);
         cv::Vec3b black;
@@ -57,7 +57,8 @@ namespace tmd {
     /**
      * Draw the players of the frame on another image and returns it.
      */
-    cv::Mat draw_player_on_frame(tmd::frame_t *frame, bool draw_torso = false,
+    inline cv::Mat draw_player_on_frame(tmd::frame_t *frame, bool draw_torso =
+    false,
                                  bool draw_parts = false){
         cv::Mat result = frame->original_frame;
 
