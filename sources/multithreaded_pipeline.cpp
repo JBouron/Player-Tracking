@@ -13,7 +13,7 @@ namespace tmd{
             throw std::invalid_argument("Error : In nultithreaded pipeline : "
                                                 "negative thread count");
         }
-
+        m_next_thread_to_use = 0;
         m_pipeline_threads = new tmd::PipelineThread*[m_thread_count];
     }
 
@@ -26,9 +26,13 @@ namespace tmd{
     }
 
     frame_t* MultithreadedPipeline::next_frame(){
-        int thread_id = m_frame_pos % m_thread_count;
+        if (!m_threads_ready){
+            create_threads();
+        }
+        int thread_id = m_next_thread_to_use;
         tmd::frame_t* frame = m_pipeline_threads[thread_id]->pop_buffer();
         m_frame_pos += m_step;
+        m_next_thread_to_use = (m_next_thread_to_use + 1)%m_thread_count;
         return frame;
     }
 
@@ -65,6 +69,8 @@ namespace tmd{
     }
 
     void MultithreadedPipeline::create_threads(){
+        tmd::debug("MultithreadedPipeline", "create_threads", "Creating "
+                "threads");
         int mod = m_end % m_thread_count;
         for (int i = 0 ; i < m_thread_count ; i ++){
             int threadId = i;
@@ -76,10 +82,16 @@ namespace tmd{
             else{
                 ending_frame = threadId - mod + m_end + m_thread_count;
             }
+            int step = m_step * m_thread_count;
+            tmd::debug("MultithreadedPipeline", "create_threads", "Creating "
+                    "thread " + std::to_string(i) + " starting_frame = " +
+                    std::to_string(starting_frame) + " ending_frame = " +
+                    std::to_string(ending_frame) + " step = "  +
+                    std::to_string(step));
             m_pipeline_threads[i] = new PipelineThread(threadId,
                                                        starting_frame,
                                                        ending_frame,
-                                                       m_video_path, m_step);
+                                                       m_video_path, step);
         }
         m_threads_ready = true;
     }

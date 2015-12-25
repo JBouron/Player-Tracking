@@ -46,9 +46,11 @@ void memleak_video_capture(void) {
 
 
 int main(int argc, char *argv[]){
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-                                      "./res/videos/uni-hockey/ace_0.mp4", 1,
-            "./res/xmls/person.xml");
+    /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
+                                      "./res/videos/uni-hockey/ace_0.mp4", 2,
+            "./res/xmls/person.xml");*/
+    tmd::Pipeline *pipeline = new tmd::SimplePipeline("./res/videos/uni-hockey/ace_0.mp4",
+                                                      "./res/xmls/person.xml");
 
     pipeline->set_frame_step_size(10);
     pipeline->set_start_frame(460);
@@ -58,11 +60,16 @@ int main(int argc, char *argv[]){
     double t1 = cv::getTickCount();
     int count = 0;
     int max_frames = -1;
-    SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frames");
+    std::string folder = "./res/pipeline_results/complete_pipeline/uni/with "
+            "blob separator/";
+
     while (frame != NULL) {
+        std::string frame_index = std::to_string(count);
+        std::string file_name = folder + "/frame" + frame_index + ".jpg";
+        cv::imwrite(file_name, tmd::draw_player_on_frame(frame, true));
+        std::cout << "Save frame " << frame_index << std::endl;
         tmd::free_frame(frame);
         frame = pipeline->next_frame();
-        tmd::SDLBinds::imshow(window, frame->original_frame);
         count++;
         if (count == max_frames) {
             break;

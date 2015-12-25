@@ -60,6 +60,8 @@ namespace tmd{
         bool m_threads_ready;
         int m_thread_count;
         int m_frame_pos;
+        int m_next_thread_to_use; // Keep track of the next thread we should
+        // use to get the next frame.
     };
 }
 
