@@ -11,8 +11,9 @@ namespace tmd{
         m_ending_frame = ending_frame;
         // TODO : Remove hard coded values using the config file.
         m_pipeline = new tmd::SimplePipeline(video_path, "/res/xmls/person");
-        m_pipeline->set_start_frame(m_id);
-        m_pipeline->set_frame_step_size(m_step_size);
+        m_pipeline->set_start_frame(starting_frame);
+        m_pipeline->set_frame_step_size(step_size);
+        m_pipeline->set_end_frame(ending_frame);
         m_stop_request = false;
 
         m_worker = std::thread(&PipelineThread::extract_from_pipeline,
