@@ -4,12 +4,8 @@
 #define load_value(name)\
     do{ \
         if (!config.lookupValue(#name, name)){ \
-            tmd::debug("Config", "load_config", "Cannot load #name, using" \
+            tmd::debug("Config", "load_config", "Cannot load "#name", using" \
             "default value instead"); \
-        } \
-        else{ \
-            tmd::debug("Config", "load_config", "#name loaded from config " \
-"file."); \
         } \
     }while(0)
 
@@ -53,6 +49,28 @@ namespace tmd{
         load_value(blob_player_extractor_buffer_size);
         load_value(blob_player_extractor_min_blob_size);
         tmd::debug("Config", "load_config", "Config file loaded.");
+
+        std::cout << "bgs_detect_shadows = " <<bgs_detect_shadows  << std::endl;
+        std::cout << "bgs_threshold = " <<bgs_threshold  << std::endl;
+        std::cout << "bgs_history = " <<bgs_history  << std::endl;
+        std::cout << "bgs_learning_rate = " <<bgs_learning_rate  << std::endl;
+        std::cout << "calibration_tool_escape_char = " <<calibration_tool_escape_char  << std::endl;
+        std::cout << "dpm_detector_numthread = " <<dpm_detector_numthread  << std::endl;
+        std::cout << "dpm_extractor_score_threshold = " <<dpm_extractor_score_threshold  << std::endl;
+        std::cout << "dpm_extractor_overlapping_threshold = " <<dpm_extractor_overlapping_threshold  << std::endl;
+        std::cout << "dpm_extractor_duplicate_area_threshold = " <<dpm_extractor_duplicate_area_threshold  << std::endl;
+        std::cout << "features_comparator_correlation_threshold = " <<features_comparator_correlation_threshold  << std::endl;
+        std::cout << "feature_extractor_threshold_red_low = " <<feature_extractor_threshold_red_low  << std::endl;
+        std::cout << "feature_extractor_threshold_red_high = " <<feature_extractor_threshold_red_high  << std::endl;
+        std::cout << "feature_extractor_threshold_green_low = " <<feature_extractor_threshold_green_low  << std::endl;
+        std::cout << "feature_extractor_threshold_green_high = " <<feature_extractor_threshold_green_high  << std::endl;
+        std::cout << "feature_extractor_threshold_saturation = " <<feature_extractor_threshold_saturation  << std::endl;
+        std::cout << "feature_extractor_threshold_value = " <<feature_extractor_threshold_value  << std::endl;
+        std::cout << "feature_extractor_histogram_size = " <<feature_extractor_histogram_size  << std::endl;
+        std::cout << "sdl_binds_default_width = " <<sdl_binds_default_width  << std::endl;
+        std::cout << "sdl_binds_default_height = " <<sdl_binds_default_height << std::endl;
+        std::cout << "blob_player_extractor_buffer_size = " <<blob_player_extractor_buffer_size  << std::endl;
+        std::cout << "blob_player_extractor_min_blob_size = " <<blob_player_extractor_min_blob_size  << std::endl;
     }
 
 
