@@ -9,9 +9,6 @@
 #include "../headers/openCV/_lsvm_matching.h"
 #include "player_t.h"
 
-/* Number of threads used during the DPM extraction. */
-#define TMD_DPM_DETECTOR_NUMTHREADS 4
-
 namespace tmd{
     /**
      * Class representing a DPM detector using the LatentSVM algorithm.

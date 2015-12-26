@@ -34,6 +34,18 @@ namespace tmd{
         /**********************************************************************/
         static int calibration_tool_escape_char;
 
+        /**********************************************************************/
+        /* DPM Detector                                                       */
+        /**********************************************************************/
+        static int dpm_detector_numthread;
+
+        /**********************************************************************/
+        /* DPM Player Extractor                                               */
+        /**********************************************************************/
+        static float dpm_extractor_score_threshold;
+        static float dpm_extractor_overlapping_threshold;
+        static float dpm_extractor_duplicate_area_threshold;
+
 
 
 

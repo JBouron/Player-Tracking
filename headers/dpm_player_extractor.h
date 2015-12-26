@@ -4,13 +4,6 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include "player_extractor.h"
 
-#define TMD_DEFAULT_DMP_EXTRACTOR_SCORE_THRESHOLD -1.0
-#define TMD_DEFAULT_DMP_EXTRACTOR_OVERLAPPING_THRESHOLD 0.2
-
-// Percentage of shared area such that it is considered as a dupluicate.
-#define TMD_DPM_EXTRACTOR_DUPLICATE_AREA_THRESHOLD 0.7 // %
-
-
 namespace tmd{
 
     /**
@@ -24,9 +17,7 @@ namespace tmd{
          * _ overlap_threshold : The overlap threshold to use with DPM.
          * _ score_threshold : The score threshold to use to filter results.
          */
-        DPMPlayerExtractor(std::string model_file, float overlap_threshold =
-        TMD_DEFAULT_DMP_EXTRACTOR_OVERLAPPING_THRESHOLD, float score_threshold
-        = TMD_DEFAULT_DMP_EXTRACTOR_SCORE_THRESHOLD);
+        DPMPlayerExtractor(std::string model_file);
 
         ~DPMPlayerExtractor();
 
