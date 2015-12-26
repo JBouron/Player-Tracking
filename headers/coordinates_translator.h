@@ -10,8 +10,8 @@ namespace tmd{
 
     class CoordinatesTranslator{
     public:
-        static position_t world_to_field(position_t w_pos, unsigned char camera_id);
-        static position_t field_to_world(position_t f_pos, unsigned char camera_id);
+        static position_t world_to_field(position_t w_pos, int camera_id);
+        static position_t field_to_world(position_t f_pos, int camera_id);
     };
 }
 

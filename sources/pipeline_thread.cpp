@@ -2,7 +2,7 @@
 #include "../headers/simple_pipeline.h"
 
 namespace tmd{
-    PipelineThread::PipelineThread(int thread_id, unsigned char camera_index,
+    PipelineThread::PipelineThread(int thread_id, int camera_index,
                                    int starting_frame, int ending_frame,
                                    std::string video_path, int step_size) {
         m_id = thread_id;

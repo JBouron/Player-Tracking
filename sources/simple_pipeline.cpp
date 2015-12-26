@@ -6,7 +6,7 @@
 
 namespace tmd {
     SimplePipeline::SimplePipeline(std::string video_path,
-                                   std::string model_file, unsigned char
+                                   std::string model_file, int
                                    camera_index, int start_frame, int end_frame,
                                    int step_size) : Pipeline
                           (video_path, model_file, camera_index, start_frame,

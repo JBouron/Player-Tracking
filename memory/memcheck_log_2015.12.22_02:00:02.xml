@@ -52417,7 +52417,7 @@
     <frame>
       <ip>0x4E8902</ip>
       <obj>/home/jbouron/.clion11/system/cmake/generated/3a528432/3a528432/Debug/Bachelor_Project</obj>
-      <fn>tmd::Pipeline::Pipeline(std::string, std::string, unsigned char, std::string, bool, bool, std::string)</fn>
+      <fn>tmd::Pipeline::Pipeline(std::string, std::string, int, std::string, bool, bool, std::string)</fn>
       <dir>/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/sources</dir>
       <file>pipeline.cpp</file>
       <line>17</line>
@@ -56587,7 +56587,7 @@
     <frame>
       <ip>0x4E8902</ip>
       <obj>/home/jbouron/.clion11/system/cmake/generated/3a528432/3a528432/Debug/Bachelor_Project</obj>
-      <fn>tmd::Pipeline::Pipeline(std::string, std::string, unsigned char, std::string, bool, bool, std::string)</fn>
+      <fn>tmd::Pipeline::Pipeline(std::string, std::string, int, std::string, bool, bool, std::string)</fn>
       <dir>/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/sources</dir>
       <file>pipeline.cpp</file>
       <line>17</line>
@@ -57661,7 +57661,7 @@
     <frame>
       <ip>0x4E8902</ip>
       <obj>/home/jbouron/.clion11/system/cmake/generated/3a528432/3a528432/Debug/Bachelor_Project</obj>
-      <fn>tmd::Pipeline::Pipeline(std::string, std::string, unsigned char, std::string, bool, bool, std::string)</fn>
+      <fn>tmd::Pipeline::Pipeline(std::string, std::string, int, std::string, bool, bool, std::string)</fn>
       <dir>/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/sources</dir>
       <file>pipeline.cpp</file>
       <line>17</line>
