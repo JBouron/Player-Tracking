@@ -12,7 +12,7 @@
 namespace tmd {
     class TrainingSetCreator {
     public:
-        TrainingSetCreator(std::string video_path, std::string static_mask_path, unsigned char camera_index,
+        TrainingSetCreator(std::string video_path, std::string static_mask_path, int camera_index,
                            std::string model_file, bool dpm = false, bool save_frames = false,
                            std::string output_folder = "");
 
@@ -33,7 +33,7 @@ namespace tmd {
         tmd::PlayerExtractor *m_playerExtractor;
         tmd::FeaturesExtractor *m_featuresExtractor;
         tmd::FeatureComparator *m_featuresComparator;
-        unsigned char m_camera_index;
+        int m_camera_index;
         std::string m_mask_path;
         int m_step;
 

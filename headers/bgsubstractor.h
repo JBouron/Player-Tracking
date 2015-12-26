@@ -27,9 +27,9 @@ namespace tmd {
          * learning_rate : Learning rate of the algorithm, ie. how does the
          * background model changes over time.
          */
-        BGSubstractor(std::string input_video_path, cv::Mat static_mask, unsigned
-        char camera_index,
-                      int starting_frame = 0, int step_size = 1);
+        BGSubstractor(std::string input_video_path, cv::Mat static_mask,
+                      int camera_index, int starting_frame = 0, int step_size =
+                        1);
 
         /**
          * Destructor of the BGS.
@@ -72,7 +72,7 @@ namespace tmd {
         cv::VideoCapture *m_input_video;
         std::string m_input_video_path;
         cv::Mat m_static_mask;
-        unsigned char m_camera_index;
+        int m_camera_index;
         int m_frame_index;
         int m_total_frame_count;
         float m_learning_rate;

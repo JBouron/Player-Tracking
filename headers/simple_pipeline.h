@@ -10,8 +10,8 @@ namespace tmd{
     class SimplePipeline : public Pipeline{
 
     public:
-        SimplePipeline(std::string video_path, std::string , unsigned
-        char camera_index, int start_frame, int end_frame, int step_size);
+        SimplePipeline(std::string video_path, std::string ,
+        int camera_index, int start_frame, int end_frame, int step_size);
 
         ~SimplePipeline();
 
