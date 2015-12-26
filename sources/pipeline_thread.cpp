@@ -2,18 +2,17 @@
 #include "../headers/simple_pipeline.h"
 
 namespace tmd{
-    PipelineThread::PipelineThread(int thread_id, int camera_index,
-                                   int starting_frame, int ending_frame,
-                                   std::string video_path, int step_size) {
+    PipelineThread::PipelineThread(std::string video_folder, int camera_index,
+                                   int thread_id, int starting_frame,
+                                   int ending_frame, int step_size) {
         m_id = thread_id;
         m_step_size = step_size;
         m_starting_frame = starting_frame;
         m_frame_idx = m_starting_frame;
         m_ending_frame = ending_frame;
         // TODO : Remove hard coded values using the config file.
-        m_pipeline = new tmd::SimplePipeline(video_path, "/res/xmls/person",
-                                             camera_index,
-                                             starting_frame, ending_frame, step_size);
+        m_pipeline = new tmd::SimplePipeline(video_folder, camera_index,
+                                     starting_frame, ending_frame, step_size);
         m_stop_request = false;
 
         m_worker = std::thread(&PipelineThread::extract_from_pipeline,

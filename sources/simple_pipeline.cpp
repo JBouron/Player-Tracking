@@ -5,17 +5,16 @@
 #include "../headers/frame_t.h"
 
 namespace tmd {
-    SimplePipeline::SimplePipeline(std::string video_path,
-                                   std::string model_file, int
-                                   camera_index, int start_frame, int end_frame,
+    SimplePipeline::SimplePipeline(std::string video_folder, int camera_index,
+                                   int start_frame, int end_frame,
                                    int step_size) : Pipeline
-                          (video_path, model_file, camera_index, start_frame,
+                          (video_folder, camera_index, start_frame,
                            end_frame,
                            step_size){
         std::string static_mask_path = "./res/bgs_masks/mask_ace" +
                 std::to_string(camera_index) + ",jpg";
         cv::Mat mask = cv::imread(static_mask_path, 0);
-        m_bgSubstractor = new BGSubstractor(video_path, camera_index, start_frame,
+        m_bgSubstractor = new BGSubstractor(video_folder, camera_index, start_frame,
                                             step_size);
 
         m_playerExtractor = new BlobPlayerExtractor();

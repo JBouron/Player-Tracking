@@ -48,15 +48,8 @@ int main(int argc, char *argv[]){
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(""
-                                                              ""
-                                                              ""
-                                                                     ""
-                                                                     ""
-                                                                     "./res/videos/uni-hockey/ace_0.mp4", 4,
-                                                      "./res/xmls/person"
-                                                              ".xml", 0, 10,
-                                                      2000, 10);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
+    "./res/videos/uni-hockey/",0,  4, 10, 2000, 10);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();

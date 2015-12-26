@@ -21,9 +21,8 @@ namespace tmd{
          * output_folder : Folder that will contain thew saved frames (if
          * save_frames is asserted).
          */
-        MultithreadedPipeline(std::string video_path, int thread_count,
-                              std::string model_file, int camera_index
-                              , int start_frame, int end_frame, int step_size);
+        MultithreadedPipeline(std::string video_folder, int camera_index, int
+                thread_count, int start_frame, int end_frame, int step_size);
 
         ~MultithreadedPipeline();
 
