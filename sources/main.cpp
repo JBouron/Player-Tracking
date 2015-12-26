@@ -48,9 +48,11 @@ int main(int argc, char *argv[]){
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::SimplePipeline("./res/videos/uni-hockey/ace_0.mp4",
+    tmd::Pipeline *pipeline = new tmd::SimplePipeline(""
+                                                              ""
+                                                              "./res/videos/uni-hockey/ace_0.mp4",
                                                       "./res/xmls/person"
-                                                              ".xml", 1000,
+                                                              ".xml", 0, 1000,
                                                       2000, 10);
     tmd::frame_t *frame = pipeline->next_frame();
 

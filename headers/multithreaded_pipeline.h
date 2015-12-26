@@ -22,8 +22,8 @@ namespace tmd{
          * save_frames is asserted).
          */
         MultithreadedPipeline(std::string video_path, int thread_count,
-                              std::string model_file, int
-                              start_frame, int end_frame, int step_size);
+                              std::string model_file, unsigned char camera_index
+                              , int start_frame, int end_frame, int step_size);
 
         ~MultithreadedPipeline();
 

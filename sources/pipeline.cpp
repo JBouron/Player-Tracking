@@ -18,9 +18,6 @@ namespace tmd {
             throw std::invalid_argument("Error couldn't load the video in the"
                                                 " pipeline.");
         }
-
-        m_running = false;
-
         m_start = start_frame;
         m_step = end_frame;
         m_end = step_size;

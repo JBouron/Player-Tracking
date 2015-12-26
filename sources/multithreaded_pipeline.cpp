@@ -4,9 +4,11 @@
 namespace tmd{
     MultithreadedPipeline::MultithreadedPipeline(std::string video_path,
                                                  int thread_count,
-                                                 std::string model_file, int
+                                                 std::string model_file,
+                                                 unsigned char camera_index, int
                                                  start_frame, int end_frame, int step_size) :
-    Pipeline(video_path, model_file, start_frame, end_frame, step_size){
+    Pipeline(video_path, model_file, camera_index, start_frame, end_frame,
+             step_size){
         m_threads_ready = false;
         m_frame_pos = m_start;
         m_thread_count = thread_count;
@@ -59,6 +61,7 @@ namespace tmd{
                     std::to_string(ending_frame) + " step = "  +
                     std::to_string(step));
             m_pipeline_threads[i] = new PipelineThread(threadId,
+                                                       m_camera_index,
                                                        starting_frame,
                                                        ending_frame,
                                                        m_video_path, step);
