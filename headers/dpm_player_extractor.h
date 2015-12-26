@@ -13,11 +13,8 @@ namespace tmd{
     public :
         /**
          * Constructor of the DPMPlayerExtractor
-         * _ model_file : path to the file containing the model of a person.
-         * _ overlap_threshold : The overlap threshold to use with DPM.
-         * _ score_threshold : The score threshold to use to filter results.
          */
-        DPMPlayerExtractor(std::string model_file);
+        DPMPlayerExtractor();
 
         ~DPMPlayerExtractor();
 

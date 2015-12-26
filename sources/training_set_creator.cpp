@@ -34,7 +34,7 @@ namespace tmd {
         m_dpm = dpm;
 
         if (dpm) {
-            m_playerExtractor = new DPMPlayerExtractor(model_file);
+            m_playerExtractor = new DPMPlayerExtractor();
         }
         else {
             m_playerExtractor = new BlobPlayerExtractor();

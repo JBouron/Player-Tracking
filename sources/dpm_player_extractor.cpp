@@ -6,9 +6,9 @@
 #include "../headers/config.h"
 
 namespace tmd{
-    DPMPlayerExtractor::DPMPlayerExtractor(std::string model_file){
+    DPMPlayerExtractor::DPMPlayerExtractor(){
         std::vector<std::string> model_files;
-        model_files.push_back(model_file);
+        model_files.push_back(tmd::Config::model_file_path);
         m_detector = new cv::LatentSvmDetector();
         bool model_loaded = m_detector->load(model_files);
         if (!model_loaded){
