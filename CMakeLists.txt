@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.3)
 project(Bachelor_Project)
 
 # Note : -MM and -H can only build, not run the program.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -D VALGRIND=ON")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -D VALGRIND=ON -lconfig++")
 set(OpenCV_FOUND TRUE)
 find_package(OpenCV REQUIRED)
 
@@ -54,6 +54,6 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         headers/simple_pipeline.h
         sources/simple_pipeline.cpp
         headers/pipeline_thread.h
-        sources/pipeline_thread.cpp headers/multithreaded_pipeline.h sources/multithreaded_pipeline.cpp)
+        sources/pipeline_thread.cpp headers/multithreaded_pipeline.h sources/multithreaded_pipeline.cpp headers/config.h sources/config.cpp)
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBRARIES} cppunit)
