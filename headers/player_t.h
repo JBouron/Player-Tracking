@@ -3,9 +3,7 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/core/mat.hpp>
-#include "position_t.h"
 #include "team_t.h"
-#include "box_t.h"
 #include "features_t.h"
 
 namespace tmd{

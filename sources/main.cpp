@@ -1,7 +1,6 @@
 #include <iostream>
 #include "../headers/frame_t.h"
 #include "../headers/test_cases/test_suite.h"
-#include "../headers/demo/demo.h"
 #include "../headers/manual_player_extractor.h"
 #include "../headers/calibration_tool.h"
 #include "../headers/dpm_player_extractor.h"
