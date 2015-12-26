@@ -7,6 +7,7 @@
 #include "frame_t.h"
 #include "config.h"
 
+#define TMD_BGS_DETECTS_SHADOWS tmd::Cong
 
 namespace tmd {
     /* Class responsible of applying a BG substraction on a given video.
