@@ -19,8 +19,8 @@ namespace tmd {
                                                 " pipeline.");
         }
         m_start = start_frame;
-        m_step = end_frame;
-        m_end = step_size;
+        m_step = step_size;
+        m_end = end_frame;
         m_camera_index = camera_index;
     }
 
