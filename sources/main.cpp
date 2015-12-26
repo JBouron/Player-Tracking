@@ -50,8 +50,8 @@ int main(int argc, char *argv[]){
             "./res/xmls/person.xml");*/
     tmd::Pipeline *pipeline = new tmd::SimplePipeline("./res/videos/uni-hockey/ace_0.mp4",
                                                       "./res/xmls/person"
-                                                              ".xml", 400,
-                                                      1000, 10);
+                                                              ".xml", 1000,
+                                                      2000, 10);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();

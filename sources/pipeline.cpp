@@ -8,8 +8,8 @@
 
 
 namespace tmd {
-    Pipeline::Pipeline(std::string video_path, std::string model_file, int
-            start_frame, int end_frame, int step_size) {
+    Pipeline::Pipeline(std::string video_path, std::string model_file, unsigned
+    char camera_index, int start_frame, int end_frame, int step_size) {
         m_video_path = video_path;
 
         m_video = new cv::VideoCapture;
@@ -24,6 +24,7 @@ namespace tmd {
         m_start = start_frame;
         m_step = end_frame;
         m_end = step_size;
+        m_camera_index = camera_index;
     }
 
     Pipeline::~Pipeline() {
