@@ -25,8 +25,8 @@ namespace tmd{
          * _ camera_index : The index of the camera.
          * _ model_file : Path to the file containing the model of the person.
          */
-         Pipeline(std::string video_path, std::string model_file,
-         int camera_index, int start_frame, int end_frame, int step_size);
+         Pipeline(std::string video_folder, int camera_index, int start_frame,
+                  int end_frame, int step_size);
 
         ~Pipeline();
 

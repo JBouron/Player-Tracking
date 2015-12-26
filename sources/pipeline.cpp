@@ -8,12 +8,13 @@
 
 
 namespace tmd {
-    Pipeline::Pipeline(std::string video_path, std::string model_file,
-    int camera_index, int start_frame, int end_frame, int step_size) {
-        m_video_path = video_path;
+    Pipeline::Pipeline(std::string video_folder, int camera_index,
+                       int start_frame, int end_frame, int step_size) {
+        m_video_path = video_folder + "/ace_" + std::to_string(camera_index)
+                       + ".mp4";
 
         m_video = new cv::VideoCapture;
-        m_video->open(video_path); // TODO : Valkyrie reports a memleak here ...
+        m_video->open(m_video_path); // TODO : Valkyrie reports a memleak here ...
         if (!m_video->isOpened()) {
             throw std::invalid_argument("Error couldn't load the video in the"
                                                 " pipeline.");

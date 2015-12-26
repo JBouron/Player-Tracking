@@ -27,8 +27,8 @@ namespace tmd{
          * step_size : Frame count to jump over between 2 consecutive buffer
          * entries.
          */
-        PipelineThread(int thread_id, int camera_index, int starting_frame,
-                       int ending_frame, std::string video_path, int step_size);
+        PipelineThread(std::string video_folder, int camera_index, int thread_id
+                , int starting_frame, int ending_frame, int step_size);
 
         /**
          * Destructor of the PipelineThread.
