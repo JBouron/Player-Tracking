@@ -3,6 +3,7 @@
 #include "../headers/debug.h"
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
+#include "../headers/config.h"
 
 namespace tmd {
 
@@ -11,8 +12,6 @@ namespace tmd {
     }
 
     FeaturesExtractor::~FeaturesExtractor() {
-        // TODO : Find why it segfualts.
-        //delete m_detector;
     }
 
     void FeaturesExtractor::extractFeaturesFromPlayers(
@@ -58,12 +57,12 @@ namespace tmd {
     }
 
     bool FeaturesExtractor::withinThresholds(double h, double s, double v) {
-        float th_red_low = TMD_FEATURE_EXTRACTOR_TH_RED_LOW;
-        float th_red_high = TMD_FEATURE_EXTRACTOR_TH_RED_HIGH;
-        float th_green_low = TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW;
-        float th_green_high = TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH;
-        float th_sat_low = TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW;
-        float th_val_low = TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW;
+        float th_red_low = Config::feature_extractor_threshold_red_low ;
+        float th_red_high = Config::feature_extractor_threshold_red_high ;
+        float th_green_low = Config::feature_extractor_threshold_green_low ;
+        float th_green_high = Config::feature_extractor_threshold_green_high ;
+        float th_sat_low = Config::feature_extractor_threshold_saturation ;
+        float th_val_low = Config::feature_extractor_threshold_value ;
 
         return ((th_red_low < h && h <= 180) || (0 <= h && h <= th_red_high) ||
                 (th_green_low <= h && h <= th_green_high)) &&
@@ -91,7 +90,7 @@ namespace tmd {
     }
 
     void FeaturesExtractor::createHistogram(player_t *p) {
-        int bins_count = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
+        int bins_count = Config::feature_extractor_histogram_size;
         int dim = 1; // One dimension : The hue.
         float **range = new float *[1]; // freed
         range[0] = new float[2];

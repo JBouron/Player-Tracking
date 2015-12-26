@@ -46,6 +46,21 @@ namespace tmd{
         static float dpm_extractor_overlapping_threshold;
         static float dpm_extractor_duplicate_area_threshold;
 
+        /**********************************************************************/
+        /* Features Comparator                                                */
+        /**********************************************************************/
+        static float features_comparator_correlation_threshold;
+
+        /**********************************************************************/
+        /* Features Extractor                                                 */
+        /**********************************************************************/
+        static float feature_extractor_threshold_red_low;
+        static float feature_extractor_threshold_red_high;
+        static float feature_extractor_threshold_green_low;
+        static float feature_extractor_threshold_green_high;
+        static float feature_extractor_threshold_saturation;
+        static float feature_extractor_threshold_value;
+        static int feature_extractor_histogram_size;
 
 
 

@@ -13,4 +13,14 @@ namespace tmd{
     float Config::dpm_extractor_score_threshold = -1.f;
     float Config::dpm_extractor_overlapping_threshold = 0.2;
     float Config::dpm_extractor_duplicate_area_threshold = 0.7;
+
+    float Config::features_comparator_correlation_threshold = 0.4;
+
+    float Config::feature_extractor_threshold_red_low = 120;
+    float Config::feature_extractor_threshold_red_high = 30;
+    float Config::feature_extractor_threshold_green_low = 30;
+    float Config::feature_extractor_threshold_green_high = 90;
+    float Config::feature_extractor_threshold_saturation = 30;
+    float Config::feature_extractor_threshold_value = 30;
+    int Config::feature_extractor_histogram_size = 180;
 }
