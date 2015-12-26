@@ -11,7 +11,7 @@ namespace tmd {
         // TODO : Remove place holders.
         std::string static_mask_path = "./res/bgs_masks/mask_ace0.jpg";
         cv::Mat mask = cv::imread(static_mask_path, 0);
-        m_bgSubstractor = new BGSubstractor(m_video, mask, 0);
+        m_bgSubstractor = new BGSubstractor(video_path, mask, 0);
 
         m_playerExtractor = new BlobPlayerExtractor();
 

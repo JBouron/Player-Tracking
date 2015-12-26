@@ -28,9 +28,11 @@ namespace tmd {
          * learning_rate : Learning rate of the algorithm, ie. how does the
          * background model changes over time.
          */
-        BGSubstractor(cv::VideoCapture *input_video, cv::Mat static_mask, unsigned char camera_index,
-                      float threshold = 256, int history = 500,
-                      float learning_rate = 0.0);
+        BGSubstractor(std::string input_video_path, cv::Mat static_mask, unsigned
+        char camera_index,
+                      int starting_frame = 0, int step_size = 1, float
+                        threshold = 256,
+                      int history = 500, float learning_rate = 0.0);
 
         /**
          * Destructor of the BGS.
@@ -46,7 +48,7 @@ namespace tmd {
         /**
          * Set the bgs to a given frame.
          */
-        bool jump_to_frame(int index);
+        void jump_to_frame(int index);
 
         /**
          * Set the color distance to use when extracting the background.
@@ -71,11 +73,15 @@ namespace tmd {
     private:
         cv::Ptr<cv::BackgroundSubtractorMOG2> m_bgs;
         cv::VideoCapture *m_input_video;
+        std::string m_input_video_path;
         cv::Mat m_static_mask;
         unsigned char m_camera_index;
-        double m_frame_index;
-        double m_total_frame_count;
+        int m_frame_index;
+        int m_total_frame_count;
         float m_learning_rate;
+
+        int m_starting_frame;
+        int m_step_size;
 
         int count_neighbours_in_fg(cv::Mat frame, int x, int y, int buffer_size);
     };
