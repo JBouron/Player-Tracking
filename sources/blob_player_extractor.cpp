@@ -2,9 +2,7 @@
 #include <iostream>
 #include "../headers/blob_player_extractor.h"
 #include "../headers/player_t.h"
-
-#define BUFFER_SIZE 5 //MUST BE ODD
-#define MIN_BLOB_SIZE 500 //USED TO FILTER BALL SIZE AND NOISE
+#include "../headers/config.h"
 
 using namespace cv;
 
@@ -25,7 +23,7 @@ namespace tmd {
         int maxLabel = std::numeric_limits<int>::max();
 
         std::map<int, std::set<int>> labelMap;
-
+        const int BUFFER_SIZE = Config::blob_player_extractor_buffer_size;
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 if (maskImage.at<uchar>(row, col) != 0) {
@@ -89,7 +87,7 @@ namespace tmd {
 
         std::vector<player_t *> players;
         for (std::map<int, int>::iterator iterator = blobSizes.begin(); iterator != blobSizes.end(); iterator++) {
-            if (iterator->second >= MIN_BLOB_SIZE) {
+            if (iterator->second >= Config::blob_player_extractor_min_blob_size) {
                 player_t *player = new player_t;
                 label = iterator->first;
                 int minRow = std::numeric_limits<int>::max();

@@ -68,6 +68,12 @@ namespace tmd{
         static int sdl_binds_default_width;
         static int sdl_binds_default_height;
 
+        /**********************************************************************/
+        /* Blob Player Extractor                                              */
+        /**********************************************************************/
+        static int blob_player_extractor_buffer_size;
+        static int blob_player_extractor_min_blob_size;
+
 
         /**********************************************************************/
         /*                                                                    */
