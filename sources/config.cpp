@@ -75,7 +75,7 @@ namespace tmd{
 
 
     // Here are the default values in case the config file is not found or
-    // invalid :
+    // invalid, or if a setting is not present in the file.
 
     /**********************************************************************/
     /* BGS                                                                */
