@@ -51,14 +51,6 @@ namespace tmd{
 
     private:
 
-        /**
-         * Returns the "colored mask", ie all the pixels belonging to the
-         * background are in black, whereas the others are in color. The
-         * resulting image are colored forground objects on a black background.
-         * The point of doing this is to improve the results of dpm.
-         */
-        cv::Mat get_colored_mask_for_frame(frame_t* frame);
-
         cv::LatentSvmDetector* m_detector;
         float m_overlap_threshold;
         float m_score_threshold;

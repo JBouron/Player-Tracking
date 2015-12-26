@@ -29,7 +29,7 @@ namespace tmd {
         m_camera_index = camera_index;
         m_mask_path = static_mask_path;
         cv::Mat mask = cv::imread(static_mask_path, 0);
-        m_bgSubstractor = new BGSubstractor(m_video, mask, camera_index);
+        m_bgSubstractor = new BGSubstractor(video_path, mask, camera_index);
 
         m_dpm = dpm;
 
@@ -108,7 +108,7 @@ namespace tmd {
 
         cv::Mat mask = cv::imread(m_mask_path, 0);
         delete m_bgSubstractor;
-        m_bgSubstractor = new BGSubstractor(m_video, mask, m_camera_index);
+        m_bgSubstractor = new BGSubstractor(video_path, mask, m_camera_index);
     }
 
     void TrainingSetCreator::write_centers() {
@@ -118,23 +118,6 @@ namespace tmd {
 
     void TrainingSetCreator::set_frame_step_size(int step) {
         m_step = step;
-    }
-
-    cv::Mat TrainingSetCreator::get_colored_mask_for_frame(frame_t *frame) {
-        cv::Mat resulting_image;
-        frame->original_frame.copyTo(resulting_image);
-        cv::Vec3b black;
-        black.val[0] = 0;
-        black.val[1] = 0;
-        black.val[2] = 0;
-        for (int c = 0; c < frame->mask_frame.cols; c++) {
-            for (int r = 0; r < frame->mask_frame.rows; r++) {
-                if (frame->mask_frame.at<uchar>(r, c) < 127) {
-                    resulting_image.at<cv::Vec3b>(r, c) = black;
-                }
-            }
-        }
-        return resulting_image;
     }
 }
 

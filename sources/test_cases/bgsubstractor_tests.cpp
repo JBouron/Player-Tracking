@@ -34,7 +34,7 @@ namespace tmd {
                    "Begin test.");
         cv::Mat mat;
         mat = cv::Mat::zeros(0, 0, CV_32SC1);
-        tmd::BGSubstractor s(m_video, mat, -1, 256, 500, 0);
+        tmd::BGSubstractor s(m_video_path, mat, -1, 256, 500, 0);
     }
 
     void BGSubstractorTest::testInvalidCameraIndex2() {
@@ -43,7 +43,7 @@ namespace tmd {
         cv::Mat mat;
         mat = cv::Mat::zeros(0, 0, CV_32SC1);
 
-        tmd::BGSubstractor s(m_video, mat, 8, 256, 500, 0);
+        tmd::BGSubstractor s(m_video_path, mat, 8, 256, 500, 0);
     }
 
     void BGSubstractorTest::testNextFrameReturnsNullWhenNoFramesLeft() {
@@ -53,7 +53,7 @@ namespace tmd {
         cv::Mat mat;
         mat = cv::Mat::zeros(0, 0, CV_32SC1);
 
-        tmd::BGSubstractor bgs(m_video, mat, 0, 256, 500, 0);
+        tmd::BGSubstractor bgs(m_video_path, mat, 0, 256, 500, 0);
         bgs.jump_to_frame(147);
         CPPUNIT_ASSERT(bgs.next_frame() == NULL);
     }
@@ -65,7 +65,7 @@ namespace tmd {
         cv::Mat mat;
         mat = cv::Mat::zeros(0, 0, CV_32SC1);
 
-        tmd::BGSubstractor bgs(m_video, mat, 0);
+        tmd::BGSubstractor bgs(m_video_path, mat, 0);
         frame_t *f = bgs.next_frame();
         while (f != NULL) {
             CPPUNIT_ASSERT(f->camera_index == 0);
@@ -81,7 +81,7 @@ namespace tmd {
         cv::Mat mat;
         mat = cv::Mat::zeros(0, 0, CV_32SC1);
 
-        tmd::BGSubstractor bgs(m_video, mat, 0);
+        tmd::BGSubstractor bgs(m_video_path, mat, 0);
         int findex = 0;
         frame_t *f = bgs.next_frame();
         int c  = 0;
