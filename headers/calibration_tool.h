@@ -5,7 +5,6 @@
 #include <opencv2/core/core.hpp>
 #include "bgsubstractor.h"
 
-#define TMD_CALIBRATION_TOOL_ESCAPE_CHAR 27 // ESC to quit the calibration tool.
 
 namespace tmd{
     /* Class allowing the user to calibrate the BGS for each camera. */

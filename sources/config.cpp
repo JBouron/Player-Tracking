@@ -5,4 +5,6 @@ namespace tmd{
     float Config::bgs_threshold = 256;
     int Config::bgs_history = 500;
     float Config::bgs_learning_rate = 0.0;
+
+    int Config::calibration_tool_escape_char = 27;
 }
