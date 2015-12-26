@@ -37,8 +37,6 @@ namespace tmd {
         std::string m_mask_path;
         int m_step;
 
-        cv::Mat get_colored_mask_for_frame(frame_t *frame);
-
     };
 }
 

@@ -23,20 +23,10 @@ namespace tmd{
          * _ static_mask_path : the path to the static mask used for the
          * background subtraction
          * _ camera_index : The index of the camera.
-         * _ dpm : Enable using dpm player extractor, if not enabled, the
-         * blob-detection based player extractor will be used instead.
          * _ model_file : Path to the file containing the model of the person.
-         * _ cluster_centers_file : Path to the file containing the cluster
-         * centers.
-         * _ save_frames : True to enable saving the frames into the output
-         * folder.
-         * _ output_folder : Path to the folder which will contain all the
-         * saved frames (if save_frame is enabled).
          */
-        Pipeline(std::string video_path, std::string static_mask_path, unsigned char camera_index,
-                 std::string model_file, bool dpm
-        = false, bool save_frames = false,
-                 std::string output_folder = "");
+         Pipeline(std::string video_path, std::string model_file, unsigned
+         char camera_index, int start_frame, int end_frame, int step_size);
 
         ~Pipeline();
 
@@ -49,76 +39,14 @@ namespace tmd{
          *
          * Note that the user has to take care of freeing the frames.
          */
-        frame_t* next_frame();
+        virtual frame_t* next_frame() = 0;
 
-
-        /**
-         * Extract the next frame from the input video.
-         * Run the full pipeline on it.
-         * Then returns a vector containing all the player for this frame.
-         * Along with their team, features, ...
-         */
-        std::vector<tmd::player_t*> next_players();
-
-
-        /**
-         * Sets the properties of the bgs.
-         */
-        void set_bgs_properties(float threshold, int history_size, float
-            learning_rate);
-
-        /**
-         * Sets the properties of the dpm (if used for player extraction).
-         */
-        void set_dpm_properties(float overlapping_threshold, float
-        score_threshold);
-
-        /**
-         * Set the step size between to consecutive extracted frames.
-         */
-        void set_frame_step_size(int step);
-
-        /**
-         * Set the starting frame index.
-         * The extraction must not begun before this operation.
-         */
-        void set_start_frame(int frame_index);
-
-        /**
-         * Set the frame index
-         */
-        void set_end_frame(int frame_index);
-
-        /**
-         * Create a 'colored mask' ie all pixel belonging to the foreground
-         * are in color whereas pixels from the background are black.
-         */
-        static cv::Mat get_colored_mask_for_frame(tmd::frame_t* frame);
-
-    private:
-        /**
-         * Fetch the next frame from the BGS.
-         */
-        tmd::frame_t* fetch_next_frame();
-
-        /**
-         * Extract the players from the given frames, and set their property
-         * (team, features, ...)
-         */
-        std::vector<tmd::player_t*> extract_players_from_frame(tmd::frame_t*
-        frame);
+    protected:
 
         cv::VideoCapture *m_video;
-        tmd::BGSubstractor *m_bgSubstractor;
-        tmd::PlayerExtractor *m_playerExtractor;
-        tmd::FeaturesExtractor *m_featuresExtractor;
-        tmd::FeatureComparator *m_featuresComparator;
+
         std::string m_video_path;
         unsigned char m_camera_index;
-        std::string m_output_folder;
-        bool m_save;
-        bool m_running;
-        bool m_using_dpm;
         int m_step;
         int m_start;
         int m_end;
