@@ -4,7 +4,7 @@
 #define load_value(name)\
     do{ \
         if (!config.lookupValue(#name, name)){ \
-            tmd::debug("Config", "load_config", "Cannot load "#name", using" \
+            tmd::debug("Config", "load_config", "Cannot load "#name", using " \
             "default value instead"); \
         } \
     }while(0)
@@ -27,6 +27,7 @@ namespace tmd{
             return;
         }
 
+        load_value(mask_folder);
         load_value(bgs_detect_shadows);
         load_value(bgs_threshold);
         load_value(bgs_history);
@@ -50,6 +51,7 @@ namespace tmd{
         load_value(blob_player_extractor_min_blob_size);
         tmd::debug("Config", "load_config", "Config file loaded.");
 
+        std::cout << "mask_folder = " << mask_folder << std::endl;
         std::cout << "bgs_detect_shadows = " <<bgs_detect_shadows  << std::endl;
         std::cout << "bgs_threshold = " <<bgs_threshold  << std::endl;
         std::cout << "bgs_history = " <<bgs_history  << std::endl;
@@ -76,6 +78,11 @@ namespace tmd{
 
     // Here are the default values in case the config file is not found or
     // invalid, or if a setting is not present in the file.
+
+    /**********************************************************************/
+    /* Misc                                                               */
+    /**********************************************************************/
+    std::string Config::mask_folder = "./res/bgs_masks/";
 
     /**********************************************************************/
     /* BGS                                                                */
