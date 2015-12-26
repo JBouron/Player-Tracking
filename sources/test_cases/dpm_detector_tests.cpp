@@ -23,12 +23,8 @@ namespace tmd{
         delete m_player;
     }
 
-    void DPMDetectorTest::testInvalidModelFileName() {
-        tmd::DPMDetector detector("invalidname");
-    }
-
     void DPMDetectorTest::testRightNumberOfBodyPartExtracted() {
-        tmd::DPMDetector detector(m_model_file);
+        tmd::DPMDetector detector;
         detector.extractBodyParts(m_player);
         CPPUNIT_ASSERT(m_player->features.body_parts.size() == 6);
     }
@@ -36,7 +32,7 @@ namespace tmd{
     void DPMDetectorTest::testNoFalsePositive() {
         player_t* player = new player_t;
         player->original_image = m_dummy_image;
-        tmd::DPMDetector detector(m_model_file);
+        tmd::DPMDetector detector;
         detector.extractBodyParts(player);
         CPPUNIT_ASSERT(player->features.body_parts.size() == 0);
     }

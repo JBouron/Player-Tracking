@@ -48,7 +48,7 @@ namespace tmd {
 
         DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
         BGSubstractor bgSubstractor(video_path, 0);
-        FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
+        FeaturesExtractor featuresExtractor;
 
         int keyboard = 0;
 

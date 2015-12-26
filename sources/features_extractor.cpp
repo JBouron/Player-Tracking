@@ -6,14 +6,6 @@
 #include "../headers/config.h"
 
 namespace tmd {
-
-    FeaturesExtractor::FeaturesExtractor(std::string model_file) : m_detector
-                                                                           (model_file) {
-    }
-
-    FeaturesExtractor::~FeaturesExtractor() {
-    }
-
     void FeaturesExtractor::extractFeaturesFromPlayers(
             std::vector<player_t *> &players) {
         size_t size = players.size();

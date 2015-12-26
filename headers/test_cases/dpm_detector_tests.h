@@ -12,7 +12,6 @@ namespace tmd{
     /** Test class for the DPMDetector. **/
     class DPMDetectorTest : public CppUnit::TestFixture{
         CPPUNIT_TEST_SUITE(DPMDetectorTest);
-        CPPUNIT_TEST_EXCEPTION(testInvalidModelFileName, std::invalid_argument);
         CPPUNIT_TEST(testRightNumberOfBodyPartExtracted);
         CPPUNIT_TEST(testNoFalsePositive);
         CPPUNIT_TEST_SUITE_END();
@@ -22,7 +21,6 @@ namespace tmd{
         void tearDown();
 
     protected:
-        void testInvalidModelFileName();
         void testRightNumberOfBodyPartExtracted();
         void testNoFalsePositive();
 

@@ -8,8 +8,8 @@
 // TODO : Some memory leaks in there (openCV ?)
 
 namespace tmd {
-    DPMDetector::DPMDetector(std::string model_file) {
-        m_detector = cvLoadLatentSvmDetector(model_file.c_str());
+    DPMDetector::DPMDetector() {
+        m_detector = cvLoadLatentSvmDetector(tmd::Config::model_file_path.c_str());
         if (m_detector == NULL) {
             throw std::invalid_argument("Error in DPMDetector : couldn't create"
                                                 " the detector.");

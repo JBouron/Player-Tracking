@@ -49,7 +49,7 @@ namespace tmd {
                 }
             }
         }
-        DPMDetector dpm("./res/xmls/person.xml");
+        DPMDetector dpm;
         for (int i = 0; i < player_count; i++) {
             std::cout << "image " << i << " ";
             dpm.extractBodyParts(players[i]);
@@ -94,7 +94,7 @@ namespace tmd {
         }
 
         // Extract features from the player.
-        tmd::FeaturesExtractor featuresExtractor("./res/xmls/person.xml");
+        tmd::FeaturesExtractor featuresExtractor;
         featuresExtractor.extractFeatures(player);
 
         // Show player image and mask.
