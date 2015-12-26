@@ -41,6 +41,7 @@ namespace tmd{
 
     private:
         cv::VideoCapture* m_video;
+        std::string m_video_path;
     };
 }
 #endif //BACHELOR_PROJECT_BGSUBSTRACTOR_TESTS_H
