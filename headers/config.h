@@ -62,6 +62,11 @@ namespace tmd{
         static float feature_extractor_threshold_value;
         static int feature_extractor_histogram_size;
 
+        /**********************************************************************/
+        /* SDL Binds                                                          */
+        /**********************************************************************/
+        static int sdl_binds_default_width;
+        static int sdl_binds_default_height;
 
 
         /**********************************************************************/

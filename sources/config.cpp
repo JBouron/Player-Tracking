@@ -23,4 +23,7 @@ namespace tmd{
     float Config::feature_extractor_threshold_saturation = 30;
     float Config::feature_extractor_threshold_value = 30;
     int Config::feature_extractor_histogram_size = 180;
+
+    int Config::sdl_binds_default_width = 1376;
+    int Config::sdl_binds_default_height = 992;
 }

@@ -5,9 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include <SDL_video.h>
 #include <SDL.h>
-
-#define TMD_DEFAULT_WINDOW_WIDTH 1376
-#define TMD_DEFAULT_WINDOW_HEIGHT 992
+#include "../config.h"
 
 namespace tmd{
     /**
@@ -27,8 +25,8 @@ namespace tmd{
         static SDL_Surface* get_sdl_surface_from_mat(cv::Mat mat);
 
         static SDL_Window* create_sdl_window(std::string name,
-                                             int w = TMD_DEFAULT_WINDOW_WIDTH,
-                                             int h = TMD_DEFAULT_WINDOW_HEIGHT);
+                                             int w = Config::sdl_binds_default_width,
+                                             int h = Config::sdl_binds_default_height);
 
         static void imshow(SDL_Window* window, cv::Mat frame);
 
