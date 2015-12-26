@@ -24,7 +24,7 @@ namespace tmd{
         std::string m_video_folder;
         cv::VideoCapture* m_videos[8];
         BGSubstractor* m_bgs[8];
-        unsigned int m_current_camera;
+        int m_current_camera;
         float m_params[8][3];
     };
 }

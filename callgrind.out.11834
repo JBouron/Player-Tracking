@@ -223,7 +223,7 @@ fn=(3752) 0x00000000001b6230
 0 6
 cob=(61)
 cfi=(201)
-cfn=(3650) qRegisterResourceData(int, unsigned char const*, unsigned char const*, unsigned char const*)
+cfn=(3650) qRegisterResourceData(int, int const*, int const*, int const*)
 calls=1 0 
 0 880
 0 1
@@ -251,7 +251,7 @@ fn=(42230) 0x0000000000868b50
 0 5
 cob=(61)
 cfi=(201)
-cfn=(42236) qUnregisterResourceData(int, unsigned char const*, unsigned char const*, unsigned char const*)
+cfn=(42236) qUnregisterResourceData(int, int const*, int const*, int const*)
 calls=1 0 
 0 389
 cob=(1)
@@ -149054,12 +149054,12 @@ calls=143 0
 * 17311
 * 429
 
-fn=(37816) cv::Vec<unsigned char, 3>& cv::Mat::at<cv::Vec<unsigned char, 3> >(int, int)
+fn=(37816) cv::Vec<int, 3>& cv::Mat::at<cv::Vec<int, 3> >(int, int)
 534 15130750
 +5 48418400
 +1 6052300
 
-fn=(36144) unsigned char& cv::Mat::at<unsigned char>(int, int)
+fn=(36144) int& cv::Mat::at<int>(int, int)
 534 716310560
 +5 1719145344
 +1 286524224
@@ -151696,7 +151696,7 @@ calls=13 -96
 * 127224
 +1 39
 cfi=(436)
-cfn=(37812) cv::Vec<unsigned char, 3>::Vec()
+cfn=(37812) cv::Vec<int, 3>::Vec()
 calls=13 1138 
 * 507
 +1 13
@@ -152321,7 +152321,7 @@ calls=1 -45
 * 1
 * 12
 cfi=(250) /home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/sources/pipeline.cpp
-cfn=(6806) tmd::Pipeline::Pipeline(std::string, std::string, unsigned char, std::string, bool, bool, std::string)
+cfn=(6806) tmd::Pipeline::Pipeline(std::string, std::string, int, std::string, bool, bool, std::string)
 calls=1 -34 
 * 160186135
 * 4
@@ -154347,7 +154347,7 @@ calls=1 -25
 * 1
 * 12
 cfi=(233)
-cfn=(32126) tmd::BGSubstractor::BGSubstractor(cv::VideoCapture*, cv::Mat, unsigned char, float, int, float)
+cfn=(32126) tmd::BGSubstractor::BGSubstractor(cv::VideoCapture*, cv::Mat, int, float, int, float)
 calls=1 -19 
 * 320670
 * 5
@@ -156167,12 +156167,12 @@ calls=2 -16
 fn=(38174)
 1902 8316
 
-fn=(38380) cv::Vec<unsigned char, 3>::operator[](int)
+fn=(38380) cv::Vec<int, 3>::operator[](int)
 1284 232968
 +3 232968
 +1 116484
 
-fn=(38378) cv::Matx<unsigned char, 3, 1>::Matx(unsigned char const*)
+fn=(38378) cv::Matx<int, 3, 1>::Matx(int const*)
 319 77656
 +2 776560
 +1 38828
@@ -156255,7 +156255,7 @@ fn=(32930) cv::TermCriteria::TermCriteria(int, int, double)
 fn=(37660) cv::Rect_<int>::Rect_(int, int, int, int)
 1901 546
 
-fn=(37814) cv::Matx<unsigned char, 3, 1>::Matx()
+fn=(37814) cv::Matx<int, 3, 1>::Matx()
 206 84
 +2 700
 +1 56
@@ -156318,7 +156318,7 @@ calls=90 217
 * 540
 +1 180
 
-fn=(38376) cv::Vec<unsigned char, 3>::Vec(cv::Vec<unsigned char, 3> const&)
+fn=(38376) cv::Vec<int, 3>::Vec(cv::Vec<int, 3> const&)
 1192 97070
 +1 97070
 cfn=(38378)
@@ -163914,9 +163914,9 @@ calls=13 0
 0 507
 0 260
 
-fn=(38418) cv::histPrepareImages(cv::Mat const*, int, int const*, cv::Mat const&, int, int const*, float const**, bool, std::vector<unsigned char*, std::allocator<unsigned char*> >&, std::vector<int, std::allocator<int> >&, cv::Size_<int>&, std::vector<double, std::allocator<double> >&)
+fn=(38418) cv::histPrepareImages(cv::Mat const*, int, int const*, cv::Mat const&, int, int const*, float const**, bool, std::vector<int*, std::allocator<int*> >&, std::vector<int, std::allocator<int> >&, cv::Size_<int>&, std::vector<double, std::allocator<double> >&)
 0 3406
-cfn=(38032) std::vector<unsigned char*, std::allocator<unsigned char*> >::_M_fill_insert(__gnu_cxx::__normal_iterator<unsigned char**, std::vector<unsigned char*, std::allocator<unsigned char*> > >, unsigned long, unsigned char* const&)
+cfn=(38032) std::vector<int*, std::allocator<int*> >::_M_fill_insert(__gnu_cxx::__normal_iterator<int**, std::vector<int*, std::allocator<int*> > >, unsigned long, int* const&)
 calls=13 0 
 0 2808
 0 325
@@ -164404,7 +164404,7 @@ calls=1 0
 0 1
 0 4
 
-fn=(35968) cv::cvt8u32f(unsigned char const*, unsigned long, unsigned char const*, unsigned long, float*, unsigned long, cv::Size_<int>, double*)
+fn=(35968) cv::cvt8u32f(int const*, unsigned long, int const*, unsigned long, float*, unsigned long, cv::Size_<int>, double*)
 0 138620107
 
 fn=(37054) cv::JpegEncoder::~JpegEncoder()
@@ -164525,7 +164525,7 @@ calls=1232 274
 0 91168
 0 28336
 
-fn=(38020) std::vector<unsigned char, std::allocator<unsigned char> >::resize(unsigned long, unsigned char)
+fn=(38020) std::vector<int, std::allocator<int> >::resize(unsigned long, int)
 0 206976
 cob=(58)
 cfi=(196)
@@ -164635,7 +164635,7 @@ fn=(38408) cv::_OutputArray::getMatRef(int) const
 fn=(38438) cv::getConvertScaleFunc(int, int)
 0 78
 
-fn=(38480) cv::transpose_32s(unsigned char const*, unsigned long, unsigned char*, unsigned long, cv::Size_<int>)
+fn=(38480) cv::transpose_32s(int const*, unsigned long, int*, unsigned long, cv::Size_<int>)
 0 8034
 
 fn=(41672)
@@ -165408,7 +165408,7 @@ calls=60 0
 0 60
 0 660
 
-fn=(38012) cv::preprocess2DKernel(cv::Mat const&, std::vector<cv::Point_<int>, std::allocator<cv::Point_<int> > >&, std::vector<unsigned char, std::allocator<unsigned char> >&)
+fn=(38012) cv::preprocess2DKernel(cv::Mat const&, std::vector<cv::Point_<int>, std::allocator<cv::Point_<int> > >&, std::vector<int, std::allocator<int> >&)
 0 46816
 cfn=(32154)
 calls=2464 0 
@@ -165433,7 +165433,7 @@ cfn=(32164)
 calls=2464 0 
 0 182336
 0 41888
-cfn=(33806) cv::NAryMatIterator::NAryMatIterator(cv::Mat const**, unsigned char**, int)
+cfn=(33806) cv::NAryMatIterator::NAryMatIterator(cv::Mat const**, int**, int)
 calls=2464 0 
 0 362208
 0 17248
@@ -165640,7 +165640,7 @@ cfn=(33806)
 calls=13 0 
 0 2093
 0 442
-cfn=(38436) cv::minMaxIdx_32f(float const*, unsigned char const*, float*, float*, unsigned long*, unsigned long*, int, unsigned long)
+cfn=(38436) cv::minMaxIdx_32f(float const*, int const*, float*, float*, unsigned long*, unsigned long*, int, unsigned long)
 calls=13 0 
 0 28444
 0 65
@@ -165651,11 +165651,11 @@ calls=13 0
 
 fn=(38486) cv::NAryMatIterator::NAryMatIterator(cv::Mat const**, cv::Mat*, int)
 0 286
-cfn=(33808) cv::NAryMatIterator::init(cv::Mat const**, cv::Mat*, unsigned char**, int)
+cfn=(33808) cv::NAryMatIterator::init(cv::Mat const**, cv::Mat*, int**, int)
 calls=26 0 
 0 11206
 
-fn=(38920) icvCvt_BGR2RGB_8u_C3R(unsigned char const*, int, unsigned char*, int, CvSize)
+fn=(38920) icvCvt_BGR2RGB_8u_C3R(int const*, int, int*, int, CvSize)
 0 27363328
 
 fn=(41912)
@@ -166172,10 +166172,10 @@ cfn=(35968)
 calls=13 0 
 0 1195809
 0 468
-cfn=(38440) cv::cvtScale32f(float const*, unsigned long, unsigned char const*, unsigned long, float*, unsigned long, cv::Size_<int>, double*)
+cfn=(38440) cv::cvtScale32f(float const*, unsigned long, int const*, unsigned long, float*, unsigned long, cv::Size_<int>, double*)
 calls=13 0 
 0 5980
-cfn=(38424) cv::cvt32s32f(int const*, unsigned long, unsigned char const*, unsigned long, float*, unsigned long, cv::Size_<int>, double*)
+cfn=(38424) cv::cvt32s32f(int const*, unsigned long, int const*, unsigned long, float*, unsigned long, cv::Size_<int>, double*)
 calls=13 0 
 0 5070
 cfn=(35968)
@@ -167395,7 +167395,7 @@ calls=13 0
 0 1703
 0 325
 
-fn=(37960) cv::CvtColorLoop_Invoker<cv::RGB2RGB<unsigned char> >::operator()(cv::Range const&) const
+fn=(37960) cv::CvtColorLoop_Invoker<cv::RGB2RGB<int> >::operator()(cv::Range const&) const
 0 10449868
 
 fn=(37966)
@@ -167521,7 +167521,7 @@ cfn=(38024) cv::BaseFilter::BaseFilter()
 calls=1232 0 
 0 7392
 0 40656
-cfn=(38026) std::vector<unsigned char, std::allocator<unsigned char> >::operator=(std::vector<unsigned char, std::allocator<unsigned char> > const&)
+cfn=(38026) std::vector<int, std::allocator<int> >::operator=(std::vector<int, std::allocator<int> > const&)
 calls=1232 0 
 0 212854
 0 12320
@@ -167648,7 +167648,7 @@ cfn=(33806)
 calls=13 0 
 0 3146
 0 650
-cfn=(38412) cv::split8u(unsigned char const*, unsigned char**, int, int)
+cfn=(38412) cv::split8u(int const*, int**, int, int)
 calls=13 0 
 0 194595
 0 65
@@ -170023,7 +170023,7 @@ cfn=(38042)
 calls=1232 0 
 0 2773294
 0 41888
-cfn=(38050) cv::FilterEngine::proceed(unsigned char const*, int, int, unsigned char*, int)
+cfn=(38050) cv::FilterEngine::proceed(int const*, int, int, int*, int)
 calls=1232 0 
 0 173020095
 0 32032
@@ -170852,7 +170852,7 @@ cfn=(38048)
 calls=33384 0 
 0 804912
 0 1117120
-cfn=(38054) cv::Filter2D<float, cv::Cast<float, float>, cv::FilterVec_32f>::operator()(unsigned char const**, unsigned char*, int, int, int, int)
+cfn=(38054) cv::Filter2D<float, cv::Cast<float, float>, cv::FilterVec_32f>::operator()(int const**, int*, int, int, int, int)
 calls=32768 0 
 0 125689740
 0 417856

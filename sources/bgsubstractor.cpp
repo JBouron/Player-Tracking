@@ -5,7 +5,7 @@
 namespace tmd {
     BGSubstractor::BGSubstractor(std::string input_video_path, cv::Mat
     static_mask,
-                                 unsigned char camera_index, int
+                                 int camera_index, int
                                  starting_frame, int step_size) {
         m_bgs = new cv::BackgroundSubtractorMOG2(tmd::Config::bgs_history,
                                                  tmd::Config::bgs_threshold,
