@@ -34,8 +34,6 @@ namespace tmd {
     }
 
     frame_t* SimplePipeline::next_frame(){
-        m_running = true;
-
         frame_t* frame = m_bgSubstractor->next_frame();
 
         tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
