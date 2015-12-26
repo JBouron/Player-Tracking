@@ -3,6 +3,7 @@
 #include "../headers/debug.h"
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
+#include "../headers/config.h"
 
 // TODO : Some memory leaks in there (openCV ?)
 
@@ -13,7 +14,7 @@ namespace tmd {
             throw std::invalid_argument("Error in DPMDetector : couldn't create"
                                                 " the detector.");
         }
-        m_numthreads = TMD_DPM_DETECTOR_NUMTHREADS;
+        m_numthreads = Config::dpm_detector_numthread;
         int root_size_x = m_detector->filters[0]->sizeX;
         int root_size_y = m_detector->filters[0]->sizeY;
         tmd::debug("DPMDetector", "DPMDetector",

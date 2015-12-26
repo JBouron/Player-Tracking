@@ -3,10 +3,10 @@
 #include "../headers/frame_t.h"
 #include "../headers/player_t.h"
 #include "../headers/debug.h"
+#include "../headers/config.h"
 
 namespace tmd{
-    DPMPlayerExtractor::DPMPlayerExtractor(std::string model_file, float
-    overlap_threshold, float score_threshold){
+    DPMPlayerExtractor::DPMPlayerExtractor(std::string model_file){
         std::vector<std::string> model_files;
         model_files.push_back(model_file);
         m_detector = new cv::LatentSvmDetector();
@@ -15,11 +15,11 @@ namespace tmd{
             throw std::invalid_argument("Error in DPMPlayerExtractor "
                                 "constructor, couldn't load model file.");
         }
-        m_overlap_threshold = overlap_threshold;
+        m_overlap_threshold = Config::dpm_extractor_overlapping_threshold;
         if (m_overlap_threshold < 0.0) m_overlap_threshold = 0.0;
         else if (1.0 < m_overlap_threshold) m_overlap_threshold = 1.0;
 
-        m_score_threshold = score_threshold;
+        m_score_threshold = Config::dpm_extractor_score_threshold;
     }
 
     DPMPlayerExtractor::~DPMPlayerExtractor(){
@@ -44,7 +44,7 @@ namespace tmd{
                 int inter_area = get_intersection_area(rect, results[i].rect);
                 float ratio = max((float)inter_area / (float)rect.area(),
                 (float)inter_area / (float)results[i].rect.area());
-                if (ratio > TMD_DPM_EXTRACTOR_DUPLICATE_AREA_THRESHOLD)
+                if (ratio > Config::dpm_extractor_duplicate_area_threshold)
                     return true;
             }
         }
