@@ -6,13 +6,16 @@
 
 namespace tmd {
     SimplePipeline::SimplePipeline(std::string video_path,
-                                   std::string model_file, int
-                                   start_frame, int end_frame, int step_size) : Pipeline
-                          (video_path, model_file, start_frame, end_frame, step_size){
-        // TODO : Remove place holders.
-        std::string static_mask_path = "./res/bgs_masks/mask_ace0.jpg";
+                                   std::string model_file, unsigned char
+                                   camera_index, int start_frame, int end_frame,
+                                   int step_size) : Pipeline
+                          (video_path, model_file, camera_index, start_frame,
+                           end_frame,
+                           step_size){
+        std::string static_mask_path = "./res/bgs_masks/mask_ace" +
+                std::to_string(camera_index) + ",jpg";
         cv::Mat mask = cv::imread(static_mask_path, 0);
-        m_bgSubstractor = new BGSubstractor(video_path, mask, 0, start_frame,
+        m_bgSubstractor = new BGSubstractor(video_path, mask, camera_index, start_frame,
                                             step_size);
 
         m_playerExtractor = new BlobPlayerExtractor();
@@ -33,7 +36,7 @@ namespace tmd {
     frame_t* SimplePipeline::next_frame(){
         m_running = true;
 
-        frame_t* frame = fetch_next_frame();
+        frame_t* frame = m_bgSubstractor->next_frame();
 
         tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
         extract_players_from_frame(frame);
@@ -46,15 +49,6 @@ namespace tmd {
         m_bgSubstractor->set_threshold_value(threshold);
         m_bgSubstractor->set_history_size(history_size);
         m_bgSubstractor->set_learning_rate(learning_rate);
-    }
-
-    tmd::frame_t* SimplePipeline::fetch_next_frame(){
-        for (int i = 0; i < m_step - 1; i++) {
-            // Throwing away the frames that are not important for us.
-            delete m_bgSubstractor->next_frame();
-        }
-        frame_t *frame = m_bgSubstractor->next_frame();
-        return frame;
     }
 
     void SimplePipeline::extract_players_from_frame

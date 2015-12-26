@@ -23,18 +23,10 @@ namespace tmd{
          * _ static_mask_path : the path to the static mask used for the
          * background subtraction
          * _ camera_index : The index of the camera.
-         * _ dpm : Enable using dpm player extractor, if not enabled, the
-         * blob-detection based player extractor will be used instead.
          * _ model_file : Path to the file containing the model of the person.
-         * _ cluster_centers_file : Path to the file containing the cluster
-         * centers.
-         * _ save_frames : True to enable saving the frames into the output
-         * folder.
-         * _ output_folder : Path to the folder which will contain all the
-         * saved frames (if save_frame is enabled).
          */
-         Pipeline(std::string video_path, std::string model_file, int
-         start_frame, int end_frame, int step_size);
+         Pipeline(std::string video_path, std::string model_file, unsigned
+         char camera_index, int start_frame, int end_frame, int step_size);
 
         ~Pipeline();
 
@@ -55,9 +47,6 @@ namespace tmd{
 
         std::string m_video_path;
         unsigned char m_camera_index;
-        std::string m_output_folder;
-        bool m_save;
-        bool m_running;
         int m_step;
         int m_start;
         int m_end;
