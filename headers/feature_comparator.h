@@ -5,8 +5,6 @@
 #include "player_t.h"
 #include "features_extractor.h" // Threshold values
 
-#define CORR_THRESHOLD 0.4
-
 namespace tmd {
 
     /**

@@ -196,13 +196,13 @@ namespace tmd {
     void show_torso_histogram(const tmd::player_t *const player) {
         cv::Mat localHist = player->features.torso_color_histogram.clone();
         // Normalize the histogram ...
-        const int hist_h = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
-        const int hist_w = TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE;
+        const int hist_h = Config::feature_extractor_histogram_size;
+        const int hist_w = Config::feature_extractor_histogram_size;
         cv::Mat histImage(hist_h, hist_w, CV_8UC3, cv::Scalar(0, 0, 0));
         normalize(localHist, localHist, 0, 1, cv::NORM_MINMAX, -1,
                   cv::Mat());
         std::cout << localHist << std::endl;
-        for (int i = 1; i < TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE; i++) {
+        for (int i = 1; i < Config::feature_extractor_histogram_size; i++) {
             line(histImage, cv::Point(1 * (i - 1),
                                       hist_h - cvRound(localHist.at<float>(i - 1))),
                  cv::Point(1 * (i), hist_h - cvRound(localHist.at<float>

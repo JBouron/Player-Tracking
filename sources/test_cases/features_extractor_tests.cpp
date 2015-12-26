@@ -2,6 +2,7 @@
 #include "../../headers/test_cases/features_extractor_tests.h"
 #include "../../headers/player_t.h"
 #include "../../headers/features_t.h"
+#include "../../headers/config.h"
 
 namespace tmd{
     void FeaturesExtractorTest::setUp() {
@@ -121,7 +122,7 @@ namespace tmd{
 
         int hist_count = 0;
         cv::Mat hist = m_player->features.torso_color_histogram;
-        for (int i = 0 ; i < TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE ; i ++){
+        for (int i = 0 ; i < Config::feature_extractor_histogram_size ; i ++){
             hist_count += static_cast<int>(hist.at<float>(i));
         }
 

@@ -10,14 +10,6 @@
  * histograms for the players.
  */
 
-#define TMD_FEATURE_EXTRACTOR_TH_RED_LOW        (120)
-#define TMD_FEATURE_EXTRACTOR_TH_RED_HIGH       (30)
-#define TMD_FEATURE_EXTRACTOR_TH_GREEN_LOW      (30)
-#define TMD_FEATURE_EXTRACTOR_TH_GREEN_HIGH     (90)
-#define TMD_FEATURE_EXTRACTOR_TH_SATURATION_LOW 30
-#define TMD_FEATURE_EXTRACTOR_TH_VALUE_LOW      30
-#define TMD_FEATURE_EXTRACTOR_HISTOGRAM_SIZE    180
-
 namespace tmd {
 
     /* This class is responsible to extract the features from the players,

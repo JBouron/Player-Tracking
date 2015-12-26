@@ -3,6 +3,7 @@
 #include "../headers/player_t.h"
 #include "../headers/features_t.h"
 #include "../headers/debug.h"
+#include "../headers/config.h"
 #include <iostream>
 #include <fstream>
 #include <bits/stream_iterator.h>
@@ -90,7 +91,7 @@ namespace tmd {
         tmd::debug("FeatureComparator", "getClosestCenter", "max = " +
                 std::to_string(max));
 
-        if(max < CORR_THRESHOLD){
+        if(max < Config::features_comparator_correlation_threshold){
             index_max = -1;
         }
         return index_max;
