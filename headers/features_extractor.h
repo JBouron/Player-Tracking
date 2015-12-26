@@ -23,19 +23,6 @@ namespace tmd {
         friend class FeaturesExtractorTest;
     public:
         /**
-         * Default constructor of the FeatureExtractor.
-         * inputs :
-         *      - model_file : path to the model file, given to the
-         *      DPMDetector when crated.
-         */
-        FeaturesExtractor(std::string model_file);
-
-        /**
-         * Destructor of the feature extractor.
-         */
-        ~FeaturesExtractor();
-
-        /**
          * Extract the features from a list of players by updating their
          * feature field.
          * inputs :

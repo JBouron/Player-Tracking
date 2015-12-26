@@ -40,7 +40,7 @@ namespace tmd {
             m_playerExtractor = new BlobPlayerExtractor();
         }
 
-        m_featuresExtractor = new FeaturesExtractor("./res/xmls/person.xml");
+        m_featuresExtractor = new FeaturesExtractor();
     }
 
     TrainingSetCreator::~TrainingSetCreator() {

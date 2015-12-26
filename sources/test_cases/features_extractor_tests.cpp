@@ -28,7 +28,7 @@ namespace tmd{
     }
 
     void FeaturesExtractorTest::testExtractBodyPartsCorrectNumberOfParts() {
-        tmd::DPMDetector d(m_model_file);
+        tmd::DPMDetector d;
         d.extractBodyParts(m_player);
         CPPUNIT_ASSERT(m_player->features.body_parts.size() == 6);
     }
@@ -36,7 +36,7 @@ namespace tmd{
     void FeaturesExtractorTest::testHSVConversionIsCorrectForHue() {
         player_t* p = new player_t;
         p->features.torso = m_hue_120_image;
-        tmd::FeaturesExtractor fe(m_model_file);
+        tmd::FeaturesExtractor fe;
         fe.convertToHSV(p);
         const int cols = p->features.torso.cols;
         const int rows = p->features.torso.rows;
@@ -53,7 +53,7 @@ namespace tmd{
     void FeaturesExtractorTest::testHSVConversionIsCorrectForSaturation() {
         player_t* p = new player_t;
         p->features.torso = m_sat_05_image;
-        tmd::FeaturesExtractor fe(m_model_file);
+        tmd::FeaturesExtractor fe;
         fe.convertToHSV(p);
         const int cols = p->features.torso.cols;
         const int rows = p->features.torso.rows;
@@ -70,7 +70,7 @@ namespace tmd{
     void FeaturesExtractorTest::testHSVConversionIsCorrectForValue() {
         player_t* p = new player_t;
         p->features.torso = m_val_05_image;
-        tmd::FeaturesExtractor fe(m_model_file);
+        tmd::FeaturesExtractor fe;
         fe.convertToHSV(p);
         const int cols = p->features.torso.cols;
         const int rows = p->features.torso.rows;
@@ -85,7 +85,7 @@ namespace tmd{
     }
 
     void FeaturesExtractorTest::testMaskIsUpdatedInRespectWithThresholds() {
-        FeaturesExtractor fe(m_model_file);
+        FeaturesExtractor fe;
         fe.extractFeatures(m_player);
         const int cols = m_player->features.torso_mask.cols;
         const int rows = m_player->features.torso_mask.rows;
@@ -107,7 +107,7 @@ namespace tmd{
     }
 
     void FeaturesExtractorTest::testHistogramsContainsSameNumberOfValues() {
-        FeaturesExtractor fe(m_model_file);
+        FeaturesExtractor fe;
         fe.extractFeatures(m_player);
         int mask_count = 0;
         const int cols = m_player->features.torso_mask.cols;

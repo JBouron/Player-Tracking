@@ -23,7 +23,7 @@ namespace tmd {
         m_featuresComparator = new FeatureComparator(2, 180,
                                                      FeatureComparator::readCentersFromFile(2, 180));
 
-        m_featuresExtractor = new FeaturesExtractor("./res/xmls/person.xml");
+        m_featuresExtractor = new FeaturesExtractor;
     }
 
     SimplePipeline::~SimplePipeline() {

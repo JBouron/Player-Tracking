@@ -45,8 +45,6 @@ void memleak_video_capture(void) {
 
 int main(int argc, char *argv[]){
     tmd::Config::load_config();
-    memleak_video_capture();
-    return 0;
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
@@ -147,7 +145,7 @@ void dpm_whole_frame(void) {
         }
     }
 
-    tmd::DPMDetector dpmDetector("./res/xmls/person.xml");
+    tmd::DPMDetector dpmDetector;
     dpmDetector.extractBodyParts(player);
     show_body_parts(player->original_image, player);
 }
