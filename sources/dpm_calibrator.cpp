@@ -46,7 +46,7 @@ namespace tmd {
         const int line_type = 8; // 8 connected line.
         const int shift = 0;
 
-        DPMPlayerExtractor dpmPlayerExtractor("./res/xmls/person.xml");
+        DPMPlayerExtractor dpmPlayerExtractor;
         BGSubstractor bgSubstractor(video_path, 0);
         FeaturesExtractor featuresExtractor;
 

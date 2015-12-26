@@ -24,8 +24,7 @@ namespace tmd{
         size_t size = players.size();
 
         // freed
-        DPMPlayerExtractor* playerExtractor = new DPMPlayerExtractor(
-                "./res/xmls/person.xml");
+        DPMPlayerExtractor* playerExtractor = new DPMPlayerExtractor();
 
         for (size_t i = 0 ; i < size ; i ++){
             player_t* p = players[i]; // freed
