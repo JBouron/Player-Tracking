@@ -1,6 +1,8 @@
 #ifndef BACHELOR_PROJECT_FEATURES_T_H
 #define BACHELOR_PROJECT_FEATURES_T_H
 
+#include <opencv2/core/core.hpp>
+#include <opencv2/core/mat.hpp>
 
 namespace tmd{
     /* Structure holding the features for one player. */

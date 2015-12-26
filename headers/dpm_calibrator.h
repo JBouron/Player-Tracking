@@ -2,6 +2,10 @@
 #define BACHELOR_PROJECT_DPM_CALIBRATOR_H
 
 #include <opencv2/highgui/highgui.hpp>
+#include <iostream>
+#include "../headers/dpm_player_extractor.h"
+#include "../headers/bgsubstractor.h"
+#include "../headers/features_extractor.h"
 
 namespace tmd{
 

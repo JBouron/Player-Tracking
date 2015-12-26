@@ -8,6 +8,9 @@
 #include "../headers/openCV/_latentsvm.h"
 #include "../headers/openCV/_lsvm_matching.h"
 #include "player_t.h"
+#include <opencv2/highgui/highgui.hpp>
+#include "../headers/debug.h"
+#include "../headers/config.h"
 
 namespace tmd{
     /**

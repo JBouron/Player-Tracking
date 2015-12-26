@@ -1,9 +1,4 @@
-#include <opencv2/highgui/highgui.hpp>
 #include "../headers/dpm_detector.h"
-#include "../headers/debug.h"
-#include "../headers/player_t.h"
-#include "../headers/features_t.h"
-#include "../headers/config.h"
 
 // TODO : Some memory leaks in there (openCV ?)
 

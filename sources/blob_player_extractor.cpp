@@ -1,8 +1,4 @@
-#include <set>
-#include <iostream>
 #include "../headers/blob_player_extractor.h"
-#include "../headers/player_t.h"
-#include "../headers/config.h"
 
 using namespace cv;
 

@@ -2,6 +2,9 @@
 #define BACHELOR_PROJECT_MANUAL_PLAYER_EXTRACTOR_H
 
 #include "player_extractor.h"
+#include "../headers/debug.h"
+#include "../headers/player_t.h"
+#include "../headers/frame_t.h"
 
 namespace tmd{
     class ManualPlayerExtractor : public PlayerExtractor{

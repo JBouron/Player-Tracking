@@ -2,6 +2,7 @@
 #define BACHELOR_PROJECT_SIMPLE_PIPELINE_H
 
 #include "pipeline.h"
+#include "../headers/blob_separator.h"
 
 namespace tmd{
     /**

@@ -1,9 +1,4 @@
-#include <iostream>
 #include "../headers/dpm_player_extractor.h"
-#include "../headers/frame_t.h"
-#include "../headers/player_t.h"
-#include "../headers/debug.h"
-#include "../headers/config.h"
 
 namespace tmd{
     DPMPlayerExtractor::DPMPlayerExtractor(){

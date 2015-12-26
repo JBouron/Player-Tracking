@@ -4,6 +4,8 @@
 #include <exception>
 #include <stdexcept>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
+#include "../headers/debug.h"
 #include "frame_t.h"
 #include "config.h"
 

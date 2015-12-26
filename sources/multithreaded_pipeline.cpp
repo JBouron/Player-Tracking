@@ -1,5 +1,4 @@
 #include "../headers/multithreaded_pipeline.h"
-#include "../headers/frame_t.h"
 
 namespace tmd{
     MultithreadedPipeline::MultithreadedPipeline(std::string video_folder, int camera_index, int

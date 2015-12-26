@@ -1,7 +1,4 @@
 #include "../headers/manual_player_extractor.h"
-#include "../headers/debug.h"
-#include "../headers/player_t.h"
-#include "../headers/frame_t.h"
 
 namespace tmd {
     bool ManualPlayerExtractor::mFirstClick = true;

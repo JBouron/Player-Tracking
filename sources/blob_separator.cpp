@@ -1,22 +1,6 @@
-#include <opencv2/objdetect/objdetect.hpp>
 #include "../headers/blob_separator.h"
-#include "../headers/pipeline.h"
-#include "../headers/debug.h"
-#include "../headers/frame_t.h"
-#include "../headers/player_t.h"
-
-int emtpy_count = 0;
 
 namespace tmd{
-
-    int _min(int a, int b){
-        return a < b ? a : b;
-    }
-
-    int _max(int a, int b){
-        return a > b ? a : b;
-    }
-
     std::vector<tmd::player_t*> BlobSeparator::separate_blobs(
             std::vector<tmd::player_t *> players) {
         std::vector<player_t*> new_player_vector;
@@ -53,14 +37,7 @@ namespace tmd{
                     std::to_string(players_in_blob.size()) + " players "
                                                                  "extracted.");
 
-            if (players_in_blob.size() == 0){
-                tmd::debug("BlobSeparator", "separate_blobs", "Emtpy blob !");
-                cv::imwrite("./res/debug/empty-blobs/emtpyBlob" +
-                                    std::to_string(emtpy_count) + ".jpg",
-                            p->original_image);
-                emtpy_count ++;
-            }
-            else if (players_in_blob.size() == 1){
+            if (players_in_blob.size() == 1){
                 new_player_vector.push_back(p);
                 free_player(players_in_blob[0]);
             }

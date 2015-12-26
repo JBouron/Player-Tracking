@@ -10,6 +10,7 @@
 #include "player_t.h"
 #include "pipeline.h"
 #include "debug.h"
+#include "../headers/simple_pipeline.h"
 
 namespace tmd{
     /**

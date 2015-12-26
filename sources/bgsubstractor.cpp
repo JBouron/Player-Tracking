@@ -1,6 +1,4 @@
-#include <opencv2/core/core.hpp>
 #include "../headers/bgsubstractor.h"
-#include "../headers/debug.h"
 
 namespace tmd {
     BGSubstractor::BGSubstractor(std::string video_folder, int camera_index, int
