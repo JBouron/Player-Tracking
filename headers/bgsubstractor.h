@@ -5,8 +5,8 @@
 #include <stdexcept>
 #include <opencv2/highgui/highgui.hpp>
 #include "frame_t.h"
+#include "config.h"
 
-#define TMD_BGS_DETECTS_SHADOWS false
 
 namespace tmd {
     /* Class responsible of applying a BG substraction on a given video.
@@ -30,9 +30,7 @@ namespace tmd {
          */
         BGSubstractor(std::string input_video_path, cv::Mat static_mask, unsigned
         char camera_index,
-                      int starting_frame = 0, int step_size = 1, float
-                        threshold = 256,
-                      int history = 500, float learning_rate = 0.0);
+                      int starting_frame = 0, int step_size = 1);
 
         /**
          * Destructor of the BGS.

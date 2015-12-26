@@ -21,7 +21,13 @@ namespace tmd{
          * They are public for ease of use.
          */
 
+        /*************
+         * BGS       *
+         *************/
         static bool bgs_detect_shadows;
+        static float bgs_threshold;
+        static int bgs_history;
+        static float bgs_learning_rate;
     };
 }
 

@@ -6,10 +6,10 @@ namespace tmd {
     BGSubstractor::BGSubstractor(std::string input_video_path, cv::Mat
     static_mask,
                                  unsigned char camera_index, int
-                                 starting_frame, int step_size , float threshold,
-                                 int history, float learning_rate) {
-        m_bgs = new cv::BackgroundSubtractorMOG2(history, threshold,
-                                                 TMD_BGS_DETECTS_SHADOWS);
+                                 starting_frame, int step_size) {
+        m_bgs = new cv::BackgroundSubtractorMOG2(tmd::Config::bgs_history,
+                                                 tmd::Config::bgs_threshold,
+                                                 tmd::Config::bgs_detect_shadows);
         m_starting_frame = starting_frame;
         m_step_size = step_size;
         if (m_bgs == NULL) {
@@ -21,7 +21,7 @@ namespace tmd {
         }
         m_static_mask = static_mask.clone();
 
-        m_learning_rate = learning_rate;
+        m_learning_rate = tmd::Config::bgs_learning_rate;
         tmd::debug("BGSubstractor", "BGSubstractor", "bgs created.");
 
         m_input_video_path = input_video_path;
