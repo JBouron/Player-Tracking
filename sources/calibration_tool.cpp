@@ -41,7 +41,7 @@ namespace tmd {
         bool done = false;
         int keyboard = 0;
 
-        while (keyboard != TMD_CALIBRATION_TOOL_ESCAPE_CHAR && !done) {
+        while (keyboard != Config::calibration_tool_escape_char && !done) {
             frame_t *frame;
             frame = m_bgs[m_current_camera]->next_frame();
             if (frame != NULL) {
