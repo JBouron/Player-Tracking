@@ -1,5 +1,4 @@
 #include "../../headers/sdl_binds/sdl_binds.h"
-#include "../../headers/debug.h"
 
 namespace tmd{
     bool SDLBinds::ms_sdl_init = false;

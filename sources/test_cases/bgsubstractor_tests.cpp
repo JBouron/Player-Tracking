@@ -1,6 +1,4 @@
 #include "../../headers/test_cases/bgsubstractor_tests.h"
-#include "../../headers/debug.h"
-#include "../../headers/frame_t.h"
 
 namespace tmd {
     void BGSubstractorTest::setUp() {

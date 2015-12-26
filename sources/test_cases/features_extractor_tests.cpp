@@ -1,8 +1,5 @@
 #include <opencv2/highgui/highgui.hpp>
 #include "../../headers/test_cases/features_extractor_tests.h"
-#include "../../headers/player_t.h"
-#include "../../headers/features_t.h"
-#include "../../headers/config.h"
 
 namespace tmd{
     void FeaturesExtractorTest::setUp() {
