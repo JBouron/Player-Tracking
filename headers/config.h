@@ -3,7 +3,7 @@
 
 #include <libconfig.h++>
 
-#define TMD_CONFIG_FILE "./res/config.cfg"
+#define TMD_CONFIG_FILE "./config.cfg"
 
 namespace tmd{
     /**
@@ -73,11 +73,6 @@ namespace tmd{
         /**********************************************************************/
         static int blob_player_extractor_buffer_size;
         static int blob_player_extractor_min_blob_size;
-
-
-        /**********************************************************************/
-        /*                                                                    */
-        /**********************************************************************/
     };
 }
 
