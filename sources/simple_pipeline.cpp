@@ -6,12 +6,14 @@
 
 namespace tmd {
     SimplePipeline::SimplePipeline(std::string video_path,
-                                   std::string model_file) : Pipeline
-                          (video_path, model_file){
+                                   std::string model_file, int
+                                   start_frame, int end_frame, int step_size) : Pipeline
+                          (video_path, model_file, start_frame, end_frame, step_size){
         // TODO : Remove place holders.
         std::string static_mask_path = "./res/bgs_masks/mask_ace0.jpg";
         cv::Mat mask = cv::imread(static_mask_path, 0);
-        m_bgSubstractor = new BGSubstractor(video_path, mask, 0);
+        m_bgSubstractor = new BGSubstractor(video_path, mask, 0, start_frame,
+                                            step_size);
 
         m_playerExtractor = new BlobPlayerExtractor();
 
@@ -81,25 +83,5 @@ namespace tmd {
         m_featuresComparator->detectTeamForPlayers(players);
         coloredMask.release();
         frame->players = players;
-    }
-
-    void SimplePipeline::set_frame_step_size(int step) {
-        m_step = step;
-    }
-
-    void SimplePipeline::set_start_frame(int frame_index) {
-        if (!m_running) {
-            tmd::debug("Pipeline", "set_frame_step_size", "Setting starting "
-                                                                  "frame to " + std::to_string(frame_index));
-            m_start = frame_index;
-            m_bgSubstractor->jump_to_frame(frame_index);
-            tmd::debug("Pipeline", "set_frame_step_size", "Done");
-        }
-    }
-
-    void SimplePipeline::set_end_frame(int frame_index) {
-        if (!m_running) {
-            m_end = frame_index;
-        }
     }
 }

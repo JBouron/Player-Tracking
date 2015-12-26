@@ -33,7 +33,8 @@ namespace tmd{
          * _ output_folder : Path to the folder which will contain all the
          * saved frames (if save_frame is enabled).
          */
-         Pipeline(std::string video_path, std::string model_file);
+         Pipeline(std::string video_path, std::string model_file, int
+         start_frame, int end_frame, int step_size);
 
         ~Pipeline();
 
@@ -47,22 +48,6 @@ namespace tmd{
          * Note that the user has to take care of freeing the frames.
          */
         virtual frame_t* next_frame() = 0;
-
-        /**
-         * Set the step size between to consecutive extracted frames.
-         */
-        virtual void set_frame_step_size(int step) = 0;
-
-        /**
-         * Set the starting frame index.
-         * The extraction must not begun before this operation.
-         */
-        virtual void set_start_frame(int frame_index) = 0;
-
-        /**
-         * Set the frame index
-         */
-        virtual void set_end_frame(int frame_index) = 0;
 
     protected:
 

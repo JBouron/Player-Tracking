@@ -4,10 +4,11 @@
 namespace tmd{
     MultithreadedPipeline::MultithreadedPipeline(std::string video_path,
                                                  int thread_count,
-                                                 std::string model_file) :
-    Pipeline(video_path, model_file){
+                                                 std::string model_file, int
+                                                 start_frame, int end_frame, int step_size) :
+    Pipeline(video_path, model_file, start_frame, end_frame, step_size){
         m_threads_ready = false;
-        m_frame_pos = 0;
+        m_frame_pos = m_start;
         m_thread_count = thread_count;
         if (m_thread_count <= 0){
             throw std::invalid_argument("Error : In nultithreaded pipeline : "
@@ -15,6 +16,7 @@ namespace tmd{
         }
         m_next_thread_to_use = 0;
         m_pipeline_threads = new tmd::PipelineThread*[m_thread_count];
+        create_threads();
     }
 
     MultithreadedPipeline::~MultithreadedPipeline() {
@@ -34,38 +36,6 @@ namespace tmd{
         m_frame_pos += m_step;
         m_next_thread_to_use = (m_next_thread_to_use + 1)%m_thread_count;
         return frame;
-    }
-
-    void MultithreadedPipeline::set_frame_step_size(int step){
-        if (m_running || m_threads_ready){
-            throw std::runtime_error("Error : pipelines/threads are already "
-                                             "running/ready");
-        }
-        else{
-            m_step = step;
-        }
-    }
-
-    void MultithreadedPipeline::set_start_frame(int frame_index){
-        if (m_running || m_threads_ready){
-            throw std::runtime_error("Error : pipelines/threads are already "
-                                             "running/ready");
-        }
-        else{
-            m_start = frame_index;
-            m_video->set(CV_CAP_PROP_POS_FRAMES, frame_index);
-            m_frame_pos = m_start;
-        }
-    }
-
-    void MultithreadedPipeline::set_end_frame(int frame_index){
-        if (m_running || m_threads_ready){
-            throw std::runtime_error("Error : pipelines/threads are already "
-                                             "running/ready");
-        }
-        else{
-            m_end = frame_index;
-        }
     }
 
     void MultithreadedPipeline::create_threads(){
