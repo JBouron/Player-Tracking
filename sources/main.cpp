@@ -45,6 +45,8 @@ void memleak_video_capture(void) {
 
 
 int main(int argc, char *argv[]){
+    tmd::Config::load_config();
+    return 0;
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
