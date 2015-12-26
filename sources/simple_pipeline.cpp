@@ -15,7 +15,7 @@ namespace tmd {
         std::string static_mask_path = "./res/bgs_masks/mask_ace" +
                 std::to_string(camera_index) + ",jpg";
         cv::Mat mask = cv::imread(static_mask_path, 0);
-        m_bgSubstractor = new BGSubstractor(video_path, mask, camera_index, start_frame,
+        m_bgSubstractor = new BGSubstractor(video_path, camera_index, start_frame,
                                             step_size);
 
         m_playerExtractor = new BlobPlayerExtractor();

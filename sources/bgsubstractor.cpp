@@ -3,9 +3,7 @@
 #include "../headers/debug.h"
 
 namespace tmd {
-    BGSubstractor::BGSubstractor(std::string input_video_path, cv::Mat
-    static_mask,
-                                 int camera_index, int
+    BGSubstractor::BGSubstractor(std::string video_folder, int camera_index, int
                                  starting_frame, int step_size) {
         m_bgs = new cv::BackgroundSubtractorMOG2(tmd::Config::bgs_history,
                                                  tmd::Config::bgs_threshold,
@@ -16,22 +14,22 @@ namespace tmd {
             throw std::bad_alloc();
         }
 
-        if (static_mask.channels() != 1) {
-            throw std::invalid_argument("The mask must only have 1 dimension : it's a binary image");
-        }
-        m_static_mask = static_mask.clone();
-
         m_learning_rate = tmd::Config::bgs_learning_rate;
         tmd::debug("BGSubstractor", "BGSubstractor", "bgs created.");
 
-        m_input_video_path = input_video_path;
-        m_input_video = new cv::VideoCapture(input_video_path);
+        m_input_video_path = video_folder + "ace_" + std::to_string
+                                                 (camera_index) + ".mp4";
+        m_input_video = new cv::VideoCapture(m_input_video_path);
         m_input_video->set(CV_CAP_PROP_POS_FRAMES, m_starting_frame);
         if (m_input_video == NULL || !m_input_video->isOpened()) {
             throw std::invalid_argument("Error in BGSubstractor constructor, "
                                                 "input video is not valid (NULL or not opened).");
         }
-        cv::VideoCapture cap(input_video_path);
+        std::string mask_path = tmd::Config::mask_folder + "mask_ace" +
+                std::to_string(camera_index) + ".jpg";
+        m_static_mask = cv::imread(mask_path, 0);
+
+        cv::VideoCapture cap(m_input_video_path);
         cv::Mat bg;
         cap.read(bg);
         cv::Mat mask;

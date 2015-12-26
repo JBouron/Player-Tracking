@@ -33,9 +33,8 @@ void dpm_whole_frame(void);
 void test_blob_separation(void);
 
 void memleak_video_capture(void) {
-    cv::Mat mask = cv::imread("./res/bgs_masks/mask_ace0.jpg", 0);
-    tmd::BGSubstractor bgs("./res/videos/alone-green-no-ball/ace_0.mp4",
-            mask, 0, 490, 10);
+    tmd::BGSubstractor bgs("./res/videos/alone-green-no-ball/"
+            , 0, 490, 10);
     while (true){
         std::cout << "Next frame" << std::endl;
         cv::imshow("BGS", bgs.next_frame()->mask_frame);
@@ -46,6 +45,8 @@ void memleak_video_capture(void) {
 
 int main(int argc, char *argv[]){
     tmd::Config::load_config();
+    memleak_video_capture();
+    return 0;
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
@@ -149,26 +150,6 @@ void dpm_whole_frame(void) {
     tmd::DPMDetector dpmDetector("./res/xmls/person.xml");
     dpmDetector.extractBodyParts(player);
     show_body_parts(player->original_image, player);
-}
-
-void extract_player_image(void) {
-    cv::VideoCapture capt("./res/videos/alone-green-no-ball/ace_0.mp4");
-    tmd::BGSubstractor bgs("./res/videos/alone-green-no-ball/ace_0.mp4", cv::imread("./res/bgs_masks/mask_ace0.jpg", 0
-    ), 0);
-    bgs.jump_to_frame(800);
-    int keyboard = 0;
-    cv::namedWindow("Extraction");
-    tmd::frame_t *frame;
-    while (keyboard != 27) {
-        keyboard = cv::waitKey(15);
-        frame = bgs.next_frame();
-        cv::imshow("Extraction", frame->original_frame);
-        if (keyboard != 27) {
-            delete frame;
-        }
-    }
-    tmd::ManualPlayerExtractor mp;
-    mp.extract_player_from_frame(frame);
 }
 
 void show_body_parts(cv::Mat image, tmd::player_t *p) {
