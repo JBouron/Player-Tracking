@@ -22,7 +22,8 @@ namespace tmd{
          * save_frames is asserted).
          */
         MultithreadedPipeline(std::string video_path, int thread_count,
-                              std::string model_file);
+                              std::string model_file, int
+                              start_frame, int end_frame, int step_size);
 
         ~MultithreadedPipeline();
 
@@ -36,22 +37,6 @@ namespace tmd{
          * Note that the user has to take care of freeing the frames.
          */
         frame_t* next_frame();
-
-        /**
-         * Set the step size between to consecutive extracted frames.
-         */
-        void set_frame_step_size(int step);
-
-        /**
-         * Set the starting frame index.
-         * The extraction must not begun before this operation.
-         */
-        void set_start_frame(int frame_index);
-
-        /**
-         * Set the frame index
-         */
-        void set_end_frame(int frame_index);
 
     private:
         void create_threads();

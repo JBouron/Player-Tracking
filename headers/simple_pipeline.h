@@ -10,7 +10,8 @@ namespace tmd{
     class SimplePipeline : public Pipeline{
 
     public:
-        SimplePipeline(std::string video_path, std::string model_file);
+        SimplePipeline(std::string video_path, std::string , int
+        start_frame, int end_frame, int step_size);
 
         ~SimplePipeline();
 
@@ -21,22 +22,6 @@ namespace tmd{
          */
         void set_bgs_properties(float threshold, int history_size, float
         learning_rate);
-
-        /**
-         * Set the step size between to consecutive extracted frames.
-         */
-        void set_frame_step_size(int step);
-
-        /**
-         * Set the starting frame index.
-         * The extraction must not begun before this operation.
-         */
-        void set_start_frame(int frame_index);
-
-        /**
-         * Set the frame index
-         */
-        void set_end_frame(int frame_index);
 
     private:
         /**
