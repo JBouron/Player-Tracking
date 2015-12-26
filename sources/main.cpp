@@ -9,9 +9,7 @@
 #include "../headers/dpm_calibrator.h"
 #include "../headers/pipeline.h"
 #include "../headers/training_set_creator.h"
-#include "../headers/blob_separator.h"
 
-#include "SDL2/SDL.h"
 #include "../headers/sdl_binds/sdl_binds.h"
 #include "../headers/simple_pipeline.h"
 #include "../headers/pipeline_thread.h"

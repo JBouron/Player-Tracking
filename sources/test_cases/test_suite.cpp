@@ -1,8 +1,6 @@
 #include "../../headers/test_cases/test_suite.h"
 #include "../../headers/test_cases/dpm_detector_tests.h"
-#include "../../headers/debug.h"
 #include "../../headers/test_cases/features_extractor_tests.h"
-#include "../../headers/test_cases/feature_comparator_tests.h"
 
 namespace tmd {
 

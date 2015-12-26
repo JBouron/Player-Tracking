@@ -1,6 +1,4 @@
 #include "../../headers/test_cases/dpm_detector_tests.h"
-#include "../../headers/player_t.h"
-#include "../../headers/features_t.h"
 
 namespace tmd{
     void DPMDetectorTest::setUp() {
