@@ -13,12 +13,11 @@ PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS})
 
 set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
-        headers/team_t.h headers/position_t.h headers/box_t.h
+        headers/team_t.h
         headers/bgsubstractor.h sources/bgsubstractor.cpp headers/debug.h
         headers/player_extractor.h headers/features_extractor.h
-        headers/coordinates_translator.h sources/coordinates_translator.cpp
         headers/calibration_tool.h sources/calibration_tool.cpp
-        headers/features_t.h headers/log_parser.h sources/log_parser.cpp
+        headers/features_t.h
         headers/manual_player_extractor.h sources/manual_player_extractor.cpp
         headers/dpm_detector.h sources/dpm_detector.cpp
         headers/feature_comparator.h sources/feature_comparator.cpp
@@ -33,8 +32,6 @@ set(SOURCE_FILES sources/main.cpp headers/frame_t.h headers/player_t.h
         sources/test_cases/dpm_detector_tests.cpp
         headers/test_cases/features_extractor_tests.h
         sources/test_cases/features_extractor_tests.cpp
-        headers/demo/demo.h
-        sources/demo/demo.cpp
         headers/test_cases/feature_comparator_tests.h
         sources/test_cases/feature_comprator_tests.cpp
         headers/dpm_player_extractor.h
