@@ -20,7 +20,7 @@ namespace tmd {
         cv::Mat original_frame;         // Original frame taken from the video.
         double frame_index;             // Index of the frame in the video.
         cv::Mat mask_frame;             // Frame after applying background substraction.
-        unsigned char camera_index;     // Index of the camera which took the frame.
+        int camera_index;     // Index of the camera which took the frame.
         std::vector<tmd::player_t*> players; // Players on the frame.
     } frame_t;
 

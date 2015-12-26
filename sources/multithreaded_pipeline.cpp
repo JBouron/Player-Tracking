@@ -5,7 +5,7 @@ namespace tmd{
     MultithreadedPipeline::MultithreadedPipeline(std::string video_path,
                                                  int thread_count,
                                                  std::string model_file,
-                                                 unsigned char camera_index, int
+                                                 int camera_index, int
                                                  start_frame, int end_frame, int step_size) :
     Pipeline(video_path, model_file, camera_index, start_frame, end_frame,
              step_size){

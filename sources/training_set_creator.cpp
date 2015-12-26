@@ -13,7 +13,7 @@
 
 namespace tmd {
     TrainingSetCreator::TrainingSetCreator(std::string video_path, std::string static_mask_path,
-                                           unsigned char camera_index, std::string model_file, bool dpm,
+                                           int camera_index, std::string model_file, bool dpm,
                                            bool save_frames, std::string output_folder) {
         m_video = new cv::VideoCapture;
         m_video->open(video_path);
