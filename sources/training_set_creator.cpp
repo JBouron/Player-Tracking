@@ -29,7 +29,7 @@ namespace tmd {
         m_camera_index = camera_index;
         m_mask_path = static_mask_path;
         cv::Mat mask = cv::imread(static_mask_path, 0);
-        m_bgSubstractor = new BGSubstractor(video_path, mask, camera_index);
+        m_bgSubstractor = new BGSubstractor(video_path, camera_index);
 
         m_dpm = dpm;
 
@@ -108,7 +108,7 @@ namespace tmd {
 
         cv::Mat mask = cv::imread(m_mask_path, 0);
         delete m_bgSubstractor;
-        m_bgSubstractor = new BGSubstractor(video_path, mask, m_camera_index);
+        m_bgSubstractor = new BGSubstractor(video_path, m_camera_index);
     }
 
     void TrainingSetCreator::write_centers() {
