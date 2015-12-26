@@ -26,4 +26,7 @@ namespace tmd{
 
     int Config::sdl_binds_default_width = 1376;
     int Config::sdl_binds_default_height = 992;
+
+    int Config::blob_player_extractor_buffer_size = 5; // Must be odd
+    int Config::blob_player_extractor_min_blob_size = 500;
 }
