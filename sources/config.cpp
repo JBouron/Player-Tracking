@@ -28,6 +28,7 @@ namespace tmd{
         }
 
         load_value(mask_folder);
+        load_value(model_file_path);
         load_value(bgs_detect_shadows);
         load_value(bgs_threshold);
         load_value(bgs_history);
@@ -83,6 +84,7 @@ namespace tmd{
     /* Misc                                                               */
     /**********************************************************************/
     std::string Config::mask_folder = "./res/bgs_masks/";
+    std::string Config::model_file_path = "./res/xmls/person.xml";
 
     /**********************************************************************/
     /* BGS                                                                */
