@@ -2,8 +2,9 @@
 #define BACHELOR_PROJECT_BLOB_SEPARATOR_H
 
 #include <vector>
-#include "player_t.h"
 #include "dpm_player_extractor.h"
+#include <opencv2/objdetect/objdetect.hpp>
+#include "../headers/pipeline.h"
 
 namespace tmd{
     class BlobSeparator{

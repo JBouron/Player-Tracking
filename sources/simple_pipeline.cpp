@@ -1,8 +1,4 @@
 #include "../headers/simple_pipeline.h"
-#include "../headers/blob_player_extractor.h"
-#include "../headers/debug.h"
-#include "../headers/blob_separator.h"
-#include "../headers/frame_t.h"
 
 namespace tmd {
     SimplePipeline::SimplePipeline(std::string video_folder, int camera_index,

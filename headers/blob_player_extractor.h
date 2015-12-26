@@ -1,6 +1,9 @@
 #ifndef BACHELOR_PROJECT_BLOB_PLAYER_EXTRACTOR_H
 #define BACHELOR_PROJECT_BLOB_PLAYER_EXTRACTOR_H
 
+#include <set>
+#include <iostream>
+#include "../headers/config.h"
 #include "player_extractor.h"
 
 namespace tmd{

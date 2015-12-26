@@ -2,6 +2,7 @@
 #define BACHELOR_PROJECT_CONFIG_H
 
 #include <libconfig.h++>
+#include "../headers/debug.h"
 
 #define TMD_CONFIG_FILE "./config.cfg"
 

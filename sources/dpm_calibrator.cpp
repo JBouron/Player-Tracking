@@ -1,8 +1,4 @@
-#include <iostream>
 #include "../headers/dpm_calibrator.h"
-#include "../headers/dpm_player_extractor.h"
-#include "../headers/bgsubstractor.h"
-#include "../headers/features_extractor.h"
 
 namespace tmd {
 

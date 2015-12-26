@@ -1,15 +1,4 @@
-//
-// Created by nicolas on 28.11.15.
-//
-
-#include <bits/stringfwd.h>
 #include "../headers/training_set_creator.h"
-#include "../headers/dpm_player_extractor.h"
-#include "../headers/blob_player_extractor.h"
-#include "../headers/debug.h"
-#include "../headers/blob_separator.h"
-#include "../headers/player_t.h"
-#include "../headers/features_t.h"
 
 namespace tmd {
     TrainingSetCreator::TrainingSetCreator(std::string video_path, std::string static_mask_path,

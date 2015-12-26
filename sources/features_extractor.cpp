@@ -1,9 +1,4 @@
-#include <opencv2/highgui/highgui.hpp>
 #include "../headers/features_extractor.h"
-#include "../headers/debug.h"
-#include "../headers/player_t.h"
-#include "../headers/features_t.h"
-#include "../headers/config.h"
 
 namespace tmd {
     void FeaturesExtractor::extractFeaturesFromPlayers(

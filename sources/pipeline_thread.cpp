@@ -1,5 +1,4 @@
 #include "../headers/pipeline_thread.h"
-#include "../headers/simple_pipeline.h"
 
 namespace tmd{
     PipelineThread::PipelineThread(std::string video_folder, int camera_index,

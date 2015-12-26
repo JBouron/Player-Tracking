@@ -1,13 +1,4 @@
-#include <opencv2/core/core.hpp>
 #include "../headers/feature_comparator.h"
-#include "../headers/player_t.h"
-#include "../headers/features_t.h"
-#include "../headers/debug.h"
-#include "../headers/config.h"
-#include <iostream>
-#include <fstream>
-#include <bits/stream_iterator.h>
-#include <opencv2/highgui/highgui.hpp>
 
 using namespace cv;
 

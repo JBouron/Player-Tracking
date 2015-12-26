@@ -1,11 +1,4 @@
 #include "../headers/pipeline.h"
-#include "../headers/dpm_player_extractor.h"
-#include "../headers/debug.h"
-#include "../headers/blob_player_extractor.h"
-#include "../headers/blob_separator.h"
-#include "../headers/frame_t.h"
-#include "../headers/player_t.h"
-
 
 namespace tmd {
     Pipeline::Pipeline(std::string video_folder, int camera_index,

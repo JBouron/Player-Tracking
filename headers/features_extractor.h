@@ -2,6 +2,7 @@
 #define TEAM_MEMBERSHIP_DETECTOR_FEATURES_EXTRACTOR_H
 
 #include <vector>
+#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "player_t.h"
 #include "dpm_detector.h"

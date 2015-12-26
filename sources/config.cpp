@@ -1,5 +1,4 @@
 #include "../headers/config.h"
-#include "../headers/debug.h"
 
 #define load_value(name)\
     do{ \

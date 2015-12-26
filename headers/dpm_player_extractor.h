@@ -3,6 +3,10 @@
 
 #include <opencv2/objdetect/objdetect.hpp>
 #include "player_extractor.h"
+#include <iostream>
+#include "../headers/debug.h"
+#include "../headers/config.h"
+
 
 namespace tmd{
 

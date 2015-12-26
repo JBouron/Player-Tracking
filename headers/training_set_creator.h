@@ -1,13 +1,12 @@
-//
-// Created by nicolas on 28.11.15.
-//
-
 #ifndef BACHELOR_PROJECT_TRAINING_SET_CREATOR_H
 #define BACHELOR_PROJECT_TRAINING_SET_CREATOR_H
 
 #include "bgsubstractor.h"
 #include "feature_comparator.h"
 #include "player_extractor.h"
+#include "../headers/dpm_player_extractor.h"
+#include "../headers/blob_player_extractor.h"
+#include "../headers/blob_separator.h"
 
 namespace tmd {
     class TrainingSetCreator {

@@ -4,6 +4,9 @@
 #include "features_t.h"
 #include "player_t.h"
 #include "features_extractor.h" // Threshold values
+#include <opencv2/core/core.hpp>
+#include <fstream>
+#include <bits/stream_iterator.h>
 
 namespace tmd {
 

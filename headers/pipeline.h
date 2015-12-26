@@ -2,6 +2,7 @@
 #define BACHELOR_PROJECT_PIPELINE_H
 
 #include <string>
+#include "../headers/blob_player_extractor.h"
 #include "frame_t.h"
 #include "bgsubstractor.h"
 #include "player_extractor.h"

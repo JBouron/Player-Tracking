@@ -1,4 +1,3 @@
-#include <opencv2/core/core.hpp>
 #include "../headers/calibration_tool.h"
 
 namespace tmd {
