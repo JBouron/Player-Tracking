@@ -14,6 +14,7 @@
 #include "../headers/simple_pipeline.h"
 #include "../headers/pipeline_thread.h"
 #include "../headers/multithreaded_pipeline.h"
+#include "../headers/fast_dpm.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -39,14 +40,23 @@ void memleak_video_capture(void) {
     }
 }
 
+void test_fast_dpm(void){
+    tmd::FastDPM fastDPM;
+    cv::Mat blob = cv::imread(
+                      "./res/manual_extraction/frame5847_originalimage0.jpg");
+    fastDPM.extract_players_and_body_parts(blob);
+}
+
 
 int main(int argc, char *argv[]){
     tmd::Config::load_config();
+    test_fast_dpm();
+    return 0;
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::SimplePipeline(
-    "./res/videos/uni-hockey/",0, 10, 2000, 10);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
+    "./res/videos/uni-hockey/",0, 4, 10, 2000, 10);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
