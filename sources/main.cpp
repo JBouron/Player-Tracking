@@ -30,12 +30,12 @@ void dpm_whole_frame(void);
 void test_blob_separation(void);
 
 void memleak_video_capture(void) {
-    tmd::BGSubstractor bgs("./res/videos/alone-green-no-ball/"
-            , 0, 490, 10);
-    while (true){
-        std::cout << "Next frame" << std::endl;
-        cv::imshow("BGS", bgs.next_frame()->mask_frame);
+    tmd::BGSubstractor bgs("./res/videos/alone-red-no-ball/", 0, 300, 10);
+    while (1){
+        tmd::frame_t* frame = bgs.next_frame();
+        cv::imshow("FGrame", frame->mask_frame);
         cv::waitKey(0);
+        tmd::free_frame(frame);
     }
 }
 
@@ -45,8 +45,8 @@ int main(int argc, char *argv[]){
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-    "./res/videos/uni-hockey/",0,  4, 10, 2000, 10);
+    tmd::Pipeline *pipeline = new tmd::SimplePipeline(
+    "./res/videos/uni-hockey/",0, 10, 2000, 10);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
@@ -67,6 +67,8 @@ int main(int argc, char *argv[]){
             break;
         }
     }
+    tmd::free_frame(frame);
+    delete pipeline;
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
