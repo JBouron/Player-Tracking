@@ -37,27 +37,18 @@ namespace tmd{
             tmd::debug("BlobSeparator", "separate_blobs", "Done : " +
                     std::to_string(players_in_blob.size()) + " players "
                                                                  "extracted.");
+            // Here the blob has multiple players in it.
+            for (size_t j = 0 ; j < players_in_blob.size() ; j ++){
+                tmd::debug("BlobSeparator", "separate_blobs", "Player " +
+                        std::to_string(j) + " has score " +
+                        std::to_string(players_in_blob[j]->likelihood));
 
-            if (players_in_blob.size() == 1){
-                new_player_vector.push_back(p);
-                free_player(players_in_blob[0]);
+                player_t* pi = players_in_blob[j];
+                pi->pos_frame.x += p->pos_frame.x;
+                pi->pos_frame.y += p->pos_frame.y;
+                new_player_vector.push_back(pi);
             }
-            else{
-                // Here the blob has multiple players in it.
-                cv::Mat frame = p->original_image.clone();
-                for (size_t j = 0 ; j < players_in_blob.size() ; j ++){
-                    tmd::debug("BlobSeparator", "separate_blobs", "Player " +
-                            std::to_string(j) + " has score " +
-                            std::to_string(players_in_blob[j]->likelihood));
-
-                    player_t* pi = players_in_blob[j];
-                    pi->pos_frame.x += p->pos_frame.x;
-                    pi->pos_frame.y += p->pos_frame.y;
-                    new_player_vector.push_back(pi);
-                }
-                free_player(p);
-                frame.release();
-            }
+            free_player(p);
             free_frame(blob_frame);
         }
         delete dpm;
