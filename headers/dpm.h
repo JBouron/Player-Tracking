@@ -18,9 +18,9 @@
 namespace tmd{
     typedef std::tuple<cv::Rect, std::vector<cv::Rect>, float> detection;
 
-    class FastDPM{
+    class DPM {
     public:
-        FastDPM();
+        DPM();
 
         std::vector<tmd::player_t*> extract_players_and_body_parts
                 (tmd::frame_t* frame);

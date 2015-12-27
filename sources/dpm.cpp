@@ -1,7 +1,4 @@
-#include "../headers/fast_dpm.h"
-#include "../headers/frame_t.h"
-#include "../headers/player_t.h"
-#include "../headers/features_t.h"
+#include "../headers/dpm.h"
 
 #ifndef max
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
@@ -13,17 +10,17 @@
 
 namespace tmd{
 
-    FastDPM::FastDPM(){
+    DPM::DPM(){
         m_detector = cvLoadLatentSvmDetector(tmd::Config::model_file_path.c_str());
     }
 
-    std::vector<tmd::player_t*> FastDPM::extract_players_and_body_parts(
+    std::vector<tmd::player_t*> DPM::extract_players_and_body_parts(
             tmd::frame_t* frame){
         IplImage blobImage = frame->original_frame;
         CvMemStorage *memStorage = cvCreateMemStorage(0);
 
         this->cvLatentSvmDetectObjects(&blobImage, m_detector, memStorage,
-                           tmd::Config::dpm_extractor_overlapping_threshold, 4);
+                           tmd::Config::dpm_extractor_overlapping_threshold, 1);
 
         // apply clamp and make part coordinates relative to the box
         clamp_detections();
@@ -48,7 +45,7 @@ namespace tmd{
         return players;
     }
 
-    void FastDPM::extractTorsoForPlayer(player_t *player) {
+    void DPM::extractTorsoForPlayer(player_t *player) {
         if (player == NULL){
             throw std::invalid_argument("Error null pointer given to "
                                                 "extractTorsoForPlayer method");
@@ -98,7 +95,7 @@ namespace tmd{
     // OUTPUT
     // sequence of detected objects (bounding boxes and confidence levels stored in CvObjectDetection structures)
     */
-    CvSeq* FastDPM::cvLatentSvmDetectObjects(IplImage* image,
+    CvSeq* DPM::cvLatentSvmDetectObjects(IplImage* image,
                                     CvLatentSvmDetector* detector,
                                     CvMemStorage* storage,
                                     float overlap_threshold, int numThreads)
@@ -196,7 +193,7 @@ namespace tmd{
 // RESULT
 // Error status
 */
-    int FastDPM::clippingBoxesUpperRightCorner(int width, int height,
+    int DPM::clippingBoxesUpperRightCorner(int width, int height,
                       CvPoint *points, int kPoints)
     {
         int i;
@@ -247,7 +244,7 @@ namespace tmd{
 // RESULT
 // Error status
 */
-    int FastDPM::clippingBoxesLowerLeftCorner(int width, int height,
+    int DPM::clippingBoxesLowerLeftCorner(int width, int height,
                                       CvPoint *points, int kPoints)
     {
         int i;
@@ -324,7 +321,7 @@ namespace tmd{
 // RESULT
 // Error status
 */
-    int FastDPM::nonMaximumSuppression(int numBoxes, const CvPoint *points,
+    int DPM::nonMaximumSuppression(int numBoxes, const CvPoint *points,
                               const CvPoint *oppositePoints, const float *score,
                               float overlapThreshold,
                               int *numBoxesOut, CvPoint **pointsOut,
@@ -416,7 +413,7 @@ namespace tmd{
     }
 
 
-    std::vector<cv::Rect> FastDPM::get_parts_rect_for_point(const
+    std::vector<cv::Rect> DPM::get_parts_rect_for_point(const
                                                         CvLSVMFilterObject **filters,
                                                    int n, CvPoint
                                                    *partsDisplacement, int
@@ -466,7 +463,7 @@ namespace tmd{
     // RESULT
     // Error status
     */
-    int FastDPM::searchObjectThresholdSomeComponents(const
+    int DPM::searchObjectThresholdSomeComponents(const
                                                     CvLSVMFeaturePyramid *H,
                                             const CvLSVMFilterObject **filters,
                                             int kComponents, const int *kPartFilters,
@@ -588,7 +585,7 @@ namespace tmd{
     // RESULT
     // Error status
     */
-    int FastDPM::estimateBoxes(CvPoint *points, int *levels, int kPoints,
+    int DPM::estimateBoxes(CvPoint *points, int *levels, int kPoints,
                       int sizeX, int sizeY, CvPoint **oppositePoints)
     {
         int i;
@@ -626,7 +623,7 @@ namespace tmd{
     // RESULT
     // Error status
     */
-    int FastDPM::getOppositePoint(CvPoint point,
+    int DPM::getOppositePoint(CvPoint point,
                          int sizeX, int sizeY,
                          float step, int degree,
                          CvPoint *oppositePoint)
@@ -671,7 +668,7 @@ namespace tmd{
     // RESULT
     // Error status
     */
-    int FastDPM::searchObjectThreshold(const CvLSVMFeaturePyramid *H,
+    int DPM::searchObjectThreshold(const CvLSVMFeaturePyramid *H,
                               const CvLSVMFilterObject **all_F, int n,
                               float b,
                               int maxXBorder, int maxYBorder,
@@ -742,7 +739,7 @@ namespace tmd{
     // RESULT
     // Error status
     */
-    int FastDPM::convertPoints(int /*countLevel*/, int lambda,
+    int DPM::convertPoints(int /*countLevel*/, int lambda,
                       int initialImageLevel,
                       CvPoint *points, int *levels,
                       CvPoint **partsDisplacement, int kPoints, int n,
@@ -806,7 +803,7 @@ namespace tmd{
     // RESULT
     // Error status
     */
-    int FastDPM::thresholdFunctionalScore(const CvLSVMFilterObject **all_F,
+    int DPM::thresholdFunctionalScore(const CvLSVMFilterObject **all_F,
                                          int n,
                                  const CvLSVMFeaturePyramid *H,
                                  float b,
@@ -925,7 +922,7 @@ namespace tmd{
         return LATENT_SVM_OK;
     }
 
-    void FastDPM::clamp_detections(){
+    void DPM::clamp_detections(){
         for (tmd::detection &detect : m_detections){
             cv::Rect box = std::get<0> (detect);
             for (cv::Rect &part : std::get<1> (detect)){

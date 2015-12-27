@@ -14,7 +14,7 @@
 #include "../headers/simple_pipeline.h"
 #include "../headers/pipeline_thread.h"
 #include "../headers/multithreaded_pipeline.h"
-#include "../headers/fast_dpm.h"
+#include "../headers/dpm.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -41,7 +41,7 @@ void memleak_video_capture(void) {
 }
 
 void test_fast_dpm(void){
-    tmd::FastDPM fastDPM;
+    tmd::DPM fastDPM;
     tmd::frame_t blob;
     blob.frame_index = 0;
     blob.camera_index = 0;
