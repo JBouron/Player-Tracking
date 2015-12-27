@@ -17,21 +17,25 @@ namespace tmd {
 
         m_input_video_path = video_folder + "ace_" + std::to_string
                                                  (camera_index) + ".mp4";
-        m_input_video = new cv::VideoCapture(m_input_video_path);
-        m_input_video->set(CV_CAP_PROP_POS_FRAMES, m_starting_frame);
-        if (m_input_video == NULL || !m_input_video->isOpened()) {
-            throw std::invalid_argument("Error in BGSubstractor constructor, "
-                                                "input video is not valid (NULL or not opened).");
-        }
+
         std::string mask_path = tmd::Config::mask_folder + "mask_ace" +
                 std::to_string(camera_index) + ".jpg";
         m_static_mask = cv::imread(mask_path, 0);
 
-        cv::VideoCapture cap(m_input_video_path);
+        m_input_video.open(m_input_video_path);
+
         cv::Mat bg;
-        cap.read(bg);
+        m_input_video.read(bg);
         cv::Mat mask;
         m_bgs->operator()(bg, mask, m_learning_rate);
+        m_input_video.release();
+
+        m_input_video.open(m_input_video_path);
+        m_input_video.set(CV_CAP_PROP_POS_FRAMES, m_starting_frame);
+        if (!m_input_video.isOpened()) {
+            throw std::invalid_argument("Error in BGSubstractor constructor, "
+                                                "input video is not valid (NULL or not opened).");
+        }
 
         tmd::debug("BGSubstractor", "BGSubstractor", "valid input video.");
         m_camera_index = camera_index;
@@ -43,7 +47,7 @@ namespace tmd {
 
         tmd::debug("BGSubstractor", "BGSubstractor", "valid camera index");
         m_frame_index = m_starting_frame;
-        m_total_frame_count = (m_input_video->get(CV_CAP_PROP_FRAME_COUNT));
+        m_total_frame_count = (m_input_video.get(CV_CAP_PROP_FRAME_COUNT));
         tmd::debug("BGSubstractor", "BGSubstractor", "m_total_frame_count = "
                                                      + std::to_string(m_total_frame_count));
         tmd::debug("BGSubstractor", "BGSubstractor", "exiting method");
@@ -51,11 +55,12 @@ namespace tmd {
 
     BGSubstractor::~BGSubstractor() {
         // cv::Ptr free the bgs for us.
+        m_input_video.release();
     }
 
     frame_t *BGSubstractor::next_frame() {
         frame_t *frame = new frame_t;
-        bool frame_extracted = m_input_video->read(frame->original_frame);
+        bool frame_extracted = m_input_video.read(frame->original_frame);
         if (!frame_extracted) {
             tmd::debug("BGSubstractor", "next_frame", "No frame left, "
                                                               "returning NULL after " + std::to_string(m_frame_index) +
@@ -116,7 +121,7 @@ namespace tmd {
         mask_copy.release();
         checked_pixels.release();
         m_frame_index += m_step_size;
-        jump_to_frame(m_frame_index);
+        step();
         return frame;
     }
 
@@ -147,14 +152,20 @@ namespace tmd {
     }
 
     void BGSubstractor::jump_to_frame(int index) {
-        delete m_input_video;
-        cv::VideoCapture *newCapture = new cv::VideoCapture(m_input_video_path);
-        newCapture->set(CV_CAP_PROP_POS_FRAMES, index);
-        m_input_video = newCapture;
+        m_input_video.release();
+        m_input_video.open(m_input_video_path);
+        m_input_video.set(CV_CAP_PROP_POS_FRAMES, index);
         m_frame_index = index;
     }
 
     int BGSubstractor::get_current_frame_index() {
         return  (m_frame_index);
+    }
+
+    void BGSubstractor::step(){
+        for (int i = 0 ; i < m_step_size - 1 ; i ++){
+            cv::Mat img;
+            m_input_video.read(img);
+        }
     }
 }

@@ -70,7 +70,7 @@ namespace tmd {
 
     private:
         cv::Ptr<cv::BackgroundSubtractorMOG2> m_bgs;
-        cv::VideoCapture *m_input_video;
+        cv::VideoCapture m_input_video;
         std::string m_input_video_path;
         cv::Mat m_static_mask;
         int m_camera_index;
@@ -82,6 +82,7 @@ namespace tmd {
         int m_step_size;
 
         int count_neighbours_in_fg(cv::Mat frame, int x, int y, int buffer_size);
+        void step();
     };
 }
 
