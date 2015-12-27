@@ -21,6 +21,7 @@ namespace tmd{
     class DPM {
     public:
         DPM();
+        ~DPM();
 
         std::vector<tmd::player_t*> extract_players_and_body_parts
                 (tmd::frame_t* frame);
@@ -96,7 +97,7 @@ namespace tmd{
         int clippingBoxesLowerLeftCorner(int width, int height,
                                                   CvPoint *points, int kPoints);
 
-        void clamp_detections();
+        void clamp_detections(int width, int height);
         void extractTorsoForPlayer(player_t *player);
 
         CvLatentSvmDetector *m_detector;

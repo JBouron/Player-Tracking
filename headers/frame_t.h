@@ -25,8 +25,8 @@ namespace tmd {
     } frame_t;
 
     inline void free_frame(frame_t* frame){
-        frame->original_frame.release();
-        frame->mask_frame.release();
+        /*frame->original_frame.release();
+        frame->mask_frame.release();*/
         for (size_t i = 0 ; i < frame->players.size() ; i ++){
             free_player(frame->players[i]);
         }

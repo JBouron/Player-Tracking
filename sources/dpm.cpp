@@ -14,6 +14,10 @@ namespace tmd{
         m_detector = cvLoadLatentSvmDetector(tmd::Config::model_file_path.c_str());
     }
 
+    DPM::~DPM() {
+        cvReleaseLatentSvmDetector(&m_detector);
+    }
+
     std::vector<tmd::player_t*> DPM::extract_players_and_body_parts(
             tmd::frame_t* frame){
         IplImage blobImage = frame->original_frame;
@@ -23,7 +27,7 @@ namespace tmd{
                            tmd::Config::dpm_extractor_overlapping_threshold, 1);
 
         // apply clamp and make part coordinates relative to the box
-        clamp_detections();
+        clamp_detections(frame->original_frame.cols, frame->original_frame.rows);
 
         std::vector<tmd::player_t*> players;
         for (tmd::detection detect : m_detections){
@@ -38,10 +42,11 @@ namespace tmd{
                 player->original_image = frame->original_frame(box);
                 player->pos_frame = box;
                 player->features.body_parts = parts;
-                //extractTorsoForPlayer(player);
+                extractTorsoForPlayer(player);
                 players.push_back(player);
             }
         }
+        m_detections.clear();
         return players;
     }
 
@@ -63,14 +68,15 @@ namespace tmd{
         int oppoY = ((torso1.y + torso1.height) + (torso2.y + torso2.height))/2;
         mean.width = oppoX - mean.x;
         mean.height = oppoY - mean.y;
-        assert(mean.x >= 0);
+        /*assert(mean.x >= 0);
         assert(mean.y >= 0);
         assert(mean.y + mean.height <= player->pos_frame.height);
-        assert(mean.x + mean.width <= player->pos_frame.width);
+        assert(mean.x + mean.width <= player->pos_frame.width);*/
         cv::Rect roi = mean;
         cv::Rect m = player->pos_frame;
-        assert(0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= m.width &&
-               0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= m.height);
+        /*assert(0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= m.width &&
+               0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= m
+               .height);*/
         player->features.torso = (player->original_image.clone())(mean);
         player->features.torso_mask = (player->mask_image.clone())(mean);
         player->features.torso_pos = mean;
@@ -200,8 +206,8 @@ namespace tmd{
         for (i = 0; i < kPoints; i++)
         {
             cv::Rect &entry_i = std::get<0>(m_detections[i]);
-            assert(entry_i.x == points[i].x);
-            assert(entry_i.y == points[i].y);
+            //assert(entry_i.x == points[i].x);
+            //assert(entry_i.y == points[i].y);
             if (points[i].x > width - 1)
             {
                 points[i].x = width - 1;
@@ -252,8 +258,8 @@ namespace tmd{
         {
             CvPoint point = points[i];
             cv::Rect &entry_i = std::get<0>(m_detections[i]);
-            assert(entry_i.x + entry_i.width == points[i].x);
-            assert(entry_i.y + entry_i.height == points[i].y);
+            //assert(entry_i.x + entry_i.width == points[i].x);
+            //(entry_i.y + entry_i.height == points[i].y);
             if (points[i].x > width - 1)
             {
                 points[i].x = width - 1;
@@ -363,8 +369,10 @@ namespace tmd{
                                 is_suppressed[indices[j]] = 1;
                                 cv::Rect to_be_removed = std::get<0>
                                 (m_detections[indices[j]]);
-                                assert(to_be_removed.x == points[indices[j]].x);
-                                assert(to_be_removed.y == points[indices[j]].y);
+                                //assert(to_be_removed.x == points[indices[j]]
+                                                             //      .x);
+                                //assert(to_be_removed.y == points[indices[j]]
+                                                             //      .y);
                             }
                         }
                     }
@@ -382,7 +390,7 @@ namespace tmd{
         *oppositePointsOut = (CvPoint *)malloc((*numBoxesOut) * sizeof(CvPoint));
         *scoreOut = (float *)malloc((*numBoxesOut) * sizeof(float));
         index = 0;
-        assert(m_detections.size() == numBoxes);
+        //assert(m_detections.size() == numBoxes);
         for (i = 0; i < numBoxes; i++)
         {
             if (!is_suppressed[indices[i]])
@@ -393,10 +401,10 @@ namespace tmd{
                 (*oppositePointsOut)[index].x = oppositePoints[indices[i]].x;
                 (*oppositePointsOut)[index].y = oppositePoints[indices[i]].y;
                 (*scoreOut)[index] = score[indices[i]];
-                assert(tmp.x == (*pointsOut)[index].x);
+                /*assert(tmp.x == (*pointsOut)[index].x);
                 assert(tmp.x == (*pointsOut)[index].x);
                 assert(tmp.x + tmp.width== (*oppositePointsOut)[index].x);
-                assert(tmp.y + tmp.height== (*oppositePointsOut)[index].y);
+                assert(tmp.y + tmp.height== (*oppositePointsOut)[index].y);*/
                 new_detections.push_back(m_detections[indices[i]]);
                 index++;
             }
@@ -922,9 +930,13 @@ namespace tmd{
         return LATENT_SVM_OK;
     }
 
-    void DPM::clamp_detections(){
+    void DPM::clamp_detections(int width, int height){
         for (tmd::detection &detect : m_detections){
-            cv::Rect box = std::get<0> (detect);
+            cv::Rect &box = std::get<0> (detect);
+            box.x = max (0, box.x);
+            box.y = max (0, box.y);
+            box.width = min(box.width, width);
+            box.height = min(box.height, height);
             for (cv::Rect &part : std::get<1> (detect)){
                 part.x -= box.x;
                 part.y -= box.y;

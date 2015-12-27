@@ -1,4 +1,5 @@
 #include "../headers/blob_separator.h"
+#include "../headers/dpm.h"
 
 namespace tmd{
     std::vector<tmd::player_t*> BlobSeparator::separate_blobs(
@@ -8,7 +9,7 @@ namespace tmd{
         size_t size = players.size();
 
         // freed
-        DPMPlayerExtractor* playerExtractor = new DPMPlayerExtractor();
+        DPM *dpm = new DPM();
 
         for (size_t i = 0 ; i < size ; i ++){
             player_t* p = players[i]; // freed
@@ -31,7 +32,7 @@ namespace tmd{
             tmd::debug("BlobSeparator", "separate_blobs", "Extract players "
                     "from blob.");
             std::vector<player_t*> players_in_blob =
-                    playerExtractor->extract_player_from_frame(blob_frame);
+                    dpm->extract_players_and_body_parts(blob_frame);
             // freed
             tmd::debug("BlobSeparator", "separate_blobs", "Done : " +
                     std::to_string(players_in_blob.size()) + " players "
@@ -52,7 +53,6 @@ namespace tmd{
                     player_t* pi = players_in_blob[j];
                     pi->pos_frame.x += p->pos_frame.x;
                     pi->pos_frame.y += p->pos_frame.y;
-
                     new_player_vector.push_back(pi);
                 }
                 free_player(p);
@@ -60,7 +60,7 @@ namespace tmd{
             }
             free_frame(blob_frame);
         }
-        delete playerExtractor;
+        delete dpm;
         return new_player_vector;
     }
 }

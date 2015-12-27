@@ -22,7 +22,7 @@ namespace tmd {
             throw std::invalid_argument("Error : Null pointer in "
                                                 "FeaturesExtractor::extractFeatures()");
         }
-        extractBodyParts(player);
+        //extractBodyParts(player);
         if (player->features.body_parts.size() > 0) {
             convertToHSV(player);
             updateMaskWithThreshold(player);
