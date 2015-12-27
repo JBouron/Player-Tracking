@@ -62,13 +62,13 @@ int main(int argc, char *argv[]){
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::SimplePipeline(
-    "./res/videos/uni-hockey/",0, 10, 2000, 10);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
+    "./res/videos/uni-hockey/",0, 4, 10, 2000, 1);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
     int count = 0;
-    int max_frames = -1;
+    int max_frames = 300;
     std::string folder = "./res/pipeline_results/complete_pipeline/uni/with "
             "blob separator/";
 

@@ -64,9 +64,7 @@ namespace tmd {
         tmd::debug("SimplePipeline", "next_frame", "Frame " + std::to_string
                 (m_bgSubstractor->get_current_frame_index()) + " : " +
                                              std::to_string(players.size()) + " players detected");
-
         m_featuresExtractor->extractFeaturesFromPlayers(players);
-
         m_featuresComparator->detectTeamForPlayers(players);
         coloredMask.release();
         frame->players = players;
