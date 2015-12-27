@@ -1,6 +1,14 @@
 #include "../headers/fast_dpm.h"
 #include "../headers/frame_t.h"
 
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+
 namespace tmd{
 
     FastDPM::FastDPM(){
@@ -84,6 +92,15 @@ namespace tmd{
         nonMaximumSuppression(kPoints, points, oppPoints, score, overlap_threshold,
                               &numBoxesOut, &pointsOut, &oppPointsOut, &scoreOut);
 
+        for (auto t : m_detections){
+            cv::Mat clone = m_image.clone();
+            for (cv::Rect part : std::get<2>(t)){
+                cv::rectangle(clone, part, m_color, 1, m_line_type, m_shift);
+            }
+            cv::imshow("Frame", clone);
+            cv::waitKey(0);
+        }
+
         result_seq = cvCreateSeq( 0, sizeof(CvSeq), sizeof(CvObjectDetection), storage );
 
         for (int i = 0; i < numBoxesOut; i++)
@@ -111,42 +128,192 @@ namespace tmd{
         return result_seq;
     }
 
+    /*
+// Elimination boxes that are outside the image boudaries
+//
+// API
+// int clippingBoxes(int width, int height,
+                     CvPoint *points, int kPoints);
+// INPUT
+// width             - image wediht
+// height            - image heigth
+// points            - a set of points (coordinates of top left or
+                       bottom right corners)
+// kPoints           - points number
+// OUTPUT
+// points            - updated points (if coordinates less than zero then
+                       set zero coordinate, if coordinates more than image
+                       size then set coordinates equal image size)
+// RESULT
+// Error status
+*/
+    int FastDPM::clippingBoxes(int width, int height,
+                      CvPoint *points, int kPoints)
+    {
+        int i;
+        for (i = 0; i < kPoints; i++)
+        {
+            assert(points[i].x == m_points[i].x);
+            assert(points[i].y == m_points[i].y);
+            if (points[i].x > width - 1)
+            {
+                points[i].x = width - 1;
+            }
+            if (points[i].x < 0)
+            {
+                points[i].x = 0;
+            }
+            if (points[i].y > height - 1)
+            {
+                points[i].y = height - 1;
+            }
+            if (points[i].y < 0)
+            {
+                points[i].y = 0;
+            }
+        }
+        return LATENT_SVM_OK;
+    }
 
-    int FastDPM::showPartFilterBoxes(IplImage *image,
-                            const CvLSVMFilterObject **filters,
-                            int n, CvPoint **partsDisplacement,
-                            int *levels, int kPoints,
-                            CvScalar color, int thickness,
-                            int line_type, int shift)
+
+    static void sort(int n, const float* x, int* indices)
     {
         int i, j;
-        float step;
-        CvPoint oppositePoint;
-        cv::Mat old = cv::Mat(image).clone();
-
-        step = powf( 2.0f, 1.0f / ((float)LAMBDA));
-        i = 0;
-        for (i = kPoints - 1; i >= 0; i--){
-            for (j = 0; j < n; j++)
+        for (i = 0; i < n; i++)
+            for (j = i + 1; j < n; j++)
             {
-                // Drawing rectangles for part filters
-                getOppositePoint(partsDisplacement[i][j],
-                                 filters[j + 1]->sizeX, filters[j + 1]->sizeY,
-                                 step, levels[i] - 2 * LAMBDA, &oppositePoint);
-                cv::rectangle(old, partsDisplacement[i][j], oppositePoint,
-                            color, thickness, line_type, shift);
+                if (x[indices[j]] > x[indices[i]])
+                {
+                    //float x_tmp = x[i];
+                    int index_tmp = indices[i];
+                    //x[i] = x[j];
+                    indices[i] = indices[j];
+                    //x[j] = x_tmp;
+                    indices[j] = index_tmp;
+                }
             }
-            cv::imshow("Initial image", old);
-            std::cout << i << std::endl;
-            cv::waitKey(0);
-            old = cv::Mat(image).clone();
+    }
+
+
+    /*
+// Perform non-maximum suppression algorithm (described in original paper)
+// to remove "similar" bounding boxes
+//
+// API
+// int nonMaximumSuppression(int numBoxes, const CvPoint *points,
+                             const CvPoint *oppositePoints, const float *score,
+                             float overlapThreshold,
+                             int *numBoxesOut, CvPoint **pointsOut,
+                             CvPoint **oppositePointsOut, float **scoreOut);
+// INPUT
+// numBoxes          - number of bounding boxes
+// points            - array of left top corner coordinates
+// oppositePoints    - array of right bottom corner coordinates
+// score             - array of detection scores
+// overlapThreshold  - threshold: bounding box is removed if overlap part
+                       is greater than passed value
+// OUTPUT
+// numBoxesOut       - the number of bounding boxes algorithm returns
+// pointsOut         - array of left top corner coordinates
+// oppositePointsOut - array of right bottom corner coordinates
+// scoreOut          - array of detection scores
+// RESULT
+// Error status
+*/
+    int FastDPM::nonMaximumSuppression(int numBoxes, const CvPoint *points,
+                              const CvPoint *oppositePoints, const float *score,
+                              float overlapThreshold,
+                              int *numBoxesOut, CvPoint **pointsOut,
+                              CvPoint **oppositePointsOut, float **scoreOut)
+    {
+        int i, j, index;
+        float* box_area = (float*)malloc(numBoxes * sizeof(float));
+        int* indices = (int*)malloc(numBoxes * sizeof(int));
+        int* is_suppressed = (int*)malloc(numBoxes * sizeof(int));
+
+        for (i = 0; i < numBoxes; i++)
+        {
+            indices[i] = i;
+            is_suppressed[i] = 0;
+            box_area[i] = (float)( (oppositePoints[i].x - points[i].x + 1) *
+                                   (oppositePoints[i].y - points[i].y + 1));
         }
+
+        sort(numBoxes, score, indices);
+        for (i = 0; i < numBoxes; i++)
+        {
+            std::cout << points[indices[i]].x << " " << points[indices[i]].y
+            << " vs " << m_points[indices[i]].x << " " <<
+                    m_points[indices[i]].y << std::endl;
+            if (!is_suppressed[indices[i]])
+            {
+                for (j = i + 1; j < numBoxes; j++)
+                {
+                    if (!is_suppressed[indices[j]])
+                    {
+                        int x1max = max(points[indices[i]].x, points[indices[j]].x);
+                        int x2min = min(oppositePoints[indices[i]].x, oppositePoints[indices[j]].x);
+                        int y1max = max(points[indices[i]].y, points[indices[j]].y);
+                        int y2min = min(oppositePoints[indices[i]].y, oppositePoints[indices[j]].y);
+                        int overlapWidth = x2min - x1max + 1;
+                        int overlapHeight = y2min - y1max + 1;
+                        if (overlapWidth > 0 && overlapHeight > 0)
+                        {
+                            float overlapPart = (overlapWidth * overlapHeight) / box_area[indices[j]];
+                            if (overlapPart > overlapThreshold)
+                            {
+                                is_suppressed[indices[j]] = 1;
+                                std::cout << "Erase point : " <<
+                                        points[indices[j]].x << " " <<
+                                        points[indices[j]].y << std::endl;
+                                assert(m_scores[indices[j]] ==
+                                               score[indices[j]]);
+                                assert(m_points[indices[j]].x ==
+                                               points[indices[j]].x);
+                                 assert(m_points[indices[j]].y ==
+                                               points[indices[j]].y);
+                                m_parts.erase(m_parts.begin() + j);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        *numBoxesOut = 0;
+        for (i = 0; i < numBoxes; i++)
+        {
+            if (!is_suppressed[i]) (*numBoxesOut)++;
+        }
+
+        *pointsOut = (CvPoint *)malloc((*numBoxesOut) * sizeof(CvPoint));
+        *oppositePointsOut = (CvPoint *)malloc((*numBoxesOut) * sizeof(CvPoint));
+        *scoreOut = (float *)malloc((*numBoxesOut) * sizeof(float));
+        index = 0;
+        for (i = 0; i < numBoxes; i++)
+        {
+            if (!is_suppressed[indices[i]])
+            {
+                (*pointsOut)[index].x = points[indices[i]].x;
+                (*pointsOut)[index].y = points[indices[i]].y;
+                (*oppositePointsOut)[index].x = oppositePoints[indices[i]].x;
+                (*oppositePointsOut)[index].y = oppositePoints[indices[i]].y;
+                (*scoreOut)[index] = score[indices[i]];
+                index++;
+            }
+
+        }
+
+        free(indices);
+        free(box_area);
+        free(is_suppressed);
 
         return LATENT_SVM_OK;
     }
 
 
-    std::vector<cv::Rect> get_parts_rect_for_point(const CvLSVMFilterObject **filters,
+    std::vector<cv::Rect> FastDPM::get_parts_rect_for_point(const
+                                                        CvLSVMFilterObject **filters,
                                                    int n, CvPoint
                                                    *partsDisplacement, int
                                                    level){
@@ -165,36 +332,6 @@ namespace tmd{
             parts.push_back(rect);
         }
         return parts;
-    }
-
-    std::vector<std::vector<cv::Rect>> detectBestPartBoxes(
-                                         const CvLSVMFilterObject **filters,
-                                         int n,
-                                         CvPoint **partsDisplacement,
-                                         int *levels, int kPoints,
-                                         float *scores) {
-        int i, j;
-        float step;
-        CvPoint oppositePoint;
-
-        step = powf(2.0f, 1.0f / ((float) LAMBDA));
-        std::vector<std::vector<cv::Rect>> all_parts;
-        for (i = 0; i < kPoints; i++) {
-            std::vector<cv::Rect> tmp_parts;
-            for (j = 0; j < n; j++) {
-                getOppositePoint(partsDisplacement[i][j],
-                                 filters[j + 1]->sizeX, filters[j + 1]->sizeY,
-                                 step, levels[i] - 2 * LAMBDA, &oppositePoint);
-
-                if (scores[i] > tmd::Config::dpm_extractor_score_threshold) {
-                    cv::Rect r(partsDisplacement[i][j], oppositePoint);
-                    tmp_parts.push_back(r);
-                }
-            }
-            all_parts.push_back(tmp_parts);
-        }
-
-        return all_parts;
     }
 
 
@@ -288,13 +425,6 @@ namespace tmd{
         *oppPoints = (CvPoint *)malloc(sizeof(CvPoint) * (*kPoints));
         *score = (float *)malloc(sizeof(float) * (*kPoints));
         s = 0;
-        int i_max = kComponents - 1;
-
-        m_parts = detectBestPartBoxes(filters, kPartFilters[i_max],
-                                      partsDisplacementArr[i_max],
-                                      levelsArr[i_max], kPointsArr[i_max],
-                                      scoreArr[i_max]);
-
         for (i = 0; i < kComponents; i++)
         {
             f = s + kPointsArr[i];
@@ -305,16 +435,14 @@ namespace tmd{
                 (*oppPoints)[j].x = oppPointsArr[i][j - s].x;
                 (*oppPoints)[j].y = oppPointsArr[i][j - s].y;
                 (*score)[j] = scoreArr[i][j - s];
+                std::vector<cv::Rect> p = get_parts_rect_for_point
+                        (filters, kPartFilters[i],
+                         partsDisplacementArr[i][j - s], levelsArr[i][j-s]);
+                m_parts.push_back(p);
+                m_scores.push_back((*score)[j]);
+                m_points.push_back((*points)[j]);
             }
             s = f;
-        }
-
-        for (std::vector<cv::Rect> parts : m_parts){
-            for (cv::Rect part : parts){
-                cv::rectangle(m_image, part, m_color, 1, m_line_type, m_shift);
-            }
-            cv::imshow("Frame", m_image);
-            cv::waitKey(0);
         }
 
         // Release allocated memory
