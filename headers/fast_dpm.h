@@ -16,6 +16,8 @@
 #include "sdl_binds/sdl_binds.h"
 
 namespace tmd{
+    typedef std::tuple<cv::Rect, std::vector<cv::Rect>, float> detection;
+
     class FastDPM{
     public:
         FastDPM();
@@ -88,8 +90,11 @@ namespace tmd{
                                             *partsDisplacement, int
                                             level);
 
-        int clippingBoxes(int width, int height,
-                                   CvPoint *points, int kPoints);
+        int clippingBoxesUpperRightCorner(int width, int height,
+                                                   CvPoint *points, int
+                                                   kPoints);
+        int clippingBoxesLowerLeftCorner(int width, int height,
+                                                  CvPoint *points, int kPoints);
 
         CvScalar m_color;
         int m_thickness;
@@ -98,8 +103,7 @@ namespace tmd{
         cv::Mat m_image;
         CvLatentSvmDetector *m_detector;
 
-        std::vector<std::tuple<cv::Rect, std::vector<cv::Rect>, float>>
-                m_detections; // box, parts, score.
+        std::vector<tmd::detection> m_detections; // box, parts, score.
 
     };
 }

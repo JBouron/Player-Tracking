@@ -13,7 +13,7 @@ namespace tmd{
 
     FastDPM::FastDPM(){
         m_detector = cvLoadLatentSvmDetector(tmd::Config::model_file_path.c_str());
-        m_color.val[0] = 255;
+        m_color.val[0] = 0;
         m_color.val[0] = 255;
         m_color.val[0] = 0;
         m_color.val[0] = 255;
@@ -28,7 +28,27 @@ namespace tmd{
         CvMemStorage *memStorage = cvCreateMemStorage(0);
 
         this->cvLatentSvmDetectObjects(&blobImage, m_detector, memStorage,
-                                       tmd::Config::dpm_extractor_overlapping_threshold, 1);
+                                       tmd::Config::dpm_extractor_overlapping_threshold, 4);
+        CvScalar c;
+        c.val[0] = 0;
+        c.val[0] = 0;
+        c.val[0] = 0;
+        c.val[0] = 255;
+        for (tmd::detection d : m_detections){
+            if (std::get<2>(d) > tmd::Config::dpm_extractor_score_threshold){
+                /*for (cv::Rect p : std::get<1>(d)){
+                    std::cout << "Drae" << std::endl;
+                    cv::rectangle(blob, p, c);
+                }*/
+                cv::Rect box = std::get<0>(d);
+                cv::rectangle(blob, box, c);
+
+            }
+        }
+        cv::imshow("Blob", blob);
+        cv::waitKey(0);
+        std::vector<tmd::player_t*> players;
+        return players;
     }
 
 
@@ -86,20 +106,23 @@ namespace tmd{
             return NULL;
         }
         // Clipping boxes
-        clippingBoxes(image->width, image->height, points, kPoints);
-        clippingBoxes(image->width, image->height, oppPoints, kPoints);
+        this->clippingBoxesLowerLeftCorner(image->width, image->height,
+                                          oppPoints,
+                                kPoints);
+        this->clippingBoxesUpperRightCorner(image->width, image->height, points,
+                                            kPoints);
         // NMS procedure
         nonMaximumSuppression(kPoints, points, oppPoints, score, overlap_threshold,
                               &numBoxesOut, &pointsOut, &oppPointsOut, &scoreOut);
 
-        for (auto t : m_detections){
+        /*for (tmd::detection t : m_detections){
             cv::Mat clone = m_image.clone();
-            for (cv::Rect part : std::get<2>(t)){
+            for (cv::Rect part : std::get<1>(t)){
                 cv::rectangle(clone, part, m_color, 1, m_line_type, m_shift);
             }
             cv::imshow("Frame", clone);
             cv::waitKey(0);
-        }
+        }*/
 
         result_seq = cvCreateSeq( 0, sizeof(CvSeq), sizeof(CvObjectDetection), storage );
 
@@ -124,9 +147,59 @@ namespace tmd{
         free(oppPoints);
         free(score);
         free(scoreOut);
-
         return result_seq;
     }
+
+/*
+// Elimination boxes that are outside the image boudaries
+//
+// API
+// int clippingBoxes(int width, int height,
+                     CvPoint *points, int kPoints);
+// INPUT
+// width             - image wediht
+// height            - image heigth
+// points            - a set of points (coordinates of top left or
+                       bottom right corners)
+// kPoints           - points number
+// OUTPUT
+// points            - updated points (if coordinates less than zero then
+                       set zero coordinate, if coordinates more than image
+                       size then set coordinates equal image size)
+// RESULT
+// Error status
+*/
+    int FastDPM::clippingBoxesUpperRightCorner(int width, int height,
+                      CvPoint *points, int kPoints)
+    {
+        int i;
+        for (i = 0; i < kPoints; i++)
+        {
+            cv::Rect &entry_i = std::get<0>(m_detections[i]);
+            assert(entry_i.x == points[i].x);
+            assert(entry_i.y == points[i].y);
+            if (points[i].x > width - 1)
+            {
+                points[i].x = width - 1;
+            }
+            if (points[i].x < 0)
+            {
+                points[i].x = 0;
+            }
+            if (points[i].y > height - 1)
+            {
+                points[i].y = height - 1;
+            }
+            if (points[i].y < 0)
+            {
+                points[i].y = 0;
+            }
+            entry_i.x = points[i].x;
+            entry_i.y = points[i].y;
+        }
+        return LATENT_SVM_OK;
+    }
+
 
     /*
 // Elimination boxes that are outside the image boudaries
@@ -147,14 +220,16 @@ namespace tmd{
 // RESULT
 // Error status
 */
-    int FastDPM::clippingBoxes(int width, int height,
-                      CvPoint *points, int kPoints)
+    int FastDPM::clippingBoxesLowerLeftCorner(int width, int height,
+                                      CvPoint *points, int kPoints)
     {
         int i;
         for (i = 0; i < kPoints; i++)
         {
-            assert(points[i].x == m_points[i].x);
-            assert(points[i].y == m_points[i].y);
+            CvPoint point = points[i];
+            cv::Rect &entry_i = std::get<0>(m_detections[i]);
+            assert(entry_i.x + entry_i.width == points[i].x);
+            assert(entry_i.y + entry_i.height == points[i].y);
             if (points[i].x > width - 1)
             {
                 points[i].x = width - 1;
@@ -171,6 +246,8 @@ namespace tmd{
             {
                 points[i].y = 0;
             }
+            entry_i.width = points[i].x - entry_i.x;
+            entry_i.height = points[i].y - entry_i.y;
         }
         return LATENT_SVM_OK;
     }
@@ -242,9 +319,6 @@ namespace tmd{
         sort(numBoxes, score, indices);
         for (i = 0; i < numBoxes; i++)
         {
-            std::cout << points[indices[i]].x << " " << points[indices[i]].y
-            << " vs " << m_points[indices[i]].x << " " <<
-                    m_points[indices[i]].y << std::endl;
             if (!is_suppressed[indices[i]])
             {
                 for (j = i + 1; j < numBoxes; j++)
@@ -263,16 +337,10 @@ namespace tmd{
                             if (overlapPart > overlapThreshold)
                             {
                                 is_suppressed[indices[j]] = 1;
-                                std::cout << "Erase point : " <<
-                                        points[indices[j]].x << " " <<
-                                        points[indices[j]].y << std::endl;
-                                assert(m_scores[indices[j]] ==
-                                               score[indices[j]]);
-                                assert(m_points[indices[j]].x ==
-                                               points[indices[j]].x);
-                                 assert(m_points[indices[j]].y ==
-                                               points[indices[j]].y);
-                                m_parts.erase(m_parts.begin() + j);
+                                cv::Rect to_be_removed = std::get<0>
+                                (m_detections[indices[j]]);
+                                assert(to_be_removed.x == points[indices[j]].x);
+                                assert(to_be_removed.y == points[indices[j]].y);
                             }
                         }
                     }
@@ -285,25 +353,34 @@ namespace tmd{
         {
             if (!is_suppressed[i]) (*numBoxesOut)++;
         }
-
+        std::vector<tmd::detection> new_detections;
         *pointsOut = (CvPoint *)malloc((*numBoxesOut) * sizeof(CvPoint));
         *oppositePointsOut = (CvPoint *)malloc((*numBoxesOut) * sizeof(CvPoint));
         *scoreOut = (float *)malloc((*numBoxesOut) * sizeof(float));
         index = 0;
+        assert(m_detections.size() == numBoxes);
         for (i = 0; i < numBoxes; i++)
         {
             if (!is_suppressed[indices[i]])
             {
+                cv::Rect tmp = std::get<0>(m_detections[indices[i]]);
                 (*pointsOut)[index].x = points[indices[i]].x;
                 (*pointsOut)[index].y = points[indices[i]].y;
                 (*oppositePointsOut)[index].x = oppositePoints[indices[i]].x;
                 (*oppositePointsOut)[index].y = oppositePoints[indices[i]].y;
                 (*scoreOut)[index] = score[indices[i]];
+                assert(tmp.x == (*pointsOut)[index].x);
+                assert(tmp.x == (*pointsOut)[index].x);
+                assert(tmp.x + tmp.width== (*oppositePointsOut)[index].x);
+                assert(tmp.y + tmp.height== (*oppositePointsOut)[index].y);
+                new_detections.push_back(m_detections[indices[i]]);
                 index++;
             }
-
+            else{
+                //m_detections.erase(m_detections.begin() + indices[i]);
+            }
         }
-
+        m_detections = new_detections;
         free(indices);
         free(box_area);
         free(is_suppressed);
@@ -438,9 +515,10 @@ namespace tmd{
                 std::vector<cv::Rect> p = get_parts_rect_for_point
                         (filters, kPartFilters[i],
                          partsDisplacementArr[i][j - s], levelsArr[i][j-s]);
-                m_parts.push_back(p);
-                m_scores.push_back((*score)[j]);
-                m_points.push_back((*points)[j]);
+                tmd::detection entry= std::make_tuple(cv::Rect((*points)[j],
+                                                          (*oppPoints)[j]),
+                                                 p, (*score)[j]);
+                m_detections.push_back(entry);
             }
             s = f;
         }

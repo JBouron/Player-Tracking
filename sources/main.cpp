@@ -44,7 +44,11 @@ void test_fast_dpm(void){
     tmd::FastDPM fastDPM;
     cv::Mat blob = cv::imread(
                       "./res/manual_extraction/frame5847_originalimage0.jpg");
+    double t1 = cv::getTickCount();
     fastDPM.extract_players_and_body_parts(blob);
+    double t2 = cv::getTickCount();
+    std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
+    std::cout << "end" << std::endl;
 }
 
 
