@@ -22,8 +22,8 @@ namespace tmd{
     public:
         FastDPM();
 
-        std::vector<tmd::player_t*> extract_players_and_body_parts(cv::Mat
-                                                                   blob);
+        std::vector<tmd::player_t*> extract_players_and_body_parts
+                (tmd::frame_t* frame);
 
     private:
         /* cvLatentSvmDetectObjects */
@@ -96,11 +96,9 @@ namespace tmd{
         int clippingBoxesLowerLeftCorner(int width, int height,
                                                   CvPoint *points, int kPoints);
 
-        CvScalar m_color;
-        int m_thickness;
-        int m_line_type;
-        int m_shift;
-        cv::Mat m_image;
+        void clamp_detections();
+        void extractTorsoForPlayer(player_t *player);
+
         CvLatentSvmDetector *m_detector;
 
         std::vector<tmd::detection> m_detections; // box, parts, score.

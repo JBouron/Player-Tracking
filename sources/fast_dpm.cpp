@@ -1,5 +1,7 @@
 #include "../headers/fast_dpm.h"
 #include "../headers/frame_t.h"
+#include "../headers/player_t.h"
+#include "../headers/features_t.h"
 
 #ifndef max
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
@@ -13,44 +15,69 @@ namespace tmd{
 
     FastDPM::FastDPM(){
         m_detector = cvLoadLatentSvmDetector(tmd::Config::model_file_path.c_str());
-        m_color.val[0] = 0;
-        m_color.val[0] = 255;
-        m_color.val[0] = 0;
-        m_color.val[0] = 255;
-        m_line_type = 8;
-        m_shift = 0;
     }
 
     std::vector<tmd::player_t*> FastDPM::extract_players_and_body_parts(
-            cv::Mat blob){
-        m_image = blob;
-        IplImage blobImage = m_image;
+            tmd::frame_t* frame){
+        IplImage blobImage = frame->original_frame;
         CvMemStorage *memStorage = cvCreateMemStorage(0);
 
         this->cvLatentSvmDetectObjects(&blobImage, m_detector, memStorage,
-                                       tmd::Config::dpm_extractor_overlapping_threshold, 4);
-        CvScalar c;
-        c.val[0] = 0;
-        c.val[0] = 0;
-        c.val[0] = 0;
-        c.val[0] = 255;
-        for (tmd::detection d : m_detections){
-            if (std::get<2>(d) > tmd::Config::dpm_extractor_score_threshold){
-                /*for (cv::Rect p : std::get<1>(d)){
-                    std::cout << "Drae" << std::endl;
-                    cv::rectangle(blob, p, c);
-                }*/
-                cv::Rect box = std::get<0>(d);
-                cv::rectangle(blob, box, c);
+                           tmd::Config::dpm_extractor_overlapping_threshold, 4);
 
+        // apply clamp and make part coordinates relative to the box
+        clamp_detections();
+
+        std::vector<tmd::player_t*> players;
+        for (tmd::detection detect : m_detections){
+            float score = std::get<2>(detect);
+            cv::Rect box = std::get<0>(detect);
+            std::vector<cv::Rect> parts = std::get<1>(detect);
+            if (score > tmd::Config::dpm_extractor_score_threshold){
+                tmd::player_t* player = new player_t;
+                player->frame_index = frame->frame_index;
+                player->likelihood = score;
+                player->mask_image = frame->mask_frame(box);
+                player->original_image = frame->original_frame(box);
+                player->pos_frame = box;
+                player->features.body_parts = parts;
+                //extractTorsoForPlayer(player);
+                players.push_back(player);
             }
         }
-        cv::imshow("Blob", blob);
-        cv::waitKey(0);
-        std::vector<tmd::player_t*> players;
         return players;
     }
 
+    void FastDPM::extractTorsoForPlayer(player_t *player) {
+        if (player == NULL){
+            throw std::invalid_argument("Error null pointer given to "
+                                                "extractTorsoForPlayer method");
+        }
+        else if (player->features.body_parts.size() < 3){
+            throw std::invalid_argument("Error not enough body parts in "
+                                                "extractTorsoForPlayer");
+        }
+        cv::Rect torso1 = player->features.body_parts[1];
+        cv::Rect torso2 = player->features.body_parts[2];
+        cv::Rect mean;
+        mean.x = (torso1.x + torso2.x) / 2;
+        mean.y = (torso1.y + torso2.y) / 2;
+        int oppoX = ((torso1.x + torso1.width) + (torso2.x + torso2.width))/2;
+        int oppoY = ((torso1.y + torso1.height) + (torso2.y + torso2.height))/2;
+        mean.width = oppoX - mean.x;
+        mean.height = oppoY - mean.y;
+        assert(mean.x >= 0);
+        assert(mean.y >= 0);
+        assert(mean.y + mean.height <= player->pos_frame.height);
+        assert(mean.x + mean.width <= player->pos_frame.width);
+        cv::Rect roi = mean;
+        cv::Rect m = player->pos_frame;
+        assert(0 <= roi.x && 0 <= roi.width && roi.x + roi.width <= m.width &&
+               0 <= roi.y && 0 <= roi.height && roi.y + roi.height <= m.height);
+        player->features.torso = (player->original_image.clone())(mean);
+        player->features.torso_mask = (player->mask_image.clone())(mean);
+        player->features.torso_pos = mean;
+    }
 
     /*
     // find rectangular regions in the given image that are likely
@@ -898,19 +925,25 @@ namespace tmd{
         return LATENT_SVM_OK;
     }
 
-
-
-
-
-    /*void FastDPM::display(CvPoint* points, int kPoints, CvPoint
-    **partsDisplacement, int n){
-        for (int i = 0 ; i < kPoints ; i ++){
-            cv::Rect rect;
-            for (int p = 0 ; p < n ; p ++){
-                rect.x = points[i].x + partsDisplacement[i][p].x;
-                rect.y = points[i].y + partsDisplacement[i][p].y;
-
+    void FastDPM::clamp_detections(){
+        for (tmd::detection &detect : m_detections){
+            cv::Rect box = std::get<0> (detect);
+            for (cv::Rect &part : std::get<1> (detect)){
+                part.x -= box.x;
+                part.y -= box.y;
+                if (part.x < 0){
+                    part.x = 0;
+                }
+                if (part.y < 0){
+                    part.y = 0;
+                }
+                if (part.x + part.width > box.width){
+                    part.width = box.width - part.x;
+                }
+                if (part.y + part.height > box.height){
+                    part.height = box.height - part.y;
+                }
             }
         }
-    }*/
+    }
 }
