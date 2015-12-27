@@ -6,8 +6,13 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/imgproc/imgproc_c.h>
 #include <opencv2/highgui/highgui.hpp>
-#include "../headers/openCV/_latentsvm.h"
 #include "../headers/openCV/_lsvm_matching.h"
+#include "../headers/openCV/_latentsvm.h"
+#include "../headers/openCV/_lsvm_distancetransform.h"
+#include "../headers/openCV/_lsvm_error.h"
+#include "../headers/openCV/_lsvm_fft.h"
+#include "../headers/openCV/_lsvm_routine.h"
+#include "../headers/openCV/_lsvm_types.h"
 #include "sdl_binds/sdl_binds.h"
 
 namespace tmd{
@@ -69,12 +74,22 @@ namespace tmd{
                                      CvPoint **points, int **levels, int *kPoints,
                                      CvPoint ***partsDisplacement);
 
-        int showPartFilterBoxes(IplImage *image,
-                                const CvLSVMFilterObject **filters,
-                                int n, CvPoint **partsDisplacement,
-                                int *levels, int kPoints,
-                                CvScalar color, int thickness,
-                                int line_type, int shift);
+
+        int nonMaximumSuppression(int numBoxes, const CvPoint *points,
+                                  const CvPoint *oppositePoints, const float *score,
+                                  float overlapThreshold,
+                                  int *numBoxesOut, CvPoint **pointsOut,
+                                  CvPoint **oppositePointsOut, float
+                                  **scoreOut);
+
+        std::vector<cv::Rect> get_parts_rect_for_point(const
+                                            CvLSVMFilterObject **filters,
+                                            int n, CvPoint
+                                            *partsDisplacement, int
+                                            level);
+
+        int clippingBoxes(int width, int height,
+                                   CvPoint *points, int kPoints);
 
         CvScalar m_color;
         int m_thickness;
@@ -83,7 +98,8 @@ namespace tmd{
         cv::Mat m_image;
         CvLatentSvmDetector *m_detector;
 
-        std::vector<std::vector<cv::Rect> > m_parts;
+        std::vector<std::tuple<cv::Rect, std::vector<cv::Rect>, float>>
+                m_detections; // box, parts, score.
 
     };
 }
