@@ -20,9 +20,9 @@ namespace tmd{
     }player_t;
 
     inline void free_player(player_t* player){
-        player->original_image.release();
-        player->mask_image.release();
-        free_features(&player->features);
+        /*player->original_image.release();
+        player->mask_image.release();*/
+        //free_features(&player->features);
         delete player;
     }
 }
