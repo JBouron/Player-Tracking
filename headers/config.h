@@ -37,6 +37,7 @@ namespace tmd{
         static float bgs_learning_rate;
         static int bgs_blob_buffer_size;
         static int bgs_blob_threshold_count;
+        static std::string bgs_empty_room_background;
 
         /**********************************************************************/
         /* Calibration tool                                                   */
