@@ -64,14 +64,16 @@ int main(int argc, char *argv[]) {
      */
 
     tmd::Config::load_config();
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline("./res/videos/uni-hockey/", 0, 4, 90, 150, 1);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
+                                 "./res/videos/alone-red-no-ball/", 0, 4, 0,
+                                 1200, 1);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
     int count = 0;
     int max_frames = -1;
-    std::string folder = "./res/pipeline_results/complete_pipeline/uni/with "
-            "blob separator/";
+    std::string folder = "./res/pipeline_results/complete_pipeline/alone-red"
+            "-no-ball/";
 
     while (frame != NULL) {
         std::string frame_index = std::to_string(count);
@@ -82,8 +84,9 @@ int main(int argc, char *argv[]) {
         file_name = folder + "/players" + frame_index + ".jpg";
         cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true, true, true, false, false));
         file_name = folder + "/teams" + frame_index + ".jpg";
-        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true, false, false, false, true));
-        std::cout << "Save frame " << frame_index << std::endl;
+        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true,
+         false, false, false, true));
+        std::cout << "Save frame " << frame->frame_index << std::endl;
         tmd::free_frame(frame);
         frame = pipeline->next_frame();
         count++;
