@@ -21,13 +21,13 @@ namespace tmd {
         int frame_index;             // Index of the frame in the video.
         cv::Mat mask_frame;             // Frame after applying background substraction.
         int camera_index;     // Index of the camera which took the frame.
-        std::vector<tmd::player_t*> players; // Players on the frame.
+        std::vector<tmd::player_t *> players; // Players on the frame.
     } frame_t;
 
-    inline void free_frame(frame_t* frame){
+    inline void free_frame(frame_t *frame) {
         /*frame->original_frame.release();
         frame->mask_frame.release();*/
-        for (size_t i = 0 ; i < frame->players.size() ; i ++){
+        for (size_t i = 0; i < frame->players.size(); i++) {
             free_player(frame->players[i]);
         }
         delete frame;
@@ -59,10 +59,10 @@ namespace tmd {
      */
     inline cv::Mat draw_player_on_frame(tmd::frame_t *frame, bool draw_torso =
     false,
-                                 bool draw_parts = false){
+                                        bool draw_parts = false) {
         cv::Mat result = frame->original_frame;
 
-        std::vector<tmd::player_t*> &players = frame->players;
+        std::vector<tmd::player_t *> &players = frame->players;
 
         CvScalar torso_color;
         torso_color.val[0] = 255;
@@ -79,11 +79,11 @@ namespace tmd {
         const int line_type = 8; // 8 connected line.
         const int shift = 0;
 
-        for (player_t* p : players){
+        for (player_t *p : players) {
             // Due to overlapping we draw first the body parts, then the
             // torso and finally th box around the player.
-            if (draw_parts){
-                for (cv::Rect part : p->features.body_parts){
+            if (draw_parts) {
+                for (cv::Rect part : p->features.body_parts) {
                     cv::Rect pos = part;
                     pos.x += p->pos_frame.x;
                     pos.y += p->pos_frame.y;
@@ -92,7 +92,7 @@ namespace tmd {
                 }
             }
 
-            if (draw_torso){
+            if (draw_torso) {
                 cv::Rect pos = p->features.torso_pos;
                 pos.x += p->pos_frame.x;
                 pos.y += p->pos_frame.y;

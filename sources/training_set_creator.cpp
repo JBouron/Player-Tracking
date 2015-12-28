@@ -67,7 +67,7 @@ namespace tmd {
         size_t player_count = players.size();
         for (int i = 0; i < player_count; i++) {
             player_t *p = players[i];
-            if(p->features.body_parts.size() != 0) {
+            if (p->features.body_parts.size() != 0) {
                 m_featuresComparator->addPlayerFeatures(p);
             }
         }

@@ -18,9 +18,9 @@ namespace tmd {
         delete m_featuresComparator;
     }
 
-    frame_t* SimplePipeline::next_frame(){
-        frame_t* frame = m_bgSubstractor->next_frame();
-        if (frame == NULL){
+    frame_t *SimplePipeline::next_frame() {
+        frame_t *frame = m_bgSubstractor->next_frame();
+        if (frame == NULL) {
             return NULL;
         }
 

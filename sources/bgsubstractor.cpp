@@ -2,10 +2,10 @@
 
 namespace tmd {
     BGSubstractor::BGSubstractor(std::string video_folder, int camera_index, int
-                             starting_frame, int ending_frame, int step_size) {
+    starting_frame, int ending_frame, int step_size) {
         m_bgs = new cv::BackgroundSubtractorMOG2(tmd::Config::bgs_history,
                                                  tmd::Config::bgs_threshold,
-                                             tmd::Config::bgs_detect_shadows);
+                                                 tmd::Config::bgs_detect_shadows);
         m_starting_frame = starting_frame;
         m_ending_frame = ending_frame;
         m_step_size = step_size;
@@ -17,10 +17,10 @@ namespace tmd {
         tmd::debug("BGSubstractor", "BGSubstractor", "bgs created.");
 
         m_input_video_path = video_folder + "ace_" + std::to_string
-                                                 (camera_index) + ".mp4";
+                (camera_index) + ".mp4";
 
         std::string mask_path = tmd::Config::mask_folder + "mask_ace" +
-                std::to_string(camera_index) + ".jpg";
+                                std::to_string(camera_index) + ".jpg";
         m_static_mask = cv::imread(mask_path, 0);
 
         m_input_video.open(m_input_video_path);
@@ -88,7 +88,7 @@ namespace tmd {
         cv::Mat mask_copy(m_static_mask.rows, m_static_mask.cols, CV_8U);
         cv::Mat checked_pixels;
         checked_pixels = cv::Mat::zeros(m_static_mask
-                .rows, m_static_mask.cols, CV_8U);
+                                                .rows, m_static_mask.cols, CV_8U);
         frame->mask_frame.copyTo(mask_copy);
         int buffer_size = 2;
         int count_threshold = 5;
@@ -160,11 +160,11 @@ namespace tmd {
     }
 
     int BGSubstractor::get_current_frame_index() {
-        return  (m_frame_index);
+        return (m_frame_index);
     }
 
-    void BGSubstractor::step(){
-        for (int i = 0 ; i < m_step_size - 1 ; i ++){
+    void BGSubstractor::step() {
+        for (int i = 0; i < m_step_size - 1; i++) {
             cv::Mat img;
             m_input_video.read(img);
         }
