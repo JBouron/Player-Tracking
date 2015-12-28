@@ -71,7 +71,7 @@ namespace tmd {
             switch (keyboard) {
                 case 'n' :
                     delete frame;
-                    for (int i = 0 ; i < frame_step ; i ++){
+                    for (int i = 0; i < frame_step; i++) {
                         delete bgSubstractor.next_frame();
                     }
                     frame = bgSubstractor.next_frame();
@@ -112,7 +112,7 @@ namespace tmd {
                 }
                 players.clear();
 
-                std::cout << "Frame "<< bgSubstractor.
+                std::cout << "Frame " << bgSubstractor.
                         get_current_frame_index() << std::endl;
 
                 dpmPlayerExtractor.set_overlapping_threshold
@@ -120,11 +120,11 @@ namespace tmd {
                 dpmPlayerExtractor.set_score_threshold(score_threshold);
 
                 // Extract players from the frame.
-                players  = dpmPlayerExtractor
+                players = dpmPlayerExtractor
                         .extract_player_from_frame(frame);
 
                 std::cout << "    " << players.size() << " players detected." <<
-                        std::endl;
+                std::endl;
 
                 // For each player
                 for (size_t i = 0; i < players.size(); i++) {
@@ -132,10 +132,10 @@ namespace tmd {
                 }
 
                 std::cout << "overlapping_threshold = " <<
-                        overlapping_threshold << std::endl;
+                overlapping_threshold << std::endl;
 
                 std::cout << "score_threshold = " << score_threshold <<
-                        std::endl;
+                std::endl;
 
             }
             frame_cpy = frame->original_frame.clone();
@@ -143,7 +143,7 @@ namespace tmd {
             // For each player
             for (size_t i = 0; i < players.size(); i++) {
                 tmd::player_t *player = players[i];
-                if (player->likelihood > score_threshold){
+                if (player->likelihood > score_threshold) {
                     // Draw detection rectangle
                     cv::rectangle(frame_cpy, player->pos_frame, color,
                                   thickness,

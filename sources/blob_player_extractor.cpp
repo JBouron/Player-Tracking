@@ -112,8 +112,8 @@ namespace tmd {
                 int tpX = (minCol - 20) < 0 ? 0 : (minCol - 20);
                 int tpY = (minRow - 20) < 0 ? 0 : (minRow - 20);
                 int btX = (maxCol + 20) > cols ? cols : (maxCol + 20);
-                int btY = (maxRow + 20) > rows ? rows: (maxRow + 20);
-                cv::Rect myRect(tpX, tpY, btX - tpX , btY - tpY);
+                int btY = (maxRow + 20) > rows ? rows : (maxRow + 20);
+                cv::Rect myRect(tpX, tpY, btX - tpX, btY - tpY);
                 player->mask_image = frame->mask_frame(myRect);
                 player->pos_frame = myRect;
                 player->team = TEAM_UNKNOWN;

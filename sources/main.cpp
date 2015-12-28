@@ -34,15 +34,15 @@ void create_training_set(void);
 
 void memleak_video_capture(void) {
     tmd::BGSubstractor bgs("./res/videos/alone-red-no-ball/", 0, 300, 10);
-    while (1){
-        tmd::frame_t* frame = bgs.next_frame();
+    while (1) {
+        tmd::frame_t *frame = bgs.next_frame();
         cv::imshow("FGrame", frame->mask_frame);
         cv::waitKey(0);
         tmd::free_frame(frame);
     }
 }
 
-void test_fast_dpm(void){
+void test_fast_dpm(void) {
     tmd::DPM fastDPM;
     tmd::frame_t blob;
     blob.frame_index = 0;
@@ -58,13 +58,15 @@ void test_fast_dpm(void){
     std::cout << "end" << std::endl;
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
+    /*create_training_set();
+    return 0;
+     */
     tmd::Config::load_config();
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-    "./res/videos/uni-hockey/",0, 4, 0, 10, 1);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline("./res/videos/uni-hockey/", 0, 4, 0, 10, 1);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
@@ -85,6 +87,7 @@ int main(int argc, char *argv[]){
             break;
         }
     }
+
     delete pipeline;
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
@@ -95,15 +98,16 @@ int main(int argc, char *argv[]){
 void create_training_set(void) {
     tmd::Config::load_config();
 
-    tmd::TrainingSetCreator* trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, "./res/xmls/person.xml", 0, 300, 1);
+    tmd::TrainingSetCreator *trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0,
+                                                                   "./res/xmls/person.xml", 0, 300, 1);
     tmd::frame_t *frame = trainer->next_frame();
 
     int count = 0;
-    int max_frames = 20;
+    int max_frames = 10;
 
     while (frame != NULL) {
         std::string frame_index = std::to_string(count);
-        std::cout << "Save frame " << frame_index << std::endl;
+        std::cout << "Finished frame " << frame_index << std::endl;
         tmd::free_frame(frame);
         frame = trainer->next_frame();
         count++;
