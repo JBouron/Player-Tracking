@@ -29,9 +29,9 @@ namespace tmd {
         delete m_pipeline;
     }
 
-    tmd::frame_t* PipelineThread::pop_buffer(){
-        tmd::frame_t* head = NULL;
-        while (true){
+    tmd::frame_t *PipelineThread::pop_buffer() {
+        tmd::frame_t *head = NULL;
+        while (true) {
             {
                 std::lock_guard<std::mutex> lock(m_buffer_lock);
                 if (m_buffer.size() > 0) {
@@ -39,15 +39,15 @@ namespace tmd {
                     m_buffer.pop_front();
                     return head;
                 }
-                else if(m_done){
+                else if (m_done) {
                     return NULL;
                 }
             }
         }
     }
 
-    void PipelineThread::extract_from_pipeline(){
-        while (!m_stop_request && m_frame_idx <= m_ending_frame){
+    void PipelineThread::extract_from_pipeline() {
+        while (!m_stop_request && m_frame_idx <= m_ending_frame) {
             tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
                                                                   std::to_string(m_id) + " calling next_players()");
             tmd::frame_t *next_buffer_entry = m_pipeline->next_frame();

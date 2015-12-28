@@ -1,4 +1,5 @@
 #include "../headers/simple_pipeline.h"
+#include "../headers/frame_t.h"
 
 namespace tmd {
     SimplePipeline::SimplePipeline(std::string video_folder, int camera_index, int start_frame, int end_frame,
@@ -45,8 +46,7 @@ namespace tmd {
                                                    " players/blobs extracted.");
 
         cv::Mat coloredMask = get_colored_mask_for_frame(frame);
-        frame->original_frame.release();
-        frame->original_frame = coloredMask;
+        frame->colored_mask_frame = coloredMask;
 
         tmd::debug("SimplePipeline", "next_frame", "Separate blobs.");
         players = BlobSeparator::separate_blobs(players);

@@ -62,11 +62,9 @@ int main(int argc, char *argv[]) {
     /*create_training_set();
     return 0;
      */
+
     tmd::Config::load_config();
-    /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-                                      "./res/videos/uni-hockey/ace_0.mp4", 2,
-            "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline("./res/videos/uni-hockey/", 0, 4, 0, 10, 1);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline("./res/videos/uni-hockey/", 0, 4, 0, 200, 1);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
@@ -78,7 +76,7 @@ int main(int argc, char *argv[]) {
     while (frame != NULL) {
         std::string frame_index = std::to_string(count);
         std::string file_name = folder + "/frame" + frame_index + ".jpg";
-        cv::imwrite(file_name, tmd::draw_player_on_frame(frame, true));
+        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true, true, false, false, true));
         std::cout << "Save frame " << frame_index << std::endl;
         tmd::free_frame(frame);
         frame = pipeline->next_frame();

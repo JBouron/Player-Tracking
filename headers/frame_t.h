@@ -19,17 +19,18 @@ namespace tmd {
     typedef struct {
         cv::Mat original_frame;         // Original frame taken from the video.
         int frame_index;             // Index of the frame in the video.
-        cv::Mat mask_frame;             // Frame after applying background substraction.
+        cv::Mat mask_frame;             // Frame after applying background subtraction.
+        cv::Mat colored_mask_frame;     // Colored mask frame taken from the video.
         int camera_index;     // Index of the camera which took the frame.
         std::vector<tmd::player_t *> players; // Players on the frame.
+        std::vector<cv::Rect> blobs; // The blobs on the the frame.
     } frame_t;
 
     inline void free_frame(frame_t *frame) {
-        /*frame->original_frame.release();
-        frame->mask_frame.release();*/
         for (size_t i = 0; i < frame->players.size(); i++) {
             free_player(frame->players[i]);
         }
+
         delete frame;
     }
 
@@ -57,10 +58,20 @@ namespace tmd {
     /**
      * Draw the players of the frame on another image and returns it.
      */
-    inline cv::Mat draw_player_on_frame(tmd::frame_t *frame, bool draw_torso =
-    false,
-                                        bool draw_parts = false) {
-        cv::Mat result = frame->original_frame;
+    inline cv::Mat draw_player_on_frame(int result_flag, tmd::frame_t *frame, bool draw_player = true,
+                                        bool draw_torso = false,
+                                        bool draw_parts = false, bool draw_blobs = false,
+                                        bool draw_player_color = true) {
+        cv::Mat result;
+        if (result_flag == 1) {
+            result = frame->colored_mask_frame;
+        } else if (result_flag == 2) {
+            cv::Mat temp= frame->mask_frame;
+            cv::Mat in[] = {temp, temp, temp};
+            cv::merge(in, 3, result);
+        } else {
+            result = frame->original_frame;
+        }
 
         std::vector<tmd::player_t *> &players = frame->players;
 
@@ -69,11 +80,18 @@ namespace tmd {
         torso_color.val[1] = 255;
         torso_color.val[2] = 0;
         torso_color.val[3] = 255;
+
         CvScalar body_part_color;
         body_part_color.val[0] = 255;
         body_part_color.val[1] = 0;
         body_part_color.val[2] = 255;
         body_part_color.val[3] = 255;
+
+        CvScalar blob_color;
+        blob_color.val[0] = 255;
+        blob_color.val[1] = 255;
+        blob_color.val[2] = 255;
+        blob_color.val[3] = 255;
 
         const int thickness = 1; // Thickness of the box.
         const int line_type = 8; // 8 connected line.
@@ -100,9 +118,28 @@ namespace tmd {
                               thickness, line_type, shift);
             }
 
-            cv::rectangle(result, p->pos_frame, tmd::get_team_color(p->team),
-                          thickness, line_type, shift);
+            if (draw_player) {
+
+                if (draw_player_color) {
+                    cv::rectangle(result, p->pos_frame, tmd::get_team_color(p->team),
+                                  thickness, line_type, shift);
+                }
+                else {
+                    cv::rectangle(result, p->pos_frame, tmd::get_team_color(TEAM_UNKNOWN),
+                                  thickness, line_type, shift);
+                }
+
+            }
         }
+
+        for (cv::Rect blob : frame->blobs) {
+            if (draw_blobs) {
+                cv::Rect pos = blob;
+                cv::rectangle(result, pos, blob_color,
+                              thickness, line_type, shift);
+            }
+        }
+
         return result;
     }
 }
