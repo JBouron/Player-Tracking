@@ -2,11 +2,12 @@
 
 namespace tmd {
     BGSubstractor::BGSubstractor(std::string video_folder, int camera_index, int
-                                 starting_frame, int step_size) {
+                             starting_frame, int ending_frame, int step_size) {
         m_bgs = new cv::BackgroundSubtractorMOG2(tmd::Config::bgs_history,
                                                  tmd::Config::bgs_threshold,
-                                                 tmd::Config::bgs_detect_shadows);
+                                             tmd::Config::bgs_detect_shadows);
         m_starting_frame = starting_frame;
+        m_ending_frame = ending_frame;
         m_step_size = step_size;
         if (m_bgs == NULL) {
             throw std::bad_alloc();
@@ -61,7 +62,7 @@ namespace tmd {
     frame_t *BGSubstractor::next_frame() {
         frame_t *frame = new frame_t;
         bool frame_extracted = m_input_video.read(frame->original_frame);
-        if (!frame_extracted) {
+        if (!frame_extracted || m_frame_index > m_ending_frame) {
             tmd::debug("BGSubstractor", "next_frame", "No frame left, "
                                                               "returning NULL after " + std::to_string(m_frame_index) +
                                                       " frames");

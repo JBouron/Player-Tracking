@@ -30,7 +30,8 @@ namespace tmd {
          * background model changes over time.
          */
         BGSubstractor(std::string video_folder, int camera_index,
-                      int starting_frame = 0, int step_size = 1);
+                      int starting_frame = 0, int ending_frame = -1, int
+                      step_size = 1);
 
         /**
          * Destructor of the BGS.
@@ -79,6 +80,7 @@ namespace tmd {
         float m_learning_rate;
 
         int m_starting_frame;
+        int m_ending_frame;
         int m_step_size;
 
         int count_neighbours_in_fg(cv::Mat frame, int x, int y, int buffer_size);
