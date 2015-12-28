@@ -59,12 +59,14 @@ void test_fast_dpm(void){
 }
 
 int main(int argc, char *argv[]){
+    /*create_training_set();
+    return 0;
+     */
     tmd::Config::load_config();
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-    "./res/videos/uni-hockey/",0, 4, 0, 10, 1);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline("./res/videos/uni-hockey/",0, 4, 0, 10, 1);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
@@ -85,6 +87,7 @@ int main(int argc, char *argv[]){
             break;
         }
     }
+    std::cout << "LOL" << std::endl;
     delete pipeline;
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
@@ -99,11 +102,11 @@ void create_training_set(void) {
     tmd::frame_t *frame = trainer->next_frame();
 
     int count = 0;
-    int max_frames = 20;
+    int max_frames = 10;
 
     while (frame != NULL) {
         std::string frame_index = std::to_string(count);
-        std::cout << "Save frame " << frame_index << std::endl;
+        std::cout << "Finished frame " << frame_index << std::endl;
         tmd::free_frame(frame);
         frame = trainer->next_frame();
         count++;
