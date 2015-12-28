@@ -44,12 +44,12 @@ namespace tmd {
     }
 
     bool FeaturesExtractor::withinThresholds(double h, double s, double v) {
-        float th_red_low = Config::feature_extractor_threshold_red_low ;
-        float th_red_high = Config::feature_extractor_threshold_red_high ;
-        float th_green_low = Config::feature_extractor_threshold_green_low ;
-        float th_green_high = Config::feature_extractor_threshold_green_high ;
-        float th_sat_low = Config::feature_extractor_threshold_saturation ;
-        float th_val_low = Config::feature_extractor_threshold_value ;
+        float th_red_low = Config::feature_extractor_threshold_red_low;
+        float th_red_high = Config::feature_extractor_threshold_red_high;
+        float th_green_low = Config::feature_extractor_threshold_green_low;
+        float th_green_high = Config::feature_extractor_threshold_green_high;
+        float th_sat_low = Config::feature_extractor_threshold_saturation;
+        float th_val_low = Config::feature_extractor_threshold_value;
 
         return ((th_red_low < h && h <= 180) || (0 <= h && h <= th_red_high) ||
                 (th_green_low <= h && h <= th_green_high)) &&

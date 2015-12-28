@@ -5,7 +5,7 @@ namespace tmd {
     TrainingSetCreator::TrainingSetCreator(std::string video_folder, int camera_index, std::string model_file,
                                            int start_frame, int end_frame, int step_size) {
 
-        m_bgSubstractor = new BGSubstractor(video_folder, camera_index, start_frame, step_size);
+        m_bgSubstractor = new BGSubstractor(video_folder, camera_index, start_frame, end_frame, step_size);
         m_playerExtractor = new BlobPlayerExtractor();
         m_featuresComparator = new FeatureComparator(2, 180, FeatureComparator::readCentersFromFile(2, 180));
         m_featuresExtractor = new FeaturesExtractor();
@@ -67,7 +67,7 @@ namespace tmd {
         size_t player_count = players.size();
         for (int i = 0; i < player_count; i++) {
             player_t *p = players[i];
-            if(p->features.body_parts.size() != 0) {
+            if (p->features.body_parts.size() != 0) {
                 m_featuresComparator->addPlayerFeatures(p);
             }
         }

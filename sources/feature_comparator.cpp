@@ -71,18 +71,19 @@ namespace tmd {
         for (int i = 0; i < m_centers.rows; i++) {
             distances[i] = compareHist(m_centers.row(i), sample, CV_COMP_CORREL);
             tmd::debug("FeatureComparator", "getClosestCenter", "Correlation "
-                    "with center = " + std::to_string(distances[i]));
+                                                                        "with center = " +
+                                                                std::to_string(distances[i]));
             tmd::debug("FeatureComparator", "getClosestCenter", "Center "
-                                            "index = " + std::to_string(i));
-            if(distances[i] > max){
+                                                                        "index = " + std::to_string(i));
+            if (distances[i] > max) {
                 max = distances[i];
                 index_max = i;
             }
         }
         tmd::debug("FeatureComparator", "getClosestCenter", "max = " +
-                std::to_string(max));
+                                                            std::to_string(max));
 
-        if(max < Config::features_comparator_correlation_threshold){
+        if (max < Config::features_comparator_correlation_threshold) {
             index_max = -1;
         }
         return index_max;
@@ -238,16 +239,16 @@ namespace tmd {
         else {
             int team_index = getClosestCenter(player);
 
-            if(team_index == -1){
+            if (team_index == -1) {
                 player->team = TEAM_UNKNOWN;
             }
-            else if(team_index == m_redCenterIndex){
+            else if (team_index == m_redCenterIndex) {
                 player->team = TEAM_A;
             }
-            else if(team_index == m_greenCenterIndex){
+            else if (team_index == m_greenCenterIndex) {
                 player->team = TEAM_B;
             }
-            else{
+            else {
                 player->team = TEAM_UNKNOWN;
             }
         }
