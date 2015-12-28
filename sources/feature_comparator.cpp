@@ -136,7 +136,9 @@ namespace tmd {
         }
     }
 
-    Mat FeatureComparator::readCentersFromFile(int rows, int cols) {
+    Mat FeatureComparator::readCentersFromFile() {
+        int rows = tmd::Config::features_comparator_centers_file_rows;
+        int cols = tmd::Config::features_comparator_centers_file_cols;
         std::ifstream clustersFile("./res/cluster/clusterCenters.txt");
         if (!clustersFile.is_open()) {
             throw std::runtime_error("Error couldn't load clusterCenters.txt");

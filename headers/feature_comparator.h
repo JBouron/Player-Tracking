@@ -84,7 +84,7 @@ namespace tmd {
         /**
          * Reads the cluster's centers from a file "clusterCenters.txt".
          */
-        static cv::Mat readCentersFromFile(int rows, int cols);
+        static cv::Mat readCentersFromFile();
 
         /**
          * Detects the teams of a collection of players.

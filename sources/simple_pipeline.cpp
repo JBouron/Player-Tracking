@@ -10,7 +10,7 @@ namespace tmd {
         m_featuresComparator = new FeatureComparator
                 (tmd::Config::features_comparator_center_count,
                  tmd::Config::features_comparator_sample_cols,
-                             FeatureComparator::readCentersFromFile(2, 180));
+                             FeatureComparator::readCentersFromFile());
         m_featuresExtractor = new FeaturesExtractor();
     }
 
