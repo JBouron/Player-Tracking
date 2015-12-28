@@ -9,23 +9,30 @@ namespace tmd{
         m_starting_frame = starting_frame;
         m_frame_idx = m_starting_frame;
         m_ending_frame = ending_frame;
-        // TODO : Remove hard coded values using the config file.
         m_pipeline = new tmd::SimplePipeline(video_folder, camera_index,
                                      starting_frame, ending_frame, step_size);
         m_stop_request = false;
 
+        m_done = false;
         m_worker = std::thread(&PipelineThread::extract_from_pipeline,
                                std::ref(*this));
     }
 
     PipelineThread::~PipelineThread(){
+        if (!m_done){
+            m_stop_request = true;
+            while (!m_done && m_stop_request){
+                tmd::debug("PipelineThread", "~PipelineThread", "Waiting for "
+                        "thread to stop.");
+            }
+        }
         delete m_pipeline;
     }
 
     tmd::frame_t* PipelineThread::pop_buffer(){
         tmd::frame_t* head = NULL;
         bool done = false;
-        while (!done) {
+        while (!done && !m_done) {
             {   // Trick here : having a scope inside the while method so
                 // that the lock is released.
                 std::lock_guard<std::mutex> lock(m_buffer_lock);
@@ -44,14 +51,17 @@ namespace tmd{
     void PipelineThread::extract_from_pipeline(){
         while (!m_stop_request && m_frame_idx < m_ending_frame){
             tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
-                                                                  std::to_string(m_id) + " call ing next_players()");
-            tmd::frame_t* next_buffer_entry =
-                    m_pipeline->next_frame();
+                          std::to_string(m_id) + " calling next_players()");
+            tmd::frame_t* next_buffer_entry = m_pipeline->next_frame();
+            if (next_buffer_entry == NULL){
+                break;
+            }
             tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
-                                                                  std::to_string(m_id) + " : Done");
+                                          std::to_string(m_id) + " : Done");
             this->push_buffer(next_buffer_entry);
             m_frame_idx  += m_step_size;
         }
+        m_done = true;
         m_stop_request = false;
     }
 
@@ -60,14 +70,5 @@ namespace tmd{
         tmd::debug("PipelineThread", "push_buffer", "Thread " +
                 std::to_string(m_id) + " push entry in buffer");
         m_buffer.push_back(frame);
-    }
-
-    void PipelineThread::request_stop(){
-        bool already_terminated = m_frame_idx >= m_ending_frame;
-        if (already_terminated)
-            return;
-
-        m_stop_request = true;
-        while(m_stop_request);
     }
 }
