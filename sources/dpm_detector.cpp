@@ -86,9 +86,10 @@ namespace tmd {
     // RESULT
     // Error status
     */
-    float delta(float a, float b){
-        return static_cast<float> (fabs(a -b));
+    float delta(float a, float b) {
+        return static_cast<float> (fabs(a - b));
     }
+
     int DPMDetector::detectBestPartBoxes(std::vector<cv::Rect> &parts,
                                          IplImage *image,
                                          const CvLSVMFilterObject **filters,
@@ -290,7 +291,7 @@ namespace tmd {
                            "searchObjectThreshold finished with error.");
                 if (error == LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT) {
                     tmd::debug("DPMDetector", "preparePartDetection",
-                           "error is LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT.");
+                               "error is LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT.");
                 }
                 return LATENT_SVM_SEARCH_OBJECT_FAILED;
             }
@@ -330,17 +331,17 @@ namespace tmd {
         return LATENT_SVM_OK;
     }
 
-    int max(int a, int b){
+    int max(int a, int b) {
         if (a < b) return b;
         else return a;
     }
 
     void DPMDetector::extractTorsoForPlayer(player_t *player) {
-        if (player == NULL){
+        if (player == NULL) {
             throw std::invalid_argument("Error null pointer given to "
-                                            "extractTorsoForPlayer method");
+                                                "extractTorsoForPlayer method");
         }
-        else if (player->features.body_parts.size() < 3){
+        else if (player->features.body_parts.size() < 3) {
             throw std::invalid_argument("Error not enough body parts in "
                                                 "extractTorsoForPlayer");
         }
@@ -349,8 +350,8 @@ namespace tmd {
         cv::Rect mean;
         mean.x = (torso1.x + torso2.x) / 2;
         mean.y = (torso1.y + torso2.y) / 2;
-        int oppoX = ((torso1.x + torso1.width) + (torso2.x + torso2.width))/2;
-        int oppoY = ((torso1.y + torso1.height) + (torso2.y + torso2.height))/2;
+        int oppoX = ((torso1.x + torso1.width) + (torso2.x + torso2.width)) / 2;
+        int oppoY = ((torso1.y + torso1.height) + (torso2.y + torso2.height)) / 2;
         mean.width = oppoX - mean.x;
         mean.height = oppoY - mean.y;
         assert(mean.x >= 0);
@@ -366,10 +367,10 @@ namespace tmd {
         player->features.torso_pos = mean;
     }
 
-    void DPMDetector::clipBoxes(player_t* player){
+    void DPMDetector::clipBoxes(player_t *player) {
         size_t boxes_count = player->features.body_parts.size();
 
-        for (size_t i = 0 ; i < boxes_count ; i ++){
+        for (size_t i = 0; i < boxes_count; i++) {
             cv::Rect *part = &(player->features.body_parts[i]);
 
             // Zero boundaries
@@ -377,10 +378,10 @@ namespace tmd {
             if (part->y < 0) part->y = 0;
 
             // Right and bottom boundaries.
-            if (part->x + part->width > player->pos_frame.width){
+            if (part->x + part->width > player->pos_frame.width) {
                 part->width = player->pos_frame.width - part->x;
             }
-            if (part->y + part->height > player->pos_frame.height){
+            if (part->y + part->height > player->pos_frame.height) {
                 part->height = player->pos_frame.height - part->y;
             }
             assert(part->x >= 0);
@@ -392,13 +393,13 @@ namespace tmd {
         }
     }
 
-    void DPMDetector::shrinkBox(player_t* player){
+    void DPMDetector::shrinkBox(player_t *player) {
         int min_x = std::numeric_limits<int>::max();
         int min_y = std::numeric_limits<int>::max();
         int max_x = 0;
         int max_y = 0;
 
-        for (int i = 0 ; i < player->features.body_parts.size() ; i ++){
+        for (int i = 0; i < player->features.body_parts.size(); i++) {
             cv::Rect part = player->features.body_parts[i];
             assert(part.x >= 0);
             assert(part.y >= 0);
@@ -420,14 +421,14 @@ namespace tmd {
         player->pos_frame.height = max_y - min_y;
 
         size_t boxes_count = player->features.body_parts.size();
-        for (size_t i = 0 ; i < boxes_count ; i ++) {
+        for (size_t i = 0; i < boxes_count; i++) {
             cv::Rect *part = &(player->features.body_parts[i]);
             part->x -= min_x;
             part->y -= min_y;
         }
 
-            tmd::debug("DPMDetector", "shrinkBox", "min_x = " + std::to_string
-                                                                    (min_x));
+        tmd::debug("DPMDetector", "shrinkBox", "min_x = " + std::to_string
+                (min_x));
         tmd::debug("DPMDetector", "shrinkBox", "max_x = " + std::to_string
                 (max_x));
         tmd::debug("DPMDetector", "shrinkBox", "min_y = " + std::to_string
