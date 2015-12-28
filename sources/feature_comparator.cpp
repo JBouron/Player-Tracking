@@ -29,7 +29,7 @@ namespace tmd {
         m_clusterCount = clusterCount;
         m_labels = cv::Mat(m_data);
         m_termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER,
-                                          10, 1.0);;
+                                          10, 1.0);
         m_attempts = 3;
         m_flags = cv::KMEANS_PP_CENTERS;
         m_centers = centers;
@@ -117,7 +117,7 @@ namespace tmd {
     }
 
     void FeatureComparator::writeCentersToFile() {
-        std::ofstream clustersFile("./res/cluster/clusterCenters.txt");
+        std::ofstream clustersFile(tmd::Config::features_comparator_centers_file_name);
         if (clustersFile.is_open()) {
             for (int i = 0; i < m_centers.rows; i++) {
                 for (int j = 0; j < m_centers.cols; j++) {
@@ -136,8 +136,10 @@ namespace tmd {
         }
     }
 
-    Mat FeatureComparator::readCentersFromFile(int rows, int cols) {
-        std::ifstream clustersFile("./res/cluster/clusterCenters.txt");
+    Mat FeatureComparator::readCentersFromFile() {
+        int rows = tmd::Config::features_comparator_centers_file_rows;
+        int cols = tmd::Config::features_comparator_centers_file_cols;
+        std::ifstream clustersFile(tmd::Config::features_comparator_centers_file_name);
         if (!clustersFile.is_open()) {
             throw std::runtime_error("Error couldn't load clusterCenters.txt");
         }

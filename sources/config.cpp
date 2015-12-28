@@ -1,11 +1,16 @@
 #include "../headers/config.h"
 
+using namespace std;
+
+string to_string(string str){
+    return str;
+}
+
 #define load_value(name)\
     do{ \
-        if (!config.lookupValue(#name, name)){ \
-            tmd::debug("Config", "load_config", "Cannot load "#name", using " \
-            "default value instead"); \
-        } \
+        config.lookupValue(#name, name); \
+            tmd::debug("Config", "load_config","" #name " = " + \
+to_string(name)); \
     }while(0)
 
 namespace tmd {
@@ -31,6 +36,8 @@ namespace tmd {
         load_value(bgs_detect_shadows);
         load_value(bgs_threshold);
         load_value(bgs_history);
+        load_value(bgs_blob_buffer_size);
+        load_value(bgs_blob_threshold_count);
         load_value(bgs_learning_rate);
         load_value(calibration_tool_escape_char);
         load_value(dpm_detector_numthread);
@@ -38,6 +45,11 @@ namespace tmd {
         load_value(dpm_extractor_overlapping_threshold);
         load_value(dpm_extractor_duplicate_area_threshold);
         load_value(features_comparator_correlation_threshold);
+        load_value(features_comparator_center_count);
+        load_value(features_comparator_sample_cols);
+        load_value(features_comparator_centers_file_rows);
+        load_value(features_comparator_centers_file_cols);
+        load_value(features_comparator_centers_file_name);
         load_value(feature_extractor_threshold_red_low);
         load_value(feature_extractor_threshold_red_high);
         load_value(feature_extractor_threshold_green_low);
@@ -50,30 +62,6 @@ namespace tmd {
         load_value(blob_player_extractor_buffer_size);
         load_value(blob_player_extractor_min_blob_size);
         tmd::debug("Config", "load_config", "Config file loaded.");
-
-        std::cout << "mask_folder = " << mask_folder << std::endl;
-        std::cout << "bgs_detect_shadows = " << bgs_detect_shadows << std::endl;
-        std::cout << "bgs_threshold = " << bgs_threshold << std::endl;
-        std::cout << "bgs_history = " << bgs_history << std::endl;
-        std::cout << "bgs_learning_rate = " << bgs_learning_rate << std::endl;
-        std::cout << "calibration_tool_escape_char = " << calibration_tool_escape_char << std::endl;
-        std::cout << "dpm_detector_numthread = " << dpm_detector_numthread << std::endl;
-        std::cout << "dpm_extractor_score_threshold = " << dpm_extractor_score_threshold << std::endl;
-        std::cout << "dpm_extractor_overlapping_threshold = " << dpm_extractor_overlapping_threshold << std::endl;
-        std::cout << "dpm_extractor_duplicate_area_threshold = " << dpm_extractor_duplicate_area_threshold << std::endl;
-        std::cout << "features_comparator_correlation_threshold = " << features_comparator_correlation_threshold <<
-        std::endl;
-        std::cout << "feature_extractor_threshold_red_low = " << feature_extractor_threshold_red_low << std::endl;
-        std::cout << "feature_extractor_threshold_red_high = " << feature_extractor_threshold_red_high << std::endl;
-        std::cout << "feature_extractor_threshold_green_low = " << feature_extractor_threshold_green_low << std::endl;
-        std::cout << "feature_extractor_threshold_green_high = " << feature_extractor_threshold_green_high << std::endl;
-        std::cout << "feature_extractor_threshold_saturation = " << feature_extractor_threshold_saturation << std::endl;
-        std::cout << "feature_extractor_threshold_value = " << feature_extractor_threshold_value << std::endl;
-        std::cout << "feature_extractor_histogram_size = " << feature_extractor_histogram_size << std::endl;
-        std::cout << "sdl_binds_default_width = " << sdl_binds_default_width << std::endl;
-        std::cout << "sdl_binds_default_height = " << sdl_binds_default_height << std::endl;
-        std::cout << "blob_player_extractor_buffer_size = " << blob_player_extractor_buffer_size << std::endl;
-        std::cout << "blob_player_extractor_min_blob_size = " << blob_player_extractor_min_blob_size << std::endl;
     }
 
 
@@ -93,6 +81,8 @@ namespace tmd {
     float Config::bgs_threshold = 256;
     int Config::bgs_history = 500;
     float Config::bgs_learning_rate = 0.0;
+    int Config::bgs_blob_buffer_size = 2;
+    int Config::bgs_blob_threshold_count = 5;
 
     /**********************************************************************/
     /* Calibration tool                                                   */
@@ -115,7 +105,12 @@ namespace tmd {
     /* Features Comparator                                                */
     /**********************************************************************/
     float Config::features_comparator_correlation_threshold = 0.4;
-
+    int Config::features_comparator_center_count = 2;
+    int Config::features_comparator_sample_cols = 180;
+    int Config::features_comparator_centers_file_rows = 2;
+    int Config::features_comparator_centers_file_cols = 180;
+    std::string Config::features_comparator_centers_file_name =
+            "./res/cluster/clusterCenters.txt";
     /**********************************************************************/
     /* Features Extractor                                                 */
     /**********************************************************************/
