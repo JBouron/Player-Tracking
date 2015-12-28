@@ -1,4 +1,5 @@
 #include "../headers/blob_player_extractor.h"
+#include "../headers/frame_t.h"
 
 using namespace cv;
 
@@ -114,6 +115,7 @@ namespace tmd {
                 int btX = (maxCol + 20) > cols ? cols : (maxCol + 20);
                 int btY = (maxRow + 20) > rows ? rows : (maxRow + 20);
                 cv::Rect myRect(tpX, tpY, btX - tpX, btY - tpY);
+                frame->blobs.push_back(myRect);
                 player->mask_image = frame->mask_frame(myRect);
                 player->pos_frame = myRect;
                 player->team = TEAM_UNKNOWN;
