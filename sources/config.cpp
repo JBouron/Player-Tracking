@@ -49,6 +49,7 @@ namespace tmd {
         load_value(features_comparator_sample_cols);
         load_value(features_comparator_centers_file_rows);
         load_value(features_comparator_centers_file_cols);
+        load_value(features_comparator_centers_file_name);
         load_value(feature_extractor_threshold_red_low);
         load_value(feature_extractor_threshold_red_high);
         load_value(feature_extractor_threshold_green_low);
@@ -108,7 +109,8 @@ namespace tmd {
     int Config::features_comparator_sample_cols = 180;
     int Config::features_comparator_centers_file_rows = 2;
     int Config::features_comparator_centers_file_cols = 180;
-
+    std::string Config::features_comparator_centers_file_name =
+            "./res/cluster/clusterCenters.txt";
     /**********************************************************************/
     /* Features Extractor                                                 */
     /**********************************************************************/

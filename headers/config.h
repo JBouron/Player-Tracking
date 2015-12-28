@@ -63,6 +63,7 @@ namespace tmd{
         static int features_comparator_sample_cols;
         static int features_comparator_centers_file_rows;
         static int features_comparator_centers_file_cols;
+        static std::string features_comparator_centers_file_name;
 
         /**********************************************************************/
         /* Features Extractor                                                 */
