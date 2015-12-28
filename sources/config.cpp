@@ -39,6 +39,7 @@ namespace tmd {
         load_value(bgs_blob_buffer_size);
         load_value(bgs_blob_threshold_count);
         load_value(bgs_learning_rate);
+        load_value(bgs_empty_room_background);
         load_value(calibration_tool_escape_char);
         load_value(dpm_detector_numthread);
         load_value(dpm_extractor_score_threshold);
@@ -83,6 +84,7 @@ namespace tmd {
     float Config::bgs_learning_rate = 0.0;
     int Config::bgs_blob_buffer_size = 2;
     int Config::bgs_blob_threshold_count = 5;
+    std::string Config::bgs_empty_room_background = "./res/room_background/";
 
     /**********************************************************************/
     /* Calibration tool                                                   */
