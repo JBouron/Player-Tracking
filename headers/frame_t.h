@@ -66,13 +66,13 @@ namespace tmd {
                                         bool draw_player_color = true) {
         cv::Mat result;
         if (result_flag == 1) {
-            result = frame->colored_mask_frame;
+            result = frame->colored_mask_frame.clone();
         } else if (result_flag == 2) {
             cv::Mat temp = frame->mask_frame;
             cv::Mat in[] = {temp, temp, temp};
             cv::merge(in, 3, result);
         } else {
-            result = frame->original_frame;
+            result = frame->original_frame.clone();
         }
 
         std::vector<tmd::player_t *> &players = frame->players;
