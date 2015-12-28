@@ -44,7 +44,6 @@ namespace tmd{
 
     MultithreadedPipeline::~MultithreadedPipeline() {
         for (int i = 0 ; i < m_thread_count ; i ++){
-            m_pipeline_threads[i]->request_stop();
             delete m_pipeline_threads[i];
         }
         delete[] m_pipeline_threads;

@@ -30,6 +30,9 @@ namespace tmd {
 
     frame_t* SimplePipeline::next_frame(){
         frame_t* frame = m_bgSubstractor->next_frame();
+        if (frame == NULL){
+            return NULL;
+        }
 
         tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
         extract_players_from_frame(frame);
