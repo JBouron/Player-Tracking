@@ -31,25 +31,23 @@ namespace tmd{
 
     tmd::frame_t* PipelineThread::pop_buffer(){
         tmd::frame_t* head = NULL;
-        bool done = false;
-        while (!done && !m_done) {
-            {   // Trick here : having a scope inside the while method so
-                // that the lock is released.
+        while (true){
+            {
                 std::lock_guard<std::mutex> lock(m_buffer_lock);
                 if (m_buffer.size() > 0){
                     head = m_buffer[0];
                     m_buffer.pop_front();
-                    done = true;
+                    return head;
                 }
-                // If there is nothing in the buffer, we wait for the thread
-                // to fill it.
+                else if(m_done){
+                    return NULL;
+                }
             }
         }
-        return head;
     }
 
     void PipelineThread::extract_from_pipeline(){
-        while (!m_stop_request && m_frame_idx < m_ending_frame){
+        while (!m_stop_request && m_frame_idx <= m_ending_frame){
             tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
                           std::to_string(m_id) + " calling next_players()");
             tmd::frame_t* next_buffer_entry = m_pipeline->next_frame();
@@ -61,6 +59,7 @@ namespace tmd{
             this->push_buffer(next_buffer_entry);
             m_frame_idx  += m_step_size;
         }
+        std::lock_guard<std::mutex> lock(m_buffer_lock);
         m_done = true;
         m_stop_request = false;
     }
