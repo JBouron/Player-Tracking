@@ -47,6 +47,8 @@ namespace tmd {
         load_value(features_comparator_correlation_threshold);
         load_value(features_comparator_center_count);
         load_value(features_comparator_sample_cols);
+        load_value(features_comparator_centers_file_rows);
+        load_value(features_comparator_centers_file_cols);
         load_value(feature_extractor_threshold_red_low);
         load_value(feature_extractor_threshold_red_high);
         load_value(feature_extractor_threshold_green_low);
@@ -104,6 +106,8 @@ namespace tmd {
     float Config::features_comparator_correlation_threshold = 0.4;
     int Config::features_comparator_center_count = 2;
     int Config::features_comparator_sample_cols = 180;
+    int Config::features_comparator_centers_file_rows = 2;
+    int Config::features_comparator_centers_file_cols = 180;
 
     /**********************************************************************/
     /* Features Extractor                                                 */

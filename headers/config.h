@@ -61,6 +61,8 @@ namespace tmd{
         static float features_comparator_correlation_threshold;
         static int features_comparator_center_count;
         static int features_comparator_sample_cols;
+        static int features_comparator_centers_file_rows;
+        static int features_comparator_centers_file_cols;
 
         /**********************************************************************/
         /* Features Extractor                                                 */
