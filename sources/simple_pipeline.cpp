@@ -7,7 +7,10 @@ namespace tmd {
         m_bgSubstractor = new BGSubstractor(video_folder, camera_index,
                                             start_frame, end_frame, step_size);
         m_playerExtractor = new BlobPlayerExtractor();
-        m_featuresComparator = new FeatureComparator(2, 180, FeatureComparator::readCentersFromFile(2, 180));
+        m_featuresComparator = new FeatureComparator
+                (tmd::Config::features_comparator_center_count,
+                 tmd::Config::features_comparator_sample_cols,
+                             FeatureComparator::readCentersFromFile(2, 180));
         m_featuresExtractor = new FeaturesExtractor();
     }
 
