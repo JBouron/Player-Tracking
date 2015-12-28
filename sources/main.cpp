@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
      */
 
     tmd::Config::load_config();
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline("./res/videos/uni-hockey/", 0, 4, 0, 200, 1);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline("./res/videos/uni-hockey/", 0, 4, 90, 150, 1);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
@@ -75,8 +75,14 @@ int main(int argc, char *argv[]) {
 
     while (frame != NULL) {
         std::string frame_index = std::to_string(count);
-        std::string file_name = folder + "/frame" + frame_index + ".jpg";
-        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true, true, false, false, true));
+        std::string file_name = folder + "/bgs" + frame_index + ".jpg";
+        cv::imwrite(file_name, tmd::draw_player_on_frame(2, frame, false, false, false, false, false));
+        file_name = folder + "/blobs" + frame_index + ".jpg";
+        cv::imwrite(file_name, tmd::draw_player_on_frame(2, frame, false, true, false, true, false));
+        file_name = folder + "/players" + frame_index + ".jpg";
+        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true, true, true, false, false));
+        file_name = folder + "/teams" + frame_index + ".jpg";
+        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true, false, false, false, true));
         std::cout << "Save frame " << frame_index << std::endl;
         tmd::free_frame(frame);
         frame = pipeline->next_frame();
@@ -91,7 +97,6 @@ int main(int argc, char *argv[]) {
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
 }
-
 
 void create_training_set(void) {
     tmd::Config::load_config();

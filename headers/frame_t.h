@@ -58,15 +58,17 @@ namespace tmd {
     /**
      * Draw the players of the frame on another image and returns it.
      */
-    inline cv::Mat draw_player_on_frame(int result_flag, tmd::frame_t *frame, bool draw_player = true,
+    inline cv::Mat draw_player_on_frame(int result_flag, tmd::frame_t *frame,
+                                        bool draw_player = true,
                                         bool draw_torso = false,
-                                        bool draw_parts = false, bool draw_blobs = false,
+                                        bool draw_parts = false,
+                                        bool draw_blobs = false,
                                         bool draw_player_color = true) {
         cv::Mat result;
         if (result_flag == 1) {
             result = frame->colored_mask_frame;
         } else if (result_flag == 2) {
-            cv::Mat temp= frame->mask_frame;
+            cv::Mat temp = frame->mask_frame;
             cv::Mat in[] = {temp, temp, temp};
             cv::merge(in, 3, result);
         } else {
@@ -132,8 +134,8 @@ namespace tmd {
             }
         }
 
-        for (cv::Rect blob : frame->blobs) {
-            if (draw_blobs) {
+        if (draw_blobs) {
+            for (cv::Rect blob : frame->blobs) {
                 cv::Rect pos = blob;
                 cv::rectangle(result, pos, blob_color,
                               thickness, line_type, shift);
