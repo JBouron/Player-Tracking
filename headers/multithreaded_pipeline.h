@@ -38,7 +38,7 @@ namespace tmd{
         frame_t* next_frame();
 
     private:
-        void create_threads();
+        void schedule_threads(std::string video_folder);
 
         tmd::PipelineThread** m_pipeline_threads;
         bool m_threads_ready;
