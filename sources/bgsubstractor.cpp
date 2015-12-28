@@ -90,8 +90,8 @@ namespace tmd {
         checked_pixels = cv::Mat::zeros(m_static_mask
                                                 .rows, m_static_mask.cols, CV_8U);
         frame->mask_frame.copyTo(mask_copy);
-        int buffer_size = 2;
-        int count_threshold = 5;
+        int buffer_size = tmd::Config::bgs_blob_buffer_size;
+        int count_threshold = tmd::Config::bgs_blob_threshold_count;
 
         for (int row = 0; row < m_static_mask.rows; row++) {
             for (int col = 0; col < m_static_mask.cols; col++) {
