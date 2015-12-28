@@ -66,7 +66,8 @@ int main(int argc, char *argv[]) {
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline("./res/videos/uni-hockey/", 0, 4, 0, 10, 1);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
+    "./res/videos/uni-hockey/", 0, 4, 90, 140, 1);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();

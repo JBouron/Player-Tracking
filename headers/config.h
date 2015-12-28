@@ -35,6 +35,8 @@ namespace tmd{
         static float bgs_threshold;
         static int bgs_history;
         static float bgs_learning_rate;
+        static int bgs_blob_buffer_size;
+        static int bgs_blob_threshold_count;
 
         /**********************************************************************/
         /* Calibration tool                                                   */
@@ -57,6 +59,8 @@ namespace tmd{
         /* Features Comparator                                                */
         /**********************************************************************/
         static float features_comparator_correlation_threshold;
+        static int features_comparator_center_count;
+        static int features_comparator_sample_cols;
 
         /**********************************************************************/
         /* Features Extractor                                                 */

@@ -29,7 +29,7 @@ namespace tmd {
         m_clusterCount = clusterCount;
         m_labels = cv::Mat(m_data);
         m_termCriteria = cv::TermCriteria(CV_TERMCRIT_EPS + CV_TERMCRIT_ITER,
-                                          10, 1.0);;
+                                          10, 1.0);
         m_attempts = 3;
         m_flags = cv::KMEANS_PP_CENTERS;
         m_centers = centers;
