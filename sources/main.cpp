@@ -30,6 +30,8 @@ void dpm_whole_frame(void);
 
 void test_blob_separation(void);
 
+void create_training_set(void);
+
 void memleak_video_capture(void) {
     tmd::BGSubstractor bgs("./res/videos/alone-red-no-ball/", 0, 300, 10);
     while (1){
@@ -56,8 +58,10 @@ void test_fast_dpm(void){
     std::cout << "end" << std::endl;
 }
 
-
 int main(int argc, char *argv[]){
+    create_training_set();
+    return 0;
+
     tmd::Config::load_config();
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
@@ -91,6 +95,31 @@ int main(int argc, char *argv[]){
     return EXIT_SUCCESS;
 }
 
+
+void create_training_set(void) {
+    tmd::Config::load_config();
+
+    tmd::TrainingSetCreator* trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, "./res/xmls/person.xml", 0, 300, 1);
+    tmd::frame_t *frame = trainer->next_frame();
+
+    int count = 0;
+    int max_frames = 20;
+
+    while (frame != NULL) {
+        std::string frame_index = std::to_string(count);
+        std::cout << "Save frame " << frame_index << std::endl;
+        tmd::free_frame(frame);
+        frame = trainer->next_frame();
+        count++;
+        if (count == max_frames) {
+            break;
+        }
+    }
+    tmd::free_frame(frame);
+    trainer->write_centers();
+    delete trainer;
+}
+
 void test_blob_separation(void) {
     tmd::player_t *player = new tmd::player_t;
     player->original_image = cv::imread(
@@ -111,35 +140,6 @@ void test_blob_separation(void) {
         cv::imshow("Player", new_players[i]->original_image);
         cv::waitKey(0);
     }
-}
-
-void create_training_set(void) {
-
-    std::string basic_path = "./res/videos/";
-
-    std::string video_folders[8];
-    std::string mask_folder[6];
-
-    video_folders[0] = basic_path + "alone-green-ball/";
-    video_folders[1] = basic_path + "alone-green-no-ball/";
-    video_folders[2] = basic_path + "alone-red-ball/";
-    video_folders[3] = basic_path + "alone-red-no-ball/";
-    video_folders[4] = basic_path + "two-green-ball/";
-    video_folders[5] = basic_path + "two-green-no-ball/";
-    video_folders[6] = basic_path + "two-red-ball/";
-    video_folders[7] = basic_path + "two-red-no-ball/";
-
-    cv::VideoCapture videos[48];
-
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 6; j++) {
-            std::string video_path = video_folders[i] + "ace_" + std::to_string(j) + ".mp4";
-            videos[i + j].open(video_path);
-        }
-    }
-
-    cv::Mat centers;
-    tmd::FeatureComparator *comparator = new tmd::FeatureComparator(2, 180, centers);
 }
 
 void dpm_whole_frame(void) {

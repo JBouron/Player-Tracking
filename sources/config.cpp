@@ -137,5 +137,4 @@ namespace tmd{
     /**********************************************************************/
     int Config::blob_player_extractor_buffer_size = 5; // Must be odd
     int Config::blob_player_extractor_min_blob_size = 500;
-
 }

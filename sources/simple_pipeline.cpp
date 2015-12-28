@@ -1,23 +1,12 @@
 #include "../headers/simple_pipeline.h"
 
 namespace tmd {
-    SimplePipeline::SimplePipeline(std::string video_folder, int camera_index,
-                                   int start_frame, int end_frame,
-                                   int step_size) : Pipeline
-                          (video_folder, camera_index, start_frame,
-                           end_frame,
-                           step_size){
-        std::string static_mask_path = "./res/bgs_masks/mask_ace" +
-                std::to_string(camera_index) + ",jpg";
-        cv::Mat mask = cv::imread(static_mask_path, 0);
-        m_bgSubstractor = new BGSubstractor(video_folder, camera_index, start_frame,
-                                            step_size);
-
+    SimplePipeline::SimplePipeline(std::string video_folder, int camera_index, int start_frame, int end_frame,
+                                   int step_size) : Pipeline(video_folder, camera_index, start_frame,
+                                                             end_frame, step_size) {
+        m_bgSubstractor = new BGSubstractor(video_folder, camera_index, start_frame, step_size);
         m_playerExtractor = new BlobPlayerExtractor();
-
-        m_featuresComparator = new FeatureComparator(2, 180,
-                                                     FeatureComparator::readCentersFromFile(2, 180));
-
+        m_featuresComparator = new FeatureComparator(2, 180, FeatureComparator::readCentersFromFile(2, 180));
         m_featuresExtractor = new FeaturesExtractor();
     }
 
@@ -28,8 +17,8 @@ namespace tmd {
         delete m_featuresComparator;
     }
 
-    frame_t* SimplePipeline::next_frame(){
-        frame_t* frame = m_bgSubstractor->next_frame();
+    frame_t *SimplePipeline::next_frame() {
+        frame_t *frame = m_bgSubstractor->next_frame();
 
         tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
         extract_players_from_frame(frame);
@@ -37,21 +26,19 @@ namespace tmd {
         return frame;
     }
 
-    void SimplePipeline::set_bgs_properties(float threshold, int history_size,
-                                      float learning_rate) {
+    void SimplePipeline::set_bgs_properties(float threshold, int history_size, float learning_rate) {
         m_bgSubstractor->set_threshold_value(threshold);
         m_bgSubstractor->set_history_size(history_size);
         m_bgSubstractor->set_learning_rate(learning_rate);
     }
 
-    void SimplePipeline::extract_players_from_frame
-            (tmd::frame_t* frame){
+    void SimplePipeline::extract_players_from_frame(tmd::frame_t *frame) {
         tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
         std::vector<tmd::player_t *> players =
                 m_playerExtractor->extract_player_from_frame(frame);
 
         tmd::debug("SimplePipeline", "next_frame", std::to_string(players.size()) +
-                                             " players/blobs extracted.");
+                                                   " players/blobs extracted.");
 
         cv::Mat coloredMask = get_colored_mask_for_frame(frame);
         frame->original_frame.release();
@@ -63,7 +50,7 @@ namespace tmd {
 
         tmd::debug("SimplePipeline", "next_frame", "Frame " + std::to_string
                 (m_bgSubstractor->get_current_frame_index()) + " : " +
-                                             std::to_string(players.size()) + " players detected");
+                                                   std::to_string(players.size()) + " players detected");
         m_featuresExtractor->extractFeaturesFromPlayers(players);
         m_featuresComparator->detectTeamForPlayers(players);
         coloredMask.release();
