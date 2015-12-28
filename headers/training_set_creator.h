@@ -11,9 +11,9 @@
 namespace tmd {
     class TrainingSetCreator {
     public:
-        TrainingSetCreator(std::string video_path, std::string static_mask_path, int camera_index,
-                           std::string model_file, bool dpm = false, bool save_frames = false,
-                           std::string output_folder = "");
+
+        TrainingSetCreator(std::string video_folder, int camera_index, std::string model_file, int start_frame,
+                           int end_frame, int step_sizer);
 
         ~TrainingSetCreator();
 
@@ -36,6 +36,7 @@ namespace tmd {
         std::string m_mask_path;
         int m_step;
 
+        void extract_players_from_frame(frame_t *frame);
     };
 }
 
