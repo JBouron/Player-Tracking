@@ -59,20 +59,17 @@ void test_fast_dpm(void){
 }
 
 int main(int argc, char *argv[]){
-    create_training_set();
-    return 0;
-
     tmd::Config::load_config();
     /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
                                       "./res/videos/uni-hockey/ace_0.mp4", 2,
             "./res/xmls/person.xml");*/
     tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-    "./res/videos/uni-hockey/",0, 4, 10, 2000, 1);
+    "./res/videos/uni-hockey/",0, 4, 1, 10, 1);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
     int count = 0;
-    int max_frames = 300;
+    int max_frames = -1;
     std::string folder = "./res/pipeline_results/complete_pipeline/uni/with "
             "blob separator/";
 
@@ -88,7 +85,6 @@ int main(int argc, char *argv[]){
             break;
         }
     }
-    tmd::free_frame(frame);
     delete pipeline;
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;

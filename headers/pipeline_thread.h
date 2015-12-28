@@ -43,8 +43,6 @@ namespace tmd{
          */
         tmd::frame_t* pop_buffer();
 
-        void request_stop();
-
     private:
         /**
          * Method executed by the working thread.
@@ -65,7 +63,7 @@ namespace tmd{
         int m_frame_idx;
         int m_step_size;
         int m_id;
-
+        std::atomic<bool> m_done;
         std::atomic<bool> m_stop_request;
     };
 }
