@@ -4,7 +4,8 @@ namespace tmd {
     SimplePipeline::SimplePipeline(std::string video_folder, int camera_index, int start_frame, int end_frame,
                                    int step_size) : Pipeline(video_folder, camera_index, start_frame,
                                                              end_frame, step_size) {
-        m_bgSubstractor = new BGSubstractor(video_folder, camera_index, start_frame, step_size);
+        m_bgSubstractor = new BGSubstractor(video_folder, camera_index,
+                                            start_frame, end_frame, step_size);
         m_playerExtractor = new BlobPlayerExtractor();
         m_featuresComparator = new FeatureComparator(2, 180, FeatureComparator::readCentersFromFile(2, 180));
         m_featuresExtractor = new FeaturesExtractor();
