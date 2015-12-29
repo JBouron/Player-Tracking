@@ -1,7 +1,7 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/Test.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include "../bgsubstractor.h"
+#include "../background_subtractor/bgsubstractor.h"
 
 #ifndef BACHELOR_PROJECT_BGSUBSTRACTOR_TESTS_H
 #define BACHELOR_PROJECT_BGSUBSTRACTOR_TESTS_H
