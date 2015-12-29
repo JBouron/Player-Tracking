@@ -97,6 +97,40 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
+void show_help(){
+    //tmd ./videos camera-index --show-result -s 0 -e 120 -j 10 -t 4 --save-result --show-torsos -b 5
+    std::cout << "###############################################" << std::endl;
+    std::cout << "#             Bachelor project                #" << std::endl;
+    std::cout << "###############################################" << std::endl;
+
+    std::cout << "              Help                             " << std::endl;
+    std::cout << "The first argument should be the folder containing the "
+                         "videos."  << std::endl;
+    std::cout << "The second argument is the camera index on which the "
+                         "algorithm will run. This index is between 0 and 7 "
+                         "included." << std::endl;
+    std::cout << "Then any of the following arguments can be added in any "
+                         "order, if they are not specified, default values "
+                         "will be used" << std::endl;
+    std::cout << "--show-results Show result at every frame in a popup window"
+                         "." << std::endl;
+    std::cout << "--save-results path Create a video file and save it to the "
+                         "specified path. (The name is the same as the input "
+                         "video)" << std::endl;
+    std::cout << "--show-torsos Show the torso boxes on the resulting frames"
+                         "." << std::endl;
+    std::cout << "-s number Set the starting frame to number. (default : 0)" <<
+            std::endl;
+    std::cout << "-e number Set the ending frame to number. (default : last "
+                         "frame)" << std::endl;
+    std::cout << "-j size Set the step size. (default : 1)" << std::endl;
+    std::cout << "-t count Set the number of threads to use. (default : 1)"
+    << std::endl;
+    std::cout << "-b rate Set the refresh rate of the player boxes. (default "
+                         ": every frames)" << std::endl;
+
+}
+
 void create_training_set(void) {
     tmd::Config::load_config();
 
