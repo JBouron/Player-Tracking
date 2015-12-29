@@ -13,6 +13,7 @@ namespace tmd{
         int camera_index;
         bool show_results = false;
         bool save_results = false;
+        std::string save_folder;
         bool show_torsos = false;
         int s = 0;
         int e = -1;
