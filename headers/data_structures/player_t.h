@@ -23,7 +23,9 @@ namespace tmd{
         /*player->original_image.release();
         player->mask_image.release();*/
         //free_features(&player->features);
-        delete player;
+        if (player != NULL){
+            delete player;
+        }
     }
 }
 
