@@ -12,7 +12,7 @@ namespace tmd{
 
     public:
         RealTimePipeline(const std::string &video_folder, int thread_count,
-                         int box_refresh_rate, int camera_index,
+                         float box_refresh_rate, int camera_index,
                          int start_frame, int end_frame);
 
         frame_t* next_frame();

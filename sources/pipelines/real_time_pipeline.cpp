@@ -3,15 +3,15 @@
 
 namespace tmd{
     RealTimePipeline::RealTimePipeline(const std::string &video_folder, int
-    thread_count, int box_refresh_rate, int camera_index,
+    thread_count, float box_refresh_rate, int camera_index,
                      int start_frame, int end_frame)
             : Pipeline(video_folder, camera_index, start_frame, end_frame,
                        1){
         m_video->set(CV_CAP_PROP_POS_FRAMES, start_frame);
         m_last_frame_computed = NULL;
         m_frame_pos = start_frame;
-        int video_fps = static_cast<int> ( m_video->get( CV_CAP_PROP_FPS ) );
-        m_box_refresh_modulus = video_fps / box_refresh_rate;
+        double video_fps =  (m_video->get(CV_CAP_PROP_FPS));
+        m_box_refresh_modulus = static_cast<int>(video_fps / box_refresh_rate);
         // TODO : Avoid using MultithreadedPipeline when thread_count = 1.
         m_pipeline = new tmd::MultithreadedPipeline(video_folder,
                                                     camera_index,
@@ -26,6 +26,7 @@ namespace tmd{
         }
 
         if ((m_frame_pos - m_start) % m_box_refresh_modulus == 0){
+            free_frame(m_last_frame_computed);
             m_last_frame_computed = m_pipeline->next_frame();
             if (m_last_frame_computed == NULL){
                 return NULL;
@@ -40,6 +41,12 @@ namespace tmd{
         frame->colored_mask_frame = m_last_frame_computed->colored_mask_frame;
         frame->frame_index = m_last_frame_computed->frame_index;
         frame->players = m_last_frame_computed->players;
+        /*size_t player_count = m_last_frame_computed->players.size();
+        for (int i = 0 ; i < player_count ; i ++){
+            frame->players.push_back(new tmd::player_t);
+            memcpy((frame->players[i]), m_last_frame_computed->players[i],
+                   sizeof(tmd::player_t));
+        }*/
         //jump_video_to_next_frame();
         m_frame_pos += m_step;
         return frame;
