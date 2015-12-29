@@ -120,7 +120,8 @@ namespace tmd {
         mask_copy.release();
         checked_pixels.release();
         m_frame_index += m_step_size;
-        step();
+        jump_to_frame(m_frame_index);
+        //step();
         return frame;
     }
 
@@ -152,7 +153,7 @@ namespace tmd {
 
     void BGSubstractor::jump_to_frame(int index) {
         m_input_video.release();
-        m_input_video.open(m_input_video_path);
+        m_input_video = cv::VideoCapture(m_input_video_path);
         m_input_video.set(CV_CAP_PROP_POS_FRAMES, index);
         m_frame_index = index;
     }
