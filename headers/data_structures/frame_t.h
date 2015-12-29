@@ -27,11 +27,13 @@ namespace tmd {
     } frame_t;
 
     inline void free_frame(frame_t *frame) {
-        for (size_t i = 0; i < frame->players.size(); i++) {
-            free_player(frame->players[i]);
-        }
+        if (frame != NULL){
+            for (size_t i = 0; i < frame->players.size(); i++) {
+                free_player(frame->players[i]);
+            }
 
-        delete frame;
+            delete frame;
+        }
     }
 
     /**
