@@ -5,6 +5,7 @@
 #include "../headers/pipelines/pipeline.h"
 #include "../headers/pipelines/multithreaded_pipeline.h"
 #include "../headers/tools/training_set_creator.h"
+#include "../headers/pipelines/real_time_pipeline.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -54,9 +55,8 @@ int main(int argc, char *argv[]) {
      */
 
     tmd::Config::load_config();
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-                                 "./res/videos/alone-red-no-ball/", 0, 4, 290,
-                                 1200, 1);
+    tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
+                        "./res/videos/alone-red-no-ball/", 4, 1, 0, 400, 1200);
     tmd::frame_t *frame = pipeline->next_frame();
 
     double t1 = cv::getTickCount();
@@ -67,25 +67,10 @@ int main(int argc, char *argv[]) {
 
     while (frame != NULL) {
         std::string frame_index = std::to_string(count);
-
-        std::string file_name = folder + "/bgs" + frame_index + ".jpg";
-        cv::imwrite(file_name, tmd::draw_player_on_frame(2, frame, false, false, false, false, false));
-
-        file_name = folder + "/blobs" + frame_index + ".jpg";
-        cv::imwrite(file_name, tmd::draw_player_on_frame(2, frame, false, false, false, true, false));
-
-        file_name = folder + "/players" + frame_index + ".jpg";
-        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true, true, true, false, false));
-
-        file_name = folder + "/teams" + frame_index + ".jpg";
-
-        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true, false, false, false, true));
-
-        file_name = folder + "/original" + frame_index + ".jpg";
-        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, false, false, false, false, false));
-
+        std::string file_name = folder + "/frame" + frame_index + ".jpg";
         std::cout << "Save frame " << frame_index << std::endl;
-        tmd::free_frame(frame);
+        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true));
+        //tmd::free_frame(frame);
         frame = pipeline->next_frame();
         count++;
         if (count == max_frames) {
