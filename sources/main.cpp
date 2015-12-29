@@ -25,13 +25,15 @@ void create_training_set(void);
 
 void memleak_video_capture(void) {
     std::string file = "./res/videos/alone-green-no-ball/ace_0.mp4";
-    cv::Mat dummy;
-    int c = 0;
-    while (1) {
-        CvCapture* cap = cvCaptureFromFile("./res/videos/alone-green-no-ball/ace_0.mp4");
-        IplImage* image = cvQueryFrame(cap);
-        cvReleaseCapture(&cap);
-        cvReleaseImage(&image);
+    cv::VideoCapture capture(file);
+    int c = 1;
+    while (c < 10){
+        capture.set(CV_CAP_PROP_POS_FRAMES, 100*c);
+        c++;
+        cv::Mat frame;
+        capture.read(frame);
+        cv::imshow("Frame", frame);
+        cv::waitKey(0);
     }
 }
 
