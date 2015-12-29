@@ -71,7 +71,7 @@ set(SOURCE_FILES sources/main.cpp
         headers/features_extraction/dpm.h
         sources/features_extraction/dpm.cpp
         headers/pipelines/real_time_pipeline.h
-        sources/pipelines/real_time_pipeline.cpp)
+        sources/pipelines/real_time_pipeline.cpp headers/data_structures/cmd_args_t.h)
 
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBRARIES}
