@@ -1,20 +1,10 @@
 #include <iostream>
-#include "../headers/frame_t.h"
-#include "../headers/test_cases/test_suite.h"
-#include "../headers/manual_player_extractor.h"
-#include "../headers/calibration_tool.h"
-#include "../headers/dpm_player_extractor.h"
-#include "../headers/features_extractor.h"
-#include "../headers/feature_comparator.h"
-#include "../headers/dpm_calibrator.h"
-#include "../headers/pipeline.h"
-#include "../headers/training_set_creator.h"
-
-#include "../headers/sdl_binds/sdl_binds.h"
-#include "../headers/simple_pipeline.h"
-#include "../headers/pipeline_thread.h"
-#include "../headers/multithreaded_pipeline.h"
-#include "../headers/dpm.h"
+#include "../headers/data_structures/frame_t.h"
+#include "../headers/background_subtractor/bgsubstractor.h"
+#include "../headers/features_extraction/dpm.h"
+#include "../headers/pipelines/pipeline.h"
+#include "../headers/pipelines/multithreaded_pipeline.h"
+#include "../headers/tools/training_set_creator.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -65,7 +55,7 @@ int main(int argc, char *argv[]) {
 
     tmd::Config::load_config();
     tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-                                 "./res/videos/alone-red-no-ball/", 0, 4, 0,
+                                 "./res/videos/alone-red-no-ball/", 0, 4, 290,
                                  1200, 1);
     tmd::frame_t *frame = pipeline->next_frame();
 

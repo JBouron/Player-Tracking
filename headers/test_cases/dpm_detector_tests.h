@@ -3,7 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "../../headers/dpm_detector.h"
+#include "../players_extraction/dpm_based_extraction/dpm_detector.h"
 
 #ifndef BACHELOR_PROJECT_DPM_DETECTOR_TESTS_H
 #define BACHELOR_PROJECT_DPM_DETECTOR_TESTS_H
