@@ -24,12 +24,14 @@ void test_blob_separation(void);
 void create_training_set(void);
 
 void memleak_video_capture(void) {
-    tmd::BGSubstractor bgs("./res/videos/alone-red-no-ball/", 0, 300, 10);
+    std::string file = "./res/videos/alone-green-no-ball/ace_0.mp4";
+    cv::Mat dummy;
+    int c = 0;
     while (1) {
-        tmd::frame_t *frame = bgs.next_frame();
-        cv::imshow("FGrame", frame->mask_frame);
-        cv::waitKey(0);
-        tmd::free_frame(frame);
+        CvCapture* cap = cvCaptureFromFile("./res/videos/alone-green-no-ball/ace_0.mp4");
+        IplImage* image = cvQueryFrame(cap);
+        cvReleaseCapture(&cap);
+        cvReleaseImage(&image);
     }
 }
 
@@ -50,16 +52,14 @@ void test_fast_dpm(void) {
 }
 
 int main(int argc, char *argv[]) {
-    /*create_training_set();
+    memleak_video_capture();
     return 0;
-     */
-
     tmd::Config::load_config();
-    tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
-                        "./res/videos/alone-red-no-ball/", 4, .25, 0, 400,
-                        1200);
+    tmd::Pipeline *pipeline = new tmd::SimplePipeline(
+                        "./res/videos/alone-red-no-ball/", 0, 0, 1200,
+                        1);
     tmd::frame_t *frame = pipeline->next_frame();
-    SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
+    //SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
     double t1 = cv::getTickCount();
     int count = 0;
     int max_frames = -1;
@@ -70,9 +70,7 @@ int main(int argc, char *argv[]) {
         std::string frame_index = std::to_string(count);
         std::string file_name = folder + "/frame" + frame_index + ".jpg";
         std::cout << "Save frame " << frame_index << std::endl;
-        tmd::SDLBinds::imshow(window, tmd::draw_player_on_frame(0, frame,
-                                                                true));
-        delete frame;
+        tmd::free_frame(frame);
         frame = pipeline->next_frame();
         count++;
         if (count == max_frames) {
