@@ -6,6 +6,7 @@
 #include "../headers/pipelines/multithreaded_pipeline.h"
 #include "../headers/tools/training_set_creator.h"
 #include "../headers/pipelines/real_time_pipeline.h"
+#include "../headers/data_structures/cmd_args_t.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -50,6 +51,7 @@ void test_fast_dpm(void) {
 }
 
 void show_help();
+tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 
 int main(int argc, char *argv[]) {
     tmd::Config::load_config();
@@ -129,6 +131,73 @@ void show_help(){
     std::cout << "-b rate Set the refresh rate of the player boxes. (default "
                          ": every frames)" << std::endl;
 
+}
+
+tmd::cmd_args_t *parse_args(int argc, char *argv[]){
+    tmd::cmd_args_t *args = new tmd::cmd_args_t;
+    if (argc < 2){
+        delete args;
+        return NULL;
+    }
+
+    args->video_folder = argv[0];
+    args->camera_index = static_cast<int> (strtol(argv[1], NULL, 10));
+
+    argc -= 2;
+    for (int i = 0 ; i < argc ; i ++){
+        int arg_idx = i + 2; // shift
+
+        if (!strcmp(argv[arg_idx], "--show-results")){
+            args->show_results = true;
+        }
+        else if (!strcmp(argv[arg_idx], "--save-results")){
+            args->save_results = true;
+        }
+        else if (!strcmp(argv[arg_idx], "--show-torsos")){
+            args->show_torsos = true;
+        }
+        else if (!strcmp(argv[arg_idx], "-s")){
+            if (i == argc - 1) return NULL;
+            else{
+                i ++;
+                args->s = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+            }
+        }
+        else if (!strcmp(argv[arg_idx], "-e")){
+            if (i == argc - 1) return NULL;
+            else{
+                i ++;
+                args->e = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+            }
+        }
+        else if (!strcmp(argv[arg_idx], "-j")){
+            if (i == argc - 1) return NULL;
+            else{
+                i ++;
+                args->j = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+            }
+        }
+        else if (!strcmp(argv[arg_idx], "-t")){
+            if (i == argc - 1) return NULL;
+            else{
+                i ++;
+                args->t = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+            }
+        }
+        else if (!strcmp(argv[arg_idx], "-b")){
+            if (i == argc - 1) return NULL;
+            else{
+                i ++;
+                args->b = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+            }
+        }
+        else{
+            std::cout << "Error, unknown argument : " << argv[arg_idx] <<
+                    std::endl;
+            delete args;
+            return NULL;
+        }
+    }
 }
 
 void create_training_set(void) {
