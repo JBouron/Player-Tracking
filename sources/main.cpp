@@ -49,12 +49,23 @@ void test_fast_dpm(void) {
     std::cout << "end" << std::endl;
 }
 
-int main(int argc, char *argv[]) {
-    /*create_training_set();
-    return 0;
-     */
+void show_help();
 
+int main(int argc, char *argv[]) {
     tmd::Config::load_config();
+
+    /* Arguments parsing */
+    std::string video_folder;
+    if (argc < 1){
+        show_help();
+        return EXIT_SUCCESS;
+    }
+    else{
+        video_folder = argv[0];
+
+    }
+
+    /**/
     tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
                         "./res/videos/alone-red-no-ball/", 4, .25, 0, 400,
                         1200);
