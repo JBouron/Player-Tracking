@@ -54,18 +54,14 @@ void show_help();
 tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 
 int main(int argc, char *argv[]) {
+    tmd::cmd_args_t* args = parse_args(argc, argv);
+    if (args == NULL){
+        show_help();
+        return EXIT_FAILURE;
+    }
+
     tmd::Config::load_config();
 
-    /* Arguments parsing */
-    std::string video_folder;
-    if (argc < 1){
-        show_help();
-        return EXIT_SUCCESS;
-    }
-    else{
-        video_folder = argv[0];
-
-    }
 
     /**/
     tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
@@ -135,69 +131,71 @@ void show_help(){
 
 tmd::cmd_args_t *parse_args(int argc, char *argv[]){
     tmd::cmd_args_t *args = new tmd::cmd_args_t;
-    if (argc < 2){
+    if (argc < 3){
+        std::cout << "Error, expected at least 2 arguments." << std::endl;
         delete args;
         return NULL;
     }
 
-    args->video_folder = argv[0];
-    args->camera_index = static_cast<int> (strtol(argv[1], NULL, 10));
+    args->video_folder = argv[1];
+    args->camera_index = static_cast<int> (strtol(argv[2], NULL, 10));
 
-    argc -= 2;
-    for (int i = 0 ; i < argc ; i ++){
-        int arg_idx = i + 2; // shift
-
-        if (!strcmp(argv[arg_idx], "--show-results")){
+    for (int i = 3 ; i < argc ; i ++){
+        if (!strcmp(argv[i], "--show-results")){
             args->show_results = true;
         }
-        else if (!strcmp(argv[arg_idx], "--save-results")){
+        else if (!strcmp(argv[i], "--save-results")){
             args->save_results = true;
+            i ++;
+            if (i == argc) return NULL;
+            else args->save_folder = argv[i];
         }
-        else if (!strcmp(argv[arg_idx], "--show-torsos")){
+        else if (!strcmp(argv[i], "--show-torsos")){
             args->show_torsos = true;
         }
-        else if (!strcmp(argv[arg_idx], "-s")){
+        else if (!strcmp(argv[i], "-s")){
             if (i == argc - 1) return NULL;
             else{
                 i ++;
-                args->s = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+                args->s = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
-        else if (!strcmp(argv[arg_idx], "-e")){
+        else if (!strcmp(argv[i], "-e")){
             if (i == argc - 1) return NULL;
             else{
                 i ++;
-                args->e = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+                args->e = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
-        else if (!strcmp(argv[arg_idx], "-j")){
+        else if (!strcmp(argv[i], "-j")){
             if (i == argc - 1) return NULL;
             else{
                 i ++;
-                args->j = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+                args->j = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
-        else if (!strcmp(argv[arg_idx], "-t")){
+        else if (!strcmp(argv[i], "-t")){
             if (i == argc - 1) return NULL;
             else{
                 i ++;
-                args->t = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+                args->t = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
-        else if (!strcmp(argv[arg_idx], "-b")){
+        else if (!strcmp(argv[i], "-b")){
             if (i == argc - 1) return NULL;
             else{
                 i ++;
-                args->b = static_cast<int>(strtol(argv[arg_idx + 1], NULL, 10));
+                args->b = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
         else{
-            std::cout << "Error, unknown argument : " << argv[arg_idx] <<
+            std::cout << "Error, unknown argument : " << argv[i] <<
                     std::endl;
             delete args;
             return NULL;
         }
     }
+    return args;
 }
 
 void create_training_set(void) {
