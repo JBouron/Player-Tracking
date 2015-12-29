@@ -29,6 +29,7 @@ namespace tmd{
     SDL_Window* SDLBinds::create_sdl_window(std::string name, int w, int h){
         if (!ms_sdl_init){
             SDL_Init(SDL_INIT_VIDEO);
+            ms_sdl_init = true;
         }
 
         SDL_Window *window;                    // Declare a pointer
