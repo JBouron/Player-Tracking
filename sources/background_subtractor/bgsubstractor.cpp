@@ -151,8 +151,6 @@ namespace tmd {
     }
 
     void BGSubstractor::jump_to_frame(int index) {
-        m_input_video.release();
-        m_input_video = cv::VideoCapture(m_input_video_path);
         m_input_video.set(CV_CAP_PROP_POS_FRAMES, index);
         m_frame_index = index;
     }
