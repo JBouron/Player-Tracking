@@ -120,7 +120,7 @@ namespace tmd {
         mask_copy.release();
         checked_pixels.release();
         m_frame_index += m_step_size;
-        step();
+        m_input_video.set(CV_CAP_PROP_POS_FRAMES, m_frame_index);
         return frame;
     }
 
@@ -151,20 +151,11 @@ namespace tmd {
     }
 
     void BGSubstractor::jump_to_frame(int index) {
-        m_input_video.release();
-        m_input_video.open(m_input_video_path);
         m_input_video.set(CV_CAP_PROP_POS_FRAMES, index);
         m_frame_index = index;
     }
 
     int BGSubstractor::get_current_frame_index() {
         return (m_frame_index);
-    }
-
-    void BGSubstractor::step() {
-        for (int i = 0; i < m_step_size - 1; i++) {
-            cv::Mat img;
-            m_input_video.read(img);
-        }
     }
 }

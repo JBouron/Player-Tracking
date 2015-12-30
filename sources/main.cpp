@@ -25,12 +25,16 @@ void test_blob_separation(void);
 void create_training_set(void);
 
 void memleak_video_capture(void) {
-    tmd::BGSubstractor bgs("./res/videos/alone-red-no-ball/", 0, 300, 10);
-    while (1) {
-        tmd::frame_t *frame = bgs.next_frame();
-        cv::imshow("FGrame", frame->mask_frame);
+    std::string file = "./res/videos/alone-green-no-ball/ace_0.mp4";
+    cv::VideoCapture capture(file);
+    int c = 1;
+    while (c < 10){
+        capture.set(CV_CAP_PROP_POS_FRAMES, 100*c);
+        c++;
+        cv::Mat frame;
+        capture.read(frame);
+        cv::imshow("Frame", frame);
         cv::waitKey(0);
-        tmd::free_frame(frame);
     }
 }
 
@@ -62,11 +66,57 @@ int main(int argc, char *argv[]) {
 
     tmd::Config::load_config();
 
+    /* The pipeline of the algorithm. */
+    tmd::Pipeline *pipeline = NULL;
+    SDL_Window *window = NULL;
+
+    if (args->show_results){
+        pipeline = new tmd::RealTimePipeline(args->video_folder, args->t,
+                                             args->b, args->camera_index,
+                                             args->s, args->e);
+    }
+    else{
+        if (args->t == 1){
+            pipeline = new tmd::SimplePipeline(args->video_folder,
+                                               args->camera_index, args->s,
+                                               args->e, args->j);
+        }
+        else if (args->t > 1){
+            pipeline = new tmd::MultithreadedPipeline(args->video_folder,
+                                                      args->camera_index,
+                                                      args->t, args->s,
+                                                      args->e, args->j);
+        }
+        else{
+            std::cout << "Error, invalid thread count : " << args->t <<
+                    std::endl;
+        }
+    }
+
+    tmd::frame_t *frame = pipeline->next_frame();
+    std::cout << "Begin" << std::endl;
+    while (frame != NULL){
+        cv::Mat result = tmd::draw_player_on_frame(0, frame, true,
+                                                   args->show_torsos, false,
+                                                   false, true);
+        if (args->show_results){
+            // TODO
+        }
+
+        if (args->save_results){
+            std::string file_name = args->save_folder + "/frame" +
+                    std::to_string(frame->frame_index) + ".jpg";
+            cv::imwrite(file_name, result);
+        }
+        free_frame(frame);
+        frame = pipeline->next_frame();
+    }
+    std::cout << "Done" << std::endl;
+    return EXIT_SUCCESS;
 
     /**/
-    tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
-                        "./res/videos/alone-red-no-ball/", 4, .25, 0, 400,
-                        1200);
+    /*tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
+                        "./res/videos/alone-red-no-ball/", 4, 2, 0, 0, 1200);
     tmd::frame_t *frame = pipeline->next_frame();
     SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
     double t1 = cv::getTickCount();
@@ -92,7 +142,7 @@ int main(int argc, char *argv[]) {
     delete pipeline;
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
-    return EXIT_SUCCESS;
+    return EXIT_SUCCESS;*/
 }
 
 void show_help(){
