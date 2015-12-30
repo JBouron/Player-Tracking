@@ -84,7 +84,6 @@ namespace tmd {
         int m_step_size;
 
         int count_neighbours_in_fg(cv::Mat frame, int x, int y, int buffer_size);
-        void step();
     };
 }
 
