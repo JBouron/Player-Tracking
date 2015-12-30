@@ -90,9 +90,17 @@ int main(int argc, char *argv[]) {
         else{
             std::cout << "Error, invalid thread count : " << args->t <<
                     std::endl;
+            return EXIT_FAILURE;
         }
     }
-
+    /*cv::VideoCapture capture(args->video_folder + "/ace_" + std::to_string
+                                                (args->camera_index) +".mp4");
+    cv::Size S = cv::Size((int) capture.get(CV_CAP_PROP_FRAME_WIDTH),    //
+            // Acquire input size
+                  (int) capture.get(CV_CAP_PROP_FRAME_HEIGHT));
+    cv::VideoWriter videoWriter(args->save_folder + "/ace_0.mp4",
+                                static_cast<int> (capture.get
+                (CV_CAP_PROP_FOURCC)), capture.get(CV_CAP_PROP_FPS), S, true);*/
     tmd::frame_t *frame = pipeline->next_frame();
     std::cout << "Begin" << std::endl;
     while (frame != NULL){
@@ -106,11 +114,14 @@ int main(int argc, char *argv[]) {
         if (args->save_results){
             std::string file_name = args->save_folder + "/frame" +
                     std::to_string(frame->frame_index) + ".jpg";
+            std::cout << "Save frame " << frame->frame_index << std::endl;
             cv::imwrite(file_name, result);
+            //videoWriter.write(result);
         }
         free_frame(frame);
         frame = pipeline->next_frame();
     }
+
     std::cout << "Done" << std::endl;
     return EXIT_SUCCESS;
 
@@ -197,42 +208,60 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]){
         else if (!strcmp(argv[i], "--save-results")){
             args->save_results = true;
             i ++;
-            if (i == argc) return NULL;
+            if (i == argc){
+                std::cout << "Error, expected save folder." << std::endl;
+                return NULL;
+            }
             else args->save_folder = argv[i];
         }
         else if (!strcmp(argv[i], "--show-torsos")){
             args->show_torsos = true;
         }
         else if (!strcmp(argv[i], "-s")){
-            if (i == argc - 1) return NULL;
+            if (i == argc - 1){
+                std::cout << "Error, expected starting frame." << std::endl;
+                return NULL;
+            }
             else{
                 i ++;
                 args->s = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
         else if (!strcmp(argv[i], "-e")){
-            if (i == argc - 1) return NULL;
+            if (i == argc - 1){
+                std::cout << "Error, expected ending frame." << std::endl;
+                return NULL;
+            }
             else{
                 i ++;
                 args->e = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
         else if (!strcmp(argv[i], "-j")){
-            if (i == argc - 1) return NULL;
+            if (i == argc - 1){
+                std::cout << "Error, expected step size." << std::endl;
+                return NULL;
+            }
             else{
                 i ++;
                 args->j = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
         else if (!strcmp(argv[i], "-t")){
-            if (i == argc - 1) return NULL;
+            if (i == argc - 1){
+                std::cout << "Error, expected thread count." << std::endl;
+                return NULL;
+            }
             else{
                 i ++;
                 args->t = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
         else if (!strcmp(argv[i], "-b")){
-            if (i == argc - 1) return NULL;
+            if (i == argc - 1){
+                std::cout << "Error, expected box refresh rate." << std::endl;
+                return NULL;
+            }
             else{
                 i ++;
                 args->b = static_cast<int>(strtol(argv[i], NULL, 10));
