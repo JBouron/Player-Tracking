@@ -55,23 +55,23 @@ void test_fast_dpm(void) {
 
 int main(int argc, char *argv[]) {
     tmd::Config::load_config();
-    tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
-                        "./res/videos/alone-red-no-ball/", 4, 2, 0, 0, 1200);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
+                "./res/videos/uni-hockey/",0, 4, 10, 2000, 1);
     tmd::frame_t *frame = pipeline->next_frame();
-    SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
+    //SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
     double t1 = cv::getTickCount();
     int count = 0;
-    int max_frames = -1;
-    std::string folder = "./res/pipeline_results/complete_pipeline/alone-red"
-            "-no-ball/";
+    int max_frames = 300;
+    std::string folder = "./res/pipeline_results/complete_pipeline/uni/with "
+            "blob separator/";
 
     while (frame != NULL) {
         std::string frame_index = std::to_string(count);
         std::string file_name = folder + "/frame" + frame_index + ".jpg";
         std::cout << "Save frame " << frame_index << std::endl;
-        tmd::SDLBinds::imshow(window, tmd::draw_player_on_frame(0, frame,
-                                                                true));
-        delete frame;
+        /*tmd::SDLBinds::imshow(window, tmd::draw_player_on_frame(0, frame,
+                                                                true));*/
+        tmd::free_frame(frame);
         frame = pipeline->next_frame();
         count++;
         if (count == max_frames) {

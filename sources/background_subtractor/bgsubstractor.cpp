@@ -120,7 +120,7 @@ namespace tmd {
         mask_copy.release();
         checked_pixels.release();
         m_frame_index += m_step_size;
-        m_input_video.set(CV_CAP_PROP_POS_FRAMES, m_frame_index);
+        //m_input_video.set(CV_CAP_PROP_POS_FRAMES, m_frame_index);
         return frame;
     }
 

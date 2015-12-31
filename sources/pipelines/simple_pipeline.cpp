@@ -49,7 +49,8 @@ namespace tmd {
                                                    " players/blobs extracted.");
 
         cv::Mat coloredMask = get_colored_mask_for_frame(frame);
-        frame->colored_mask_frame = coloredMask;
+        /*frame->colored_mask_frame = coloredMask;*/
+        frame->original_frame = coloredMask;
 
         tmd::debug("SimplePipeline", "next_frame", "Separate blobs.");
         players = BlobSeparator::separate_blobs(players);
@@ -60,7 +61,7 @@ namespace tmd {
                                                    std::to_string(players.size()) + " players detected");
         m_featuresExtractor->extractFeaturesFromPlayers(players);
         m_featuresComparator->detectTeamForPlayers(players);
-        coloredMask.release();
+        //coloredMask.release();
         frame->players = players;
     }
 }

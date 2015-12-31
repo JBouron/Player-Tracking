@@ -39,9 +39,9 @@ namespace tmd {
                     m_buffer.pop_front();
                     return head;
                 }
-                else if (m_done) {
+                /*else if (m_done) {
                     return NULL;
-                }
+                }*/
             }
         }
     }

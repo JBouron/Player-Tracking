@@ -1,5 +1,7 @@
 #include "../../../headers/players_extraction/blob_based_extraction/blob_separator.h"
 #include "../../../headers/features_extraction/dpm.h"
+#include "../../../headers/data_structures/player_t.h"
+#include "../../../headers/data_structures/frame_t.h"
 
 namespace tmd {
     std::vector<tmd::player_t *> BlobSeparator::separate_blobs(
@@ -13,8 +15,6 @@ namespace tmd {
 
         for (size_t i = 0; i < size; i++) {
             player_t *p = players[i]; // freed
-            cv::imwrite("./res/debug/last_player_image_blob_separator.jpg ",
-                        p->original_image);
             if (p->original_image.rows < 100 || p->original_image.cols < 50) {
                 free_player(p);
                 continue;
@@ -27,7 +27,6 @@ namespace tmd {
                     tmd::get_colored_mask_for_frame(blob_frame);
             blob_frame->original_frame.release();
             blob_frame->original_frame = colored_mask;
-
 
             tmd::debug("BlobSeparator", "separate_blobs", "Extract players "
                     "from blob.");
