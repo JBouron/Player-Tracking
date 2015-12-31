@@ -3,7 +3,7 @@
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include "../features_extractor.h"
+#include "../features_extraction/features_extractor.h"
 
 namespace tmd{
     /** Test Class for the FeaturesExtractor **/

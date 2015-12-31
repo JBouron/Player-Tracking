@@ -1,20 +1,11 @@
 #include <iostream>
-#include "../headers/frame_t.h"
-#include "../headers/test_cases/test_suite.h"
-#include "../headers/manual_player_extractor.h"
-#include "../headers/calibration_tool.h"
-#include "../headers/dpm_player_extractor.h"
-#include "../headers/features_extractor.h"
-#include "../headers/feature_comparator.h"
-#include "../headers/dpm_calibrator.h"
-#include "../headers/pipeline.h"
-#include "../headers/training_set_creator.h"
-
-#include "../headers/sdl_binds/sdl_binds.h"
-#include "../headers/simple_pipeline.h"
-#include "../headers/pipeline_thread.h"
-#include "../headers/multithreaded_pipeline.h"
-#include "../headers/dpm.h"
+#include "../headers/data_structures/frame_t.h"
+#include "../headers/background_subtractor/bgsubstractor.h"
+#include "../headers/features_extraction/dpm.h"
+#include "../headers/pipelines/pipeline.h"
+#include "../headers/pipelines/multithreaded_pipeline.h"
+#include "../headers/tools/training_set_creator.h"
+#include "../headers/pipelines/real_time_pipeline.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -30,17 +21,23 @@ void dpm_whole_frame(void);
 
 void test_blob_separation(void);
 
+void create_training_set(void);
+
 void memleak_video_capture(void) {
-    tmd::BGSubstractor bgs("./res/videos/alone-red-no-ball/", 0, 300, 10);
-    while (1){
-        tmd::frame_t* frame = bgs.next_frame();
-        cv::imshow("FGrame", frame->mask_frame);
+    std::string file = "./res/videos/alone-green-no-ball/ace_0.mp4";
+    cv::VideoCapture capture(file);
+    int c = 1;
+    while (c < 10){
+        capture.set(CV_CAP_PROP_POS_FRAMES, 100*c);
+        c++;
+        cv::Mat frame;
+        capture.read(frame);
+        cv::imshow("Frame", frame);
         cv::waitKey(0);
-        tmd::free_frame(frame);
     }
 }
 
-void test_fast_dpm(void){
+void test_fast_dpm(void) {
     tmd::DPM fastDPM;
     tmd::frame_t blob;
     blob.frame_index = 0;
@@ -56,39 +53,61 @@ void test_fast_dpm(void){
     std::cout << "end" << std::endl;
 }
 
-
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
     tmd::Config::load_config();
-    /*tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-                                      "./res/videos/uni-hockey/ace_0.mp4", 2,
-            "./res/xmls/person.xml");*/
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-    "./res/videos/uni-hockey/",0, 4, 10, 2000, 1);
+    tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
+                        "./res/videos/alone-red-no-ball/", 4, 2, 0, 0, 1200);
     tmd::frame_t *frame = pipeline->next_frame();
-
+    SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
     double t1 = cv::getTickCount();
     int count = 0;
-    int max_frames = 300;
-    std::string folder = "./res/pipeline_results/complete_pipeline/uni/with "
-            "blob separator/";
+    int max_frames = -1;
+    std::string folder = "./res/pipeline_results/complete_pipeline/alone-red"
+            "-no-ball/";
 
     while (frame != NULL) {
         std::string frame_index = std::to_string(count);
         std::string file_name = folder + "/frame" + frame_index + ".jpg";
-        cv::imwrite(file_name, tmd::draw_player_on_frame(frame, true));
         std::cout << "Save frame " << frame_index << std::endl;
-        tmd::free_frame(frame);
+        tmd::SDLBinds::imshow(window, tmd::draw_player_on_frame(0, frame,
+                                                                true));
+        delete frame;
         frame = pipeline->next_frame();
         count++;
         if (count == max_frames) {
             break;
         }
     }
-    tmd::free_frame(frame);
+
     delete pipeline;
     double t2 = cv::getTickCount();
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
+}
+
+void create_training_set(void) {
+    tmd::Config::load_config();
+
+    tmd::TrainingSetCreator *trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0,
+                                                                   "./res/xmls/person.xml", 0, 300, 1);
+    tmd::frame_t *frame = trainer->next_frame();
+
+    int count = 0;
+    int max_frames = 10;
+
+    while (frame != NULL) {
+        std::string frame_index = std::to_string(count);
+        std::cout << "Finished frame " << frame_index << std::endl;
+        tmd::free_frame(frame);
+        frame = trainer->next_frame();
+        count++;
+        if (count == max_frames) {
+            break;
+        }
+    }
+    tmd::free_frame(frame);
+    trainer->write_centers();
+    delete trainer;
 }
 
 void test_blob_separation(void) {
@@ -111,35 +130,6 @@ void test_blob_separation(void) {
         cv::imshow("Player", new_players[i]->original_image);
         cv::waitKey(0);
     }
-}
-
-void create_training_set(void) {
-
-    std::string basic_path = "./res/videos/";
-
-    std::string video_folders[8];
-    std::string mask_folder[6];
-
-    video_folders[0] = basic_path + "alone-green-ball/";
-    video_folders[1] = basic_path + "alone-green-no-ball/";
-    video_folders[2] = basic_path + "alone-red-ball/";
-    video_folders[3] = basic_path + "alone-red-no-ball/";
-    video_folders[4] = basic_path + "two-green-ball/";
-    video_folders[5] = basic_path + "two-green-no-ball/";
-    video_folders[6] = basic_path + "two-red-ball/";
-    video_folders[7] = basic_path + "two-red-no-ball/";
-
-    cv::VideoCapture videos[48];
-
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 6; j++) {
-            std::string video_path = video_folders[i] + "ace_" + std::to_string(j) + ".mp4";
-            videos[i + j].open(video_path);
-        }
-    }
-
-    cv::Mat centers;
-    tmd::FeatureComparator *comparator = new tmd::FeatureComparator(2, 180, centers);
 }
 
 void dpm_whole_frame(void) {

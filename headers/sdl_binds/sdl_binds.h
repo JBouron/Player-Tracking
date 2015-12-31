@@ -5,7 +5,7 @@
 #include <opencv2/core/core.hpp>
 #include <SDL_video.h>
 #include <SDL.h>
-#include "../config.h"
+#include "../misc/config.h"
 
 namespace tmd{
     /**
