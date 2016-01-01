@@ -24,6 +24,8 @@ namespace tmd{
         int m_frame_pos;
         tmd::Pipeline *m_pipeline;
         tmd::frame_t *m_last_frame_computed;
+
+        double m_frame_delay; // minimum time between to frames.
     };
 }
 

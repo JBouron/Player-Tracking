@@ -12,6 +12,9 @@ namespace tmd{
         m_frame_pos = start_frame;
         m_box_step = box_step;
 
+        double fps = m_video->get(CV_CAP_PROP_FPS);
+        m_frame_delay = 1.0 / fps;
+
         if (thread_count == 1){
             m_pipeline = new tmd::SimplePipeline(video_folder, camera_index,
                                              start_frame, end_frame, box_step);
@@ -25,11 +28,11 @@ namespace tmd{
     }
 
     frame_t* RealTimePipeline::next_frame(){
+        double time_start = cv::getTickCount();
         cv::Mat video_frame;
         if (!m_video->read(video_frame)){
             return NULL;
         }
-
         if ((m_frame_pos - m_start) % m_box_step == 0){
             free_frame(m_last_frame_computed);
             m_last_frame_computed = m_pipeline->next_frame();
@@ -54,6 +57,8 @@ namespace tmd{
         }*/
         //jump_video_to_next_frame();
         m_frame_pos += m_step;
+        while ((cv::getTickCount() - time_start) / cv::getTickFrequency() <
+                m_frame_delay);
         return frame;
     }
 
