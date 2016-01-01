@@ -70,6 +70,8 @@ namespace tmd {
         int get_current_frame_index();
 
     private:
+        void step();
+
         cv::Ptr<cv::BackgroundSubtractorMOG2> m_bgs;
         cv::VideoCapture m_input_video;
         std::string m_input_video_path;
