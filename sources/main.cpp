@@ -56,12 +56,12 @@ void test_fast_dpm(void) {
 int main(int argc, char *argv[]) {
     tmd::Config::load_config();
     tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-                "./res/videos/uni-hockey/",0, 4, 10, 2000, 1);
+                "./res/videos/uni-hockey/",0, 4, 150, 2000, 1);
     tmd::frame_t *frame = pipeline->next_frame();
     //SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
     double t1 = cv::getTickCount();
     int count = 0;
-    int max_frames = 300;
+    int max_frames = 50;
     std::string folder = "./res/pipeline_results/complete_pipeline/uni/with "
             "blob separator/";
 
