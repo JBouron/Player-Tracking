@@ -11,16 +11,16 @@ namespace tmd{
     class RealTimePipeline : public Pipeline{
 
     public:
-        RealTimePipeline(const std::string &video_folder, int thread_count,
-                         float box_refresh_rate, int camera_index,
-                         int start_frame, int end_frame);
+        RealTimePipeline(const std::string &video_folder, int camera_index,
+                         int thread_count, int start_frame, int end_frame,
+                         int box_step);
 
         frame_t* next_frame();
 
     private:
         void jump_video_to_next_frame();
 
-        int m_box_refresh_modulus;
+        int m_box_step;
         int m_frame_pos;
         tmd::Pipeline *m_pipeline;
         tmd::frame_t *m_last_frame_computed;

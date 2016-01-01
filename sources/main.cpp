@@ -55,8 +55,8 @@ void test_fast_dpm(void) {
 
 int main(int argc, char *argv[]) {
     tmd::Config::load_config();
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-                        "./res/videos/uni-hockey/", 0, 4, 0, 10, 5);
+    tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
+                        "./res/videos/uni-hockey/", 0, 4, 0, 1200, 5);
     tmd::frame_t *frame = pipeline->next_frame();
     SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
     double t1 = cv::getTickCount();
@@ -70,6 +70,7 @@ int main(int argc, char *argv[]) {
         std::cout << "Save frame " << frame_index << std::endl;
         tmd::SDLBinds::imshow(window, tmd::draw_player_on_frame(0, frame,
                                                                 true));
+        //cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true));
         delete frame;
         frame = pipeline->next_frame();
         count++;
