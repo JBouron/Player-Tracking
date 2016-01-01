@@ -56,10 +56,9 @@ void test_fast_dpm(void) {
 int main(int argc, char *argv[]) {
     tmd::Config::load_config();
     tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
-                        "./res/videos/uni-hockey/", 0, 4, 0, 1200, 5);
+                        "./res/videos/uni-hockey/", 0, 4, 0, 3000, 30);
     tmd::frame_t *frame = pipeline->next_frame();
     SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
-    double t1 = cv::getTickCount();
     int count = 0;
     int max_frames = -1;
     std::string folder = "./res/pipeline_results/complete_pipeline/uni/with blob separator/";
@@ -72,7 +71,10 @@ int main(int argc, char *argv[]) {
                                                                 true));
         //cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true));
         delete frame;
+    double t1 = cv::getTickCount();
         frame = pipeline->next_frame();
+        double t2 = cv::getTickCount();
+        std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
         count++;
         if (count == max_frames) {
             break;
@@ -80,8 +82,6 @@ int main(int argc, char *argv[]) {
     }
 
     delete pipeline;
-    double t2 = cv::getTickCount();
-    std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
 }
 
