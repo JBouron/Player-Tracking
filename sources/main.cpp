@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
         tmd::SDLBinds::imshow(window, tmd::draw_player_on_frame(0, frame,
                                                                 true));
         //cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true));
-        delete frame;
+        //delete frame;
     double t1 = cv::getTickCount();
         frame = pipeline->next_frame();
         double t2 = cv::getTickCount();

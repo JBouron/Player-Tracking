@@ -42,24 +42,14 @@ namespace tmd{
         }
 
         tmd::frame_t* frame = new frame_t;
-        frame->original_frame = video_frame;
-        frame->mask_frame = m_last_frame_computed->mask_frame;
-        frame->blobs = m_last_frame_computed->blobs;
-        frame->camera_index = m_last_frame_computed->camera_index;
-        frame->colored_mask_frame = m_last_frame_computed->colored_mask_frame;
-        frame->frame_index = m_last_frame_computed->frame_index;
-        frame->players = m_last_frame_computed->players;
-        /*size_t player_count = m_last_frame_computed->players.size();
-        for (int i = 0 ; i < player_count ; i ++){
-            frame->players.push_back(new tmd::player_t);
-            memcpy((frame->players[i]), m_last_frame_computed->players[i],
-                   sizeof(tmd::player_t));
-        }*/
-        //jump_video_to_next_frame();
+        m_last_frame_computed->original_frame = video_frame;
         m_frame_pos += m_step;
-        while ((cv::getTickCount() - time_start) / cv::getTickFrequency() <
-                m_frame_delay);
-        return frame;
+        /*std::this_thread::sleep_for(std::chrono::duration<double>
+                                            (m_frame_delay -
+                 (cv::getTickCount() - time_start) / cv::getTickFrequency()));
+        /*while ((cv::getTickCount() - time_start) / cv::getTickFrequency() <
+                m_frame_delay);*/
+        return m_last_frame_computed;
     }
 
     void RealTimePipeline::jump_video_to_next_frame(){
