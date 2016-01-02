@@ -1,6 +1,8 @@
 #ifndef BACHELOR_PROJECT_REAL_TIME_PIPELINE_H
 #define BACHELOR_PROJECT_REAL_TIME_PIPELINE_H
 
+#include <thread>         // std::this_thread::sleep_for
+#include <chrono>         // std::chrono::seconds
 #include "multithreaded_pipeline.h"
 
 namespace tmd{
