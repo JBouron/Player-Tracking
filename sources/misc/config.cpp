@@ -97,11 +97,12 @@ namespace tmd {
     int Config::dpm_detector_numthread = 4;
 
     /**********************************************************************/
-    /* DPM Player Extractor                                               */
+    /* DPM                                                                */
     /**********************************************************************/
     float Config::dpm_extractor_score_threshold = -1.f;
     float Config::dpm_extractor_overlapping_threshold = 0.2;
     float Config::dpm_extractor_duplicate_area_threshold = 0.7;
+    bool Config::use_dpm_player_extractor = false;
 
     /**********************************************************************/
     /* Features Comparator                                                */
