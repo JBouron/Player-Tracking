@@ -23,9 +23,11 @@ namespace tmd {
                                 std::to_string(camera_index) + ".jpg";
         m_static_mask = cv::imread(mask_path, 0);
 
-        std::string background_path = tmd::Config::bgs_empty_room_background
-                          + "/ace_" + std::to_string(camera_index) + ".jpg";
-        cv::Mat bg = cv::imread(background_path);
+        /*std::string background_path = tmd::Config::bgs_empty_room_background
+                          + "/ace_" + std::to_string(camera_index) + ".jpg";*/
+        m_input_video.open(m_input_video_path);
+        cv::Mat bg;
+        m_input_video.read(bg);
         cv::Mat mask;
         m_bgs->operator()(bg, mask, m_learning_rate);
 
