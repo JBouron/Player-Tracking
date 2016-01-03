@@ -63,14 +63,14 @@ tmd::cmd_args_t *get_debug_args(){
     args->video_folder = "./res/videos/uni-hockey/";
     args->camera_index = 0;
     args->show_results = true;
-    args->save_results = false;
+    args->save_results = true;
     args->save_folder = "./res/pipeline_results/complete_pipeline/uni/with blob separator/";
     args->show_torsos = true;
-    args->s = 0;
+    args->s = 10;
     args->e = std::numeric_limits<int>::max();
     args->j = 1;
-    args->t = 4;
-    args->b = 15;
+    args->t = 1;
+    args->b = 1;
     return args;
 }
 
