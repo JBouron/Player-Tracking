@@ -24,7 +24,8 @@ namespace tmd {
         CvMemStorage *memStorage = cvCreateMemStorage(0);
 
         this->cvLatentSvmDetectObjects(&blobImage, m_detector, memStorage,
-                                       tmd::Config::dpm_extractor_overlapping_threshold, tmd::Config::dpm_detector_numthread);
+tmd::Config::dpm_extractor_overlapping_threshold,
+                                       tmd::Config::dpm_detector_numthread);
 
         // apply clamp and make part coordinates relative to the box
         clamp_detections(frame->original_frame.cols, frame->original_frame.rows);
@@ -42,7 +43,7 @@ namespace tmd {
                 player->original_image = frame->original_frame(box);
                 player->pos_frame = box;
                 player->features.body_parts = parts;
-                extractTorsoForPlayer(player);
+                extractTorsoForPlayer(player, std::get<3>(detect));
                 players.push_back(player);
             }
         }
@@ -50,7 +51,7 @@ namespace tmd {
         return players;
     }
 
-    void DPM::extractTorsoForPlayer(player_t *player) {
+    void DPM::extractTorsoForPlayer(player_t *player, int component_level) {
         if (player == NULL) {
             throw std::invalid_argument("Error null pointer given to "
                                                 "extractTorsoForPlayer method");
@@ -59,8 +60,16 @@ namespace tmd {
             throw std::invalid_argument("Error not enough body parts in "
                                                 "extractTorsoForPlayer");
         }
-        cv::Rect torso1 = player->features.body_parts[1];
-        cv::Rect torso2 = player->features.body_parts[2];
+        cv::Rect torso1;
+        cv::Rect torso2;
+        if (component_level == 1){
+            torso1 = player->features.body_parts[1];
+            torso2 = player->features.body_parts[2];
+        }
+        else{
+            torso1 = player->features.body_parts[0];
+            torso2 = player->features.body_parts[1];
+        }
         cv::Rect mean;
         mean.x = (torso1.x + torso2.x) / 2;
         mean.y = (torso1.y + torso2.y) / 2;
@@ -516,7 +525,7 @@ namespace tmd {
                          partsDisplacementArr[i][j - s], levelsArr[i][j - s]);
                 tmd::detection entry = std::make_tuple(cv::Rect((*points)[j],
                                                                 (*oppPoints)[j]),
-                                                       p, (*score)[j]);
+                                                       p, (*score)[j], i);
                 m_detections.push_back(entry);
             }
             s = f;
