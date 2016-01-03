@@ -1,8 +1,8 @@
-#include "../../headers/pipelines/real_time_pipeline.h"
+#include "../../headers/pipelines/approximative_pipeline.h"
 #include "../../headers/data_structures/frame_t.h"
 
 namespace tmd{
-    RealTimePipeline::RealTimePipeline(const std::string &video_folder,
+    ApproximativePipeline::ApproximativePipeline(const std::string &video_folder,
            int camera_index, int thread_count, int start_frame, int end_frame,
                                        int box_step)
             : Pipeline(video_folder, camera_index, start_frame, end_frame,
@@ -27,7 +27,7 @@ namespace tmd{
         }
     }
 
-    frame_t* RealTimePipeline::next_frame(){
+    frame_t* ApproximativePipeline::next_frame(){
         double time_start = cv::getTickCount();
         cv::Mat video_frame;
         if (!m_video->read(video_frame)){
@@ -52,7 +52,7 @@ namespace tmd{
         return m_last_frame_computed;
     }
 
-    void RealTimePipeline::jump_video_to_next_frame(){
+    void ApproximativePipeline::jump_video_to_next_frame(){
         cv::Mat dummy;
         for (int i = 0 ; i < m_step - 1 ; i ++){
             m_video->read(dummy);

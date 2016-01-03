@@ -5,7 +5,7 @@
 #include "../headers/pipelines/pipeline.h"
 #include "../headers/pipelines/multithreaded_pipeline.h"
 #include "../headers/tools/training_set_creator.h"
-#include "../headers/pipelines/real_time_pipeline.h"
+#include "../headers/pipelines/approximative_pipeline.h"
 #include "../headers/data_structures/cmd_args_t.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
     SDL_Window *window = NULL;
 
     if (args->b > 1){
-        pipeline = new tmd::RealTimePipeline(args->video_folder,
+        pipeline = new tmd::ApproximativePipeline(args->video_folder,
                                              args->camera_index, args->t,
                                              args->s, args->e, args->b);
     }
