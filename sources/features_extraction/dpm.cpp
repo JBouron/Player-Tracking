@@ -893,12 +893,32 @@ namespace tmd {
                 if (part.y < 0) {
                     part.y = 0;
                 }
+                if (part.x > box.width){
+                    part.x = box.width;
+                }
+                if (part.y > box.height){
+                    part.y = box.height;
+                }
+                if (part.width < 0){
+                    part.width = 0;
+                }
+                if (part.height < 0){
+                    part.height = 0;
+                }
                 if (part.x + part.width > box.width) {
                     part.width = box.width - part.x;
                 }
                 if (part.y + part.height > box.height) {
                     part.height = box.height - part.y;
                 }
+                assert (part.x >= 0);
+                assert (part.x <= box.width);
+                assert (part.y >= 0);
+                assert (part.y <= box.height);
+                assert (part.width >= 0);
+                assert (part.height >= 0);
+                assert (part.x + part.width <= box.width);
+                assert (part.y + part.height<= box.height);
             }
         }
     }
