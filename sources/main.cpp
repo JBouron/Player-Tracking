@@ -58,12 +58,29 @@ void test_fast_dpm(void) {
 void show_help();
 tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 
+tmd::cmd_args_t *get_debug_args(){
+    tmd::cmd_args_t *args = new tmd::cmd_args_t;
+    args->video_folder = "./res/videos/uni-hockey/";
+    args->camera_index = 0;
+    args->show_results = true;
+    args->save_results = false;
+    args->save_folder = "./res/pipeline_results/complete_pipeline/uni/with blob separator/";
+    args->show_torsos = true;
+    args->s = 0;
+    args->e = std::numeric_limits<int>::max();
+    args->j = 1;
+    args->t = 4;
+    args->b = 15;
+    return args;
+}
+
 void params_benchmark();
 void bgs_benchmark();
 
 
 int main(int argc, char *argv[]) {
-    tmd::cmd_args_t* args = parse_args(argc, argv);
+    // TODO : Normally use parse_args function.
+    tmd::cmd_args_t* args = get_debug_args();
     if (args == NULL){
         show_help();
         return EXIT_FAILURE;
@@ -74,13 +91,15 @@ int main(int argc, char *argv[]) {
     /* The pipeline of the algorithm. */
     tmd::Pipeline *pipeline = NULL;
     SDL_Window *window = NULL;
-
+    bool use_approximate_pipeline;
     if (args->b > 1){
         pipeline = new tmd::ApproximativePipeline(args->video_folder,
                                              args->camera_index, args->t,
                                              args->s, args->e, args->b);
+        use_approximate_pipeline = true;
     }
     else{
+        use_approximate_pipeline = false;
         if (args->t == 1){
             pipeline = new tmd::SimplePipeline(args->video_folder,
                                                args->camera_index, args->s,
@@ -119,7 +138,9 @@ int main(int argc, char *argv[]) {
             std::cout << "Save frame " << frame->frame_index << std::endl;
             cv::imwrite(file_name, result);
         }
-        free_frame(frame);
+        if (!use_approximate_pipeline) {
+            free_frame(frame);
+        }
         frame = pipeline->next_frame();
     }
 
