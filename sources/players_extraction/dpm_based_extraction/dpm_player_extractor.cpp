@@ -1,4 +1,5 @@
 #include "../../../headers/players_extraction/dpm_based_extraction/dpm_player_extractor.h"
+#include "../../../headers/data_structures/frame_t.h"
 
 namespace tmd {
     DPMPlayerExtractor::DPMPlayerExtractor() {
@@ -11,7 +12,12 @@ namespace tmd {
 
     std::vector<player_t *> DPMPlayerExtractor::extract_player_from_frame(
             frame_t *frame) {
-        return m_detector->extract_players_and_body_parts(frame);
+        tmd::frame_t *tmp = new tmd::frame_t;
+        tmp->original_frame = tmd::get_colored_mask_for_frame(frame);
+        tmp->mask_frame = frame->mask_frame;
+        tmp->frame_index = frame->frame_index;
+        tmp->camera_index = frame->camera_index;
+        return m_detector->extract_players_and_body_parts(tmp);
     }
 
     void DPMPlayerExtractor::set_overlapping_threshold(float th){
