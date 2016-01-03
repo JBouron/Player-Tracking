@@ -24,7 +24,7 @@ namespace tmd {
         CvMemStorage *memStorage = cvCreateMemStorage(0);
 
         this->cvLatentSvmDetectObjects(&blobImage, m_detector, memStorage,
-                                       tmd::Config::dpm_extractor_overlapping_threshold, 1);
+                                       tmd::Config::dpm_extractor_overlapping_threshold, tmd::Config::dpm_detector_numthread);
 
         // apply clamp and make part coordinates relative to the box
         clamp_detections(frame->original_frame.cols, frame->original_frame.rows);
@@ -647,9 +647,6 @@ namespace tmd {
                                    int numThreads) {
         int opResult;
 
-
-        // Matching
-#ifdef HAVE_TBB
         if (numThreads <= 0)
     {
         opResult = LATENT_SVM_TBB_NUMTHREADS_NOT_CORRECT;
@@ -659,15 +656,7 @@ namespace tmd {
                                            scoreThreshold, numThreads, score,
                                            points, levels, kPoints,
                                            partsDisplacement);
-#else
-        opResult = this->thresholdFunctionalScore(all_F, n, H, b,
-                                                  maxXBorder, maxYBorder,
-                                                  scoreThreshold,
-                                                  score, points, levels,
-                                                  kPoints, partsDisplacement);
 
-        (void) numThreads;
-#endif
         if (opResult != LATENT_SVM_OK) {
             return LATENT_SVM_SEARCH_OBJECT_FAILED;
         }
