@@ -45,8 +45,6 @@ namespace tmd{
     private:
         void recreate_detector();
         tmd::DPM* m_detector;
-        float m_overlap_threshold;
-        float m_score_threshold;
     };
 }
 
