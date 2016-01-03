@@ -16,7 +16,7 @@
 #include "../sdl_binds/sdl_binds.h"
 
 namespace tmd{
-    typedef std::tuple<cv::Rect, std::vector<cv::Rect>, float> detection;
+    typedef std::tuple<cv::Rect, std::vector<cv::Rect>, float, int> detection;
 
     class DPM {
     public:
@@ -98,7 +98,7 @@ namespace tmd{
                                                   CvPoint *points, int kPoints);
 
         void clamp_detections(int width, int height);
-        void extractTorsoForPlayer(player_t *player);
+        void extractTorsoForPlayer(player_t *player, int component_level);
 
         CvLatentSvmDetector *m_detector;
 
