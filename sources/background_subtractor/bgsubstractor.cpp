@@ -121,6 +121,8 @@ namespace tmd {
         mask_copy.copyTo(frame->mask_frame);
         mask_copy.release();
         checked_pixels.release();
+        cv::Mat coloredMask = get_colored_mask_for_frame(frame);
+        frame->colored_mask_frame = coloredMask;
         step();
         return frame;
     }
