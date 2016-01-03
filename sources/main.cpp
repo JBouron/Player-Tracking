@@ -78,6 +78,8 @@ int main(int argc, char *argv[]) {
                                                  true, true, false, true));
         tmd::free_frame(frame);
         frame = pipeline->next_frame();
+        double t2 = cv::getTickCount();
+        std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
         count++;
         if (count == max_frames) {
             break;
@@ -85,8 +87,6 @@ int main(int argc, char *argv[]) {
     }
 
     delete pipeline;
-    double t2 = cv::getTickCount();
-    std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
     return EXIT_SUCCESS;
 }
 
