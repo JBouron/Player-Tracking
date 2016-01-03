@@ -1,5 +1,6 @@
 #include "../../../headers/players_extraction/blob_based_extraction/blob_separator.h"
 #include "../../../headers/features_extraction/dpm.h"
+#include "../../../headers/data_structures/frame_t.h"
 
 namespace tmd {
     std::vector<tmd::player_t *> BlobSeparator::separate_blobs(
@@ -25,8 +26,7 @@ namespace tmd {
             blob_frame->frame_index = p->frame_index;
             cv::Mat colored_mask =
                     tmd::get_colored_mask_for_frame(blob_frame);
-            blob_frame->original_frame.release();
-            blob_frame->original_frame = colored_mask;
+            blob_frame->colored_mask_frame = colored_mask;
 
 
             tmd::debug("BlobSeparator", "separate_blobs", "Extract players "
