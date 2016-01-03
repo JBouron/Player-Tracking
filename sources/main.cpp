@@ -128,6 +128,7 @@ int main(int argc, char *argv[]) {
     }
 
     std::cout << "Done" << std::endl;
+    delete pipeline;
     return EXIT_SUCCESS;
 }
 
