@@ -123,7 +123,10 @@ namespace tmd {
             }
 
             if (draw_player) {
-
+                cv::putText(result, std::to_string(p->likelihood), cv::Point
+                                    (p->pos_frame.x, p->pos_frame.y-5),
+                            cv::FONT_HERSHEY_SIMPLEX,
+                            0.55, torso_color );
                 if (draw_player_color) {
                     cv::rectangle(result, p->pos_frame, tmd::get_team_color(p->team),
                                   thickness, line_type, shift);
