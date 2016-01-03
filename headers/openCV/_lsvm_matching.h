@@ -356,7 +356,6 @@ int thresholdFunctionalScore(const CvLSVMFilterObject **all_F, int n,
                              CvPoint **points, int **levels, int *kPoints,
                              CvPoint ***partsDisplacement);
 
-#ifdef HAVE_TBB
 /*
 // int tbbThresholdFunctionalScore(const CvLSVMFilterObject **all_F, int n,
                                    const CvLSVMFeaturePyramid *H,
@@ -395,7 +394,6 @@ int tbbThresholdFunctionalScore(const CvLSVMFilterObject **all_F, int n,
                                 float **score,
                                 CvPoint **points, int **levels, int *kPoints,
                                 CvPoint ***partsDisplacement);
-#endif
 
 /*
 // Perform non-maximum suppression algorithm (described in original paper)

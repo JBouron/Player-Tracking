@@ -63,8 +63,9 @@ namespace tmd{
         int m_frame_idx;
         int m_step_size;
         int m_id;
-        std::atomic<bool> m_done;
+        bool m_done;
         std::atomic<bool> m_stop_request;
+        std::atomic<bool> m_worker_stopped;
     };
 }
 
