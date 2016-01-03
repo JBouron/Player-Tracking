@@ -103,6 +103,7 @@ namespace tmd {
     float Config::dpm_extractor_overlapping_threshold = 0.2;
     float Config::dpm_extractor_duplicate_area_threshold = 0.7;
     bool Config::use_dpm_player_extractor = false;
+    bool Config::use_colored_mask_in_dpm = true;
 
     /**********************************************************************/
     /* Features Comparator                                                */

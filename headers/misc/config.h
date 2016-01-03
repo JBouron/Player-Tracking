@@ -56,6 +56,7 @@ namespace tmd{
         static float dpm_extractor_overlapping_threshold;
         static float dpm_extractor_duplicate_area_threshold;
         static bool use_dpm_player_extractor;
+        static bool use_colored_mask_in_dpm;
 
         /**********************************************************************/
         /* Features Comparator                                                */
