@@ -54,8 +54,13 @@ void test_fast_dpm(void) {
     std::cout << "end" << std::endl;
 }
 
+
 void show_help();
 tmd::cmd_args_t *parse_args(int argc, char *argv[]);
+
+void params_benchmark();
+void bgs_benchmark();
+
 
 int main(int argc, char *argv[]) {
     tmd::cmd_args_t* args = parse_args(argc, argv);
@@ -124,36 +129,6 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Done" << std::endl;
     return EXIT_SUCCESS;
-
-    /**/
-    /*tmd::Pipeline *pipeline = new tmd::RealTimePipeline(
-                        "./res/videos/alone-red-no-ball/", 4, 2, 0, 0, 1200);
-    tmd::frame_t *frame = pipeline->next_frame();
-    SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
-    double t1 = cv::getTickCount();
-    int count = 0;
-    int max_frames = -1;
-    std::string folder = "./res/pipeline_results/complete_pipeline/alone-red"
-            "-no-ball/";
-
-    while (frame != NULL) {
-        std::string frame_index = std::to_string(count);
-        std::string file_name = folder + "/frame" + frame_index + ".jpg";
-        std::cout << "Save frame " << frame_index << std::endl;
-        tmd::SDLBinds::imshow(window, tmd::draw_player_on_frame(0, frame,
-                                                                true));
-        delete frame;
-        frame = pipeline->next_frame();
-        count++;
-        if (count == max_frames) {
-            break;
-        }
-    }
-
-    delete pipeline;
-    double t2 = cv::getTickCount();
-    std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
-    return EXIT_SUCCESS;*/
 }
 
 void show_help(){
@@ -162,7 +137,8 @@ void show_help(){
     std::cout << "#             Bachelor project                #" << std::endl;
     std::cout << "###############################################" << std::endl;
 
-    std::cout << "              Help                             " << std::endl;
+    std::cout << "  HELP :                                             " <<
+            std::endl;
     std::cout << "The first argument should be the folder containing the "
                          "videos."  << std::endl;
     std::cout << "The second argument is the camera index on which the "
@@ -275,6 +251,77 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]){
         }
     }
     return args;
+}
+
+void params_benchmark(){
+    std::string folder = "./res/params_benchmark/";
+    tmd::SimplePipeline* pipeline = NULL;
+    /*for (tmd::Config::bgs_blob_threshold_count = 1 ;
+         tmd::Config::bgs_blob_threshold_count <= 24 ;
+         tmd::Config::bgs_blob_threshold_count ++){*/
+
+        for (tmd::Config::dpm_extractor_score_threshold = -5.f ;
+             tmd::Config::dpm_extractor_score_threshold <= 5.f ;
+             tmd::Config::dpm_extractor_score_threshold += 0.5f){
+
+            for (tmd::Config::dpm_extractor_overlapping_threshold = 0.0 ;
+                 tmd::Config::dpm_extractor_overlapping_threshold <= 1.0 ;
+                 tmd::Config::dpm_extractor_overlapping_threshold += 0.1){
+
+                pipeline = new tmd::SimplePipeline(
+                                   "./res/videos/uni-hockey/", 0, 49, 51, 1);
+                tmd::frame_t* frame = pipeline->next_frame();
+                cv::Mat result = tmd::draw_player_on_frame(0, frame, true,
+                                                           true, false,
+                                                           false, true);
+                std::string file_name = folder + "btc_" + std::to_string
+                  (tmd::Config::bgs_blob_threshold_count) + "__dst_" +
+                std::to_string(tmd::Config::dpm_extractor_score_threshold) +
+                "__dot_" + std::to_string
+                   (tmd::Config::dpm_extractor_overlapping_threshold) + ".jpg";
+                std::cout << "Save : " << file_name << std::endl;
+                cv::imwrite(file_name, result);
+                tmd::free_frame(frame);
+                delete pipeline;
+            }
+        }
+    //}
+}
+
+void bgs_benchmark(){
+    std::string folder = "./res/bgs_benchmark/";
+    tmd::BGSubstractor *bgs;
+    tmd::BlobPlayerExtractor *pe = new tmd::BlobPlayerExtractor();
+
+    for (tmd::Config::bgs_blob_buffer_size = 4 ;
+            tmd::Config::bgs_blob_buffer_size <= 6 ;
+         tmd::Config::bgs_blob_buffer_size ++){
+
+        int max = (2*tmd::Config::bgs_blob_buffer_size + 1) *
+                (2*tmd::Config::bgs_blob_buffer_size + 1);
+
+        for (tmd::Config::bgs_blob_threshold_count = 1 ;
+             tmd::Config::bgs_blob_threshold_count <= max ;
+             tmd::Config::bgs_blob_threshold_count ++){
+
+            bgs = new tmd::BGSubstractor("./res/videos/uni-hockey/", 0, 49,
+                                         51, 1);
+
+            tmd::frame_t *frame = bgs->next_frame();
+            frame->players = pe->extract_player_from_frame(frame);
+
+            cv::Mat result = tmd::draw_player_on_frame(2, frame, false,
+                                                       false, false, true,
+                                                       false);
+            std::string file_name = folder + "bbs_" + std::to_string
+              (tmd::Config::bgs_blob_buffer_size) + "__btc_" +
+                std::to_string(tmd::Config::bgs_blob_threshold_count) + ".jpg";
+            std::cout << "Save : " << file_name << std::endl;
+            cv::imwrite(file_name, result);
+            tmd::free_frame(frame);
+            delete bgs;
+        }
+    }
 }
 
 void create_training_set(void) {

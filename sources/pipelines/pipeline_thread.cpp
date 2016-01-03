@@ -21,7 +21,7 @@ namespace tmd {
     PipelineThread::~PipelineThread() {
         if (!m_done) {
             m_stop_request = true;
-            while (!m_done && m_stop_request) {
+            while (!m_worker_stopped) {
                 tmd::debug("PipelineThread", "~PipelineThread", "Waiting for "
                         "thread to stop.");
             }
@@ -30,6 +30,9 @@ namespace tmd {
     }
 
     tmd::frame_t *PipelineThread::pop_buffer() {
+        if (m_done){
+            return NULL;
+        }
         tmd::frame_t *head = NULL;
         while (true) {
             {
@@ -37,10 +40,8 @@ namespace tmd {
                 if (m_buffer.size() > 0) {
                     head = m_buffer[0];
                     m_buffer.pop_front();
+                    m_done = (head == NULL);
                     return head;
-                }
-                else if (m_done) {
-                    return NULL;
                 }
             }
         }
@@ -59,9 +60,9 @@ namespace tmd {
             this->push_buffer(next_buffer_entry);
             m_frame_idx += m_step_size;
         }
+        this->push_buffer(NULL); // Indicating the end.
         std::lock_guard<std::mutex> lock(m_buffer_lock);
-        m_done = true;
-        m_stop_request = false;
+        m_worker_stopped = true;
     }
 
     void PipelineThread::push_buffer(tmd::frame_t *frame) {
