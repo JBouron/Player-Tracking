@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
     /*params_benchmark();
     return 0;*/
     tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-                        "./res/videos/uni-hockey/", 0, 4, 300, 2000, 1);
+                        "./res/videos/uni-hockey/", 0,4,  0, 1200, 1);
     tmd::frame_t *frame = pipeline->next_frame();
     //SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
     double t1 = cv::getTickCount();
@@ -74,8 +74,8 @@ int main(int argc, char *argv[]) {
         std::string frame_index = std::to_string(frame->frame_index);
         std::string file_name = folder + "/frame" + frame_index + ".jpg";
         std::cout << "Save frame " << frame_index << std::endl;
-        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame,
-                                                                true));
+        /*cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame,
+                                                                true));*/
         tmd::free_frame(frame);
         frame = pipeline->next_frame();
         count++;
