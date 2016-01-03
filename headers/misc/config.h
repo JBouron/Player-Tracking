@@ -50,11 +50,12 @@ namespace tmd{
         static int dpm_detector_numthread;
 
         /**********************************************************************/
-        /* DPM Player Extractor                                               */
+        /* DPM                                                                */
         /**********************************************************************/
         static float dpm_extractor_score_threshold;
         static float dpm_extractor_overlapping_threshold;
         static float dpm_extractor_duplicate_area_threshold;
+        static bool use_dpm_player_extractor;
 
         /**********************************************************************/
         /* Features Comparator                                                */
