@@ -75,10 +75,10 @@ int main(int argc, char *argv[]) {
     tmd::Pipeline *pipeline = NULL;
     SDL_Window *window = NULL;
 
-    if (args->show_results){
-        pipeline = new tmd::RealTimePipeline(args->video_folder, args->t,
-                                             args->b, args->camera_index,
-                                             args->s, args->e);
+    if (args->b > 1){
+        pipeline = new tmd::RealTimePipeline(args->video_folder,
+                                             args->camera_index, args->t,
+                                             args->s, args->e, args->b);
     }
     else{
         if (args->t == 1){
@@ -98,14 +98,11 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
     }
-    /*cv::VideoCapture capture(args->video_folder + "/ace_" + std::to_string
-                                                (args->camera_index) +".mp4");
-    cv::Size S = cv::Size((int) capture.get(CV_CAP_PROP_FRAME_WIDTH),    //
-            // Acquire input size
-                  (int) capture.get(CV_CAP_PROP_FRAME_HEIGHT));
-    cv::VideoWriter videoWriter(args->save_folder + "/ace_0.mp4",
-                                static_cast<int> (capture.get
-                (CV_CAP_PROP_FOURCC)), capture.get(CV_CAP_PROP_FPS), S, true);*/
+
+    if (args->show_results){
+        window = tmd::SDLBinds::create_sdl_window("TMD");
+    }
+
     tmd::frame_t *frame = pipeline->next_frame();
     std::cout << "Begin" << std::endl;
     while (frame != NULL){
@@ -113,7 +110,7 @@ int main(int argc, char *argv[]) {
                                                    args->show_torsos, false,
                                                    false, true);
         if (args->show_results){
-            // TODO
+            tmd::SDLBinds::imshow(window, result);
         }
 
         if (args->save_results){
@@ -121,7 +118,6 @@ int main(int argc, char *argv[]) {
                     std::to_string(frame->frame_index) + ".jpg";
             std::cout << "Save frame " << frame->frame_index << std::endl;
             cv::imwrite(file_name, result);
-            //videoWriter.write(result);
         }
         free_frame(frame);
         frame = pipeline->next_frame();
