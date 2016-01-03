@@ -10,10 +10,10 @@ namespace tmd{
      * Class holding a real time pipeline.
      */
 
-    class RealTimePipeline : public Pipeline{
+    class ApproximativePipeline : public Pipeline{
 
     public:
-        RealTimePipeline(const std::string &video_folder, int camera_index,
+        ApproximativePipeline(const std::string &video_folder, int camera_index,
                          int thread_count, int start_frame, int end_frame,
                          int box_step);
 
