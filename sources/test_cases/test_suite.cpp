@@ -1,5 +1,4 @@
 #include "../../headers/test_cases/test_suite.h"
-#include "../../headers/test_cases/dpm_detector_tests.h"
 #include "../../headers/test_cases/features_extractor_tests.h"
 
 namespace tmd {
@@ -8,7 +7,7 @@ namespace tmd {
         // TODO : Resolve tests changes and uncomment this.
 //        run_tests_feature_comparator();
         run_tests_bgs();
-        run_tests_dpm();
+        //run_tests_dpm();
         run_tests_features_extractor();
     }
 
@@ -34,17 +33,6 @@ namespace tmd {
         runner.run("", false);
         tmd::debug("Tests for FeatureComparator completed.");
     }*/
-
-    void run_tests_dpm(void){
-        tmd::debug("Running tests for DPMDetector.");
-        CPPUNIT_TEST_SUITE_REGISTRATION(DPMDetectorTest);
-        CppUnit::TextUi::TestRunner runner;
-        CppUnit::TestFactoryRegistry &registry =
-                CppUnit::TestFactoryRegistry::getRegistry();
-        runner.addTest(registry.makeTest());
-        runner.run("", false);
-        tmd::debug("Tests for DPMDetector completed.");
-    }
 
     void run_tests_features_extractor(void){
         tmd::debug("Running tests for FeaturesExtractor.");
