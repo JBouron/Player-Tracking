@@ -27,7 +27,7 @@ namespace tmd {
         //extractBodyParts(player);
         if (player->features.body_parts.size() > 0) {
             convertToHSV(player);
-            updateMaskWithThreshold(player);
+            //updateMaskWithThreshold(player);
             createHistogram(player);
         }
     }
