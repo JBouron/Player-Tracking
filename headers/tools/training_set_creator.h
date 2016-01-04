@@ -22,6 +22,8 @@ namespace tmd {
 
         void write_centers(int frame_index);
 
+        void write_centers();
+
     private:
         bool m_dpm;
         cv::VideoCapture *m_video;
@@ -34,6 +36,7 @@ namespace tmd {
         int m_step;
 
         void extract_players_from_frame(frame_t *frame);
+
     };
 }
 
