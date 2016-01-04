@@ -27,6 +27,10 @@ namespace tmd{
         /**********************************************************************/
         static std::string mask_folder;
         static std::string model_file_path;
+        static bool draw_static_boxes;
+        static int static_boxes_width;
+        static int static_boxes_height;
+        static int static_boxes_thickness;
 
         /**********************************************************************/
         /* BGS                                                                */
