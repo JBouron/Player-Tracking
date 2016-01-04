@@ -62,6 +62,10 @@ namespace tmd {
         load_value(sdl_binds_default_height);
         load_value(blob_player_extractor_buffer_size);
         load_value(blob_player_extractor_min_blob_size);
+        load_value(use_bgs);
+        load_value(use_dpm_player_extractor);
+        load_value(use_colored_mask_in_dpm);
+
         tmd::debug("Config", "load_config", "Config file loaded.");
     }
 
