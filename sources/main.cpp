@@ -63,13 +63,13 @@ tmd::cmd_args_t *get_debug_args(){
     args->video_folder = "./res/videos/uni-hockey/";
     args->camera_index = 0;
     args->show_results = true;
-    args->save_results = true;
+    args->save_results = false;
     args->save_folder = "./res/pipeline_results/complete_pipeline/uni/with blob separator/";
     args->show_torsos = true;
-    args->s = 10;
+    args->s = 0;
     args->e = std::numeric_limits<int>::max();
-    args->j = 1;
-    args->t = 1;
+    args->j = 10;
+    args->t = 4;
     args->b = 1;
     return args;
 }
@@ -124,6 +124,7 @@ int main(int argc, char *argv[]) {
 
     tmd::frame_t *frame = pipeline->next_frame();
     std::cout << "Begin" << std::endl;
+    double t1 = cv::getTickCount();
     while (frame != NULL){
         cv::Mat result = tmd::draw_player_on_frame(0, frame, true,
                                                    args->show_torsos, false,
@@ -143,8 +144,9 @@ int main(int argc, char *argv[]) {
         }
         frame = pipeline->next_frame();
     }
-
+    double t2 = cv::getTickCount();
     std::cout << "Done" << std::endl;
+    std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
     delete pipeline;
     return EXIT_SUCCESS;
 }
@@ -389,22 +391,6 @@ void test_blob_separation(void) {
     }
 }
 
-void dpm_whole_frame(void) {
-    tmd::player_t *player = new tmd::player_t;
-    player->original_image = cv::imread("./res/images/uni0.jpg");
-    const int rows = player->original_image.rows;
-    const int cols = player->original_image.cols;
-    player->mask_image = cv::Mat(rows, cols, CV_8U);
-    for (int l = 0; l < rows; l++) {
-        for (int j = 0; j < cols; j++) {
-            player->mask_image.at<uchar>(l, j) = 255;
-        }
-    }
-
-    tmd::DPMDetector dpmDetector;
-    dpmDetector.extractBodyParts(player);
-    show_body_parts(player->original_image, player);
-}
 
 void show_body_parts(cv::Mat image, tmd::player_t *p) {
     std::vector<cv::Rect> parts = p->features.body_parts;
