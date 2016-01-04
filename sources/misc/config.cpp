@@ -85,6 +85,7 @@ namespace tmd {
     int Config::bgs_blob_buffer_size = 2;
     int Config::bgs_blob_threshold_count = 5;
     std::string Config::bgs_empty_room_background = "./res/room_background/";
+    bool Config::use_bgs = true;
 
     /**********************************************************************/
     /* Calibration tool                                                   */
