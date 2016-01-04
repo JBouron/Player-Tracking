@@ -83,7 +83,7 @@ namespace tmd {
     std::string Config::mask_folder = "./res/bgs_masks/";
     std::string Config::model_file_path = "./res/xmls/person.xml";
     bool Config::draw_static_boxes = true;
-    int Config::static_boxes_width = 45;
+    int Config::static_boxes_width = 30;
     int Config::static_boxes_height = 120;
     int Config::static_boxes_thickness = 2;
 
