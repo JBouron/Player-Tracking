@@ -8,6 +8,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "player_t.h"
 #include "features_t.h"
+#include "../misc/config.h"
 
 namespace tmd {
 
@@ -97,7 +98,7 @@ namespace tmd {
         blob_color.val[2] = 255;
         blob_color.val[3] = 255;
 
-        const int thickness = 1; // Thickness of the box.
+        int thickness = 1; // Thickness of the box.
         const int line_type = 8; // 8 connected line.
         const int shift = 0;
 
@@ -127,18 +128,31 @@ namespace tmd {
                                     (p->pos_frame.x, p->pos_frame.y-5),
                             cv::FONT_HERSHEY_SIMPLEX,
                             0.55, torso_color );
+                cv::Scalar color;
                 if (draw_player_color) {
-                    cv::rectangle(result, p->pos_frame, tmd::get_team_color(p->team),
-                                  thickness, line_type, shift);
+                    color = tmd::get_team_color(p->team);
                 }
                 else {
-                    cv::rectangle(result, p->pos_frame, tmd::get_team_color(TEAM_UNKNOWN),
-                                  thickness, line_type, shift);
+                    color = tmd::get_team_color(TEAM_UNKNOWN);
                 }
 
-            }
-        }
+                cv::Rect box = p->pos_frame;
+                if (tmd::Config::draw_static_boxes){
+                    box = p->pos_frame;
+                    box.x += box.width / 2;
+                    box.y += box.height / 2;
+                    box.width = tmd::Config::static_boxes_width;
+                    box.height = tmd::Config::static_boxes_height;
+                    box.x -= box.width / 2;
+                    box.y -= box.height / 2;
+                    thickness = tmd::Config::static_boxes_thickness;
+                }
 
+                cv::rectangle(result, box, color, thickness,
+                              line_type, shift);
+            }
+            thickness = 1;
+        }
         if (draw_blobs) {
             for (cv::Rect blob : frame->blobs) {
                 cv::Rect pos = blob;
