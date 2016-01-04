@@ -12,8 +12,7 @@ namespace tmd {
     class TrainingSetCreator {
     public:
 
-        TrainingSetCreator(std::string video_folder, int camera_index, std::string model_file, int start_frame,
-                           int end_frame, int step_sizer);
+        TrainingSetCreator(std::string video_folder, int camera_index, int start_frame, int end_frame, int step_size);
 
         ~TrainingSetCreator();
 
@@ -21,9 +20,9 @@ namespace tmd {
 
         void set_new_video_path(std::string video_path);
 
-        void write_centers();
+        void write_centers(int frame_index);
 
-        void set_frame_step_size(int step);
+        void write_centers();
 
     private:
         bool m_dpm;
@@ -37,6 +36,7 @@ namespace tmd {
         int m_step;
 
         void extract_players_from_frame(frame_t *frame);
+
     };
 }
 

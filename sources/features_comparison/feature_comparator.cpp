@@ -136,12 +136,32 @@ namespace tmd {
         }
     }
 
+    void FeatureComparator::writeCentersToFile(int frame_index) {
+        std::ofstream clustersFile(tmd::Config::features_comparator_centers_file_name + std::to_string(frame_index));
+        if (clustersFile.is_open()) {
+            for (int i = 0; i < m_centers.rows; i++) {
+                for (int j = 0; j < m_centers.cols; j++) {
+                    Mat row = m_centers.row(i);
+                    if (j < m_centers.cols - 1) {
+                        clustersFile << row.at<float>(j) << " ";
+                    }
+                    else {
+                        clustersFile << row.at<float>(j);
+                    }
+                }
+                clustersFile << "\n";
+            }
+            clustersFile.flush();
+            clustersFile.close();
+        }
+    }
+
     Mat FeatureComparator::readCentersFromFile() {
         int rows = tmd::Config::features_comparator_centers_file_rows;
         int cols = tmd::Config::features_comparator_centers_file_cols;
         std::ifstream clustersFile(tmd::Config::features_comparator_centers_file_name);
         if (!clustersFile.is_open()) {
-            throw std::runtime_error("Error couldn't load clusterCenters.txt");
+            throw std::runtime_error("Error couldn't load " + tmd::Config::features_comparator_centers_file_name);
         }
         Mat toReturn(rows, cols, CV_32F);
         if (clustersFile.is_open()) {

@@ -126,8 +126,8 @@ namespace tmd {
     int Config::features_comparator_sample_cols = 180;
     int Config::features_comparator_centers_file_rows = 2;
     int Config::features_comparator_centers_file_cols = 180;
-    std::string Config::features_comparator_centers_file_name =
-            "./res/cluster/clusterCenters.txt";
+    std::string Config::features_comparator_centers_file_name = "./res/cluster/cluster.kfc";
+
     /**********************************************************************/
     /* Features Extractor                                                 */
     /**********************************************************************/

@@ -28,8 +28,8 @@ void memleak_video_capture(void) {
     std::string file = "./res/videos/alone-green-no-ball/ace_0.mp4";
     cv::VideoCapture capture(file);
     int c = 1;
-    while (c < 10){
-        capture.set(CV_CAP_PROP_POS_FRAMES, 100*c);
+    while (c < 10) {
+        capture.set(CV_CAP_PROP_POS_FRAMES, 100 * c);
         c++;
         cv::Mat frame;
         capture.read(frame);
@@ -56,9 +56,10 @@ void test_fast_dpm(void) {
 
 
 void show_help();
+
 tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 
-tmd::cmd_args_t *get_debug_args(){
+tmd::cmd_args_t *get_debug_args() {
     tmd::cmd_args_t *args = new tmd::cmd_args_t;
     args->video_folder = "./res/videos/uni-hockey/";
     args->camera_index = 0;
@@ -75,13 +76,15 @@ tmd::cmd_args_t *get_debug_args(){
 }
 
 void params_benchmark();
+
 void bgs_benchmark();
 
 
 int main(int argc, char *argv[]) {
+
     // TODO : Normally use parse_args function.
-    tmd::cmd_args_t* args = get_debug_args();
-    if (args == NULL){
+    tmd::cmd_args_t *args = get_debug_args();
+    if (args == NULL) {
         show_help();
         return EXIT_FAILURE;
     }
@@ -92,50 +95,60 @@ int main(int argc, char *argv[]) {
     tmd::Pipeline *pipeline = NULL;
     SDL_Window *window = NULL;
     bool use_approximate_pipeline;
-    if (args->b > 1){
+    if (args->b > 1) {
         pipeline = new tmd::ApproximativePipeline(args->video_folder,
-                                             args->camera_index, args->t,
-                                             args->s, args->e, args->b);
+                                                  args->camera_index, args->t,
+                                                  args->s, args->e, args->b);
         use_approximate_pipeline = true;
     }
-    else{
+    else {
         use_approximate_pipeline = false;
-        if (args->t == 1){
+        if (args->t == 1) {
             pipeline = new tmd::SimplePipeline(args->video_folder,
                                                args->camera_index, args->s,
                                                args->e, args->j);
         }
-        else if (args->t > 1){
+        else if (args->t > 1) {
             pipeline = new tmd::MultithreadedPipeline(args->video_folder,
                                                       args->camera_index,
                                                       args->t, args->s,
                                                       args->e, args->j);
         }
-        else{
+        else {
             std::cout << "Error, invalid thread count : " << args->t <<
-                    std::endl;
+            std::endl;
             return EXIT_FAILURE;
         }
     }
 
-    if (args->show_results){
+    if (args->show_results) {
         window = tmd::SDLBinds::create_sdl_window("TMD");
     }
 
     tmd::frame_t *frame = pipeline->next_frame();
     std::cout << "Begin" << std::endl;
     double t1 = cv::getTickCount();
-    while (frame != NULL){
+
+    std::ofstream outputFile(args->save_folder + "output.out");
+
+
+    while (frame != NULL) {
+
+        outputFile << "Frame " << frame->frame_index << std::endl;
+        for (tmd::player_t *player : frame->players) {
+            outputFile << player->team << std::endl;
+        }
+
         cv::Mat result = tmd::draw_player_on_frame(0, frame, true,
                                                    args->show_torsos, false,
                                                    false, true);
-        if (args->show_results){
+        if (args->show_results) {
             tmd::SDLBinds::imshow(window, result);
         }
 
-        if (args->save_results){
+        if (args->save_results) {
             std::string file_name = args->save_folder + "/frame" +
-                    std::to_string(frame->frame_index) + ".jpg";
+                                    std::to_string(frame->frame_index) + ".jpg";
             std::cout << "Save frame " << frame->frame_index << std::endl;
             cv::imwrite(file_name, result);
         }
@@ -144,6 +157,9 @@ int main(int argc, char *argv[]) {
         }
         frame = pipeline->next_frame();
     }
+
+    outputFile.flush();
+    outputFile.close();
     double t2 = cv::getTickCount();
     std::cout << "Done" << std::endl;
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
@@ -151,44 +167,44 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-void show_help(){
+void show_help() {
     //tmd ./videos camera-index --show-result -s 0 -e 120 -j 10 -t 4 --save-result --show-torsos -b 5
     std::cout << "###############################################" << std::endl;
     std::cout << "#             Bachelor project                #" << std::endl;
     std::cout << "###############################################" << std::endl;
 
     std::cout << "  HELP :                                             " <<
-            std::endl;
+    std::endl;
     std::cout << "The first argument should be the folder containing the "
-                         "videos."  << std::endl;
+            "videos." << std::endl;
     std::cout << "The second argument is the camera index on which the "
-                         "algorithm will run. This index is between 0 and 7 "
-                         "included." << std::endl;
+            "algorithm will run. This index is between 0 and 7 "
+            "included." << std::endl;
     std::cout << "Then any of the following arguments can be added in any "
-                         "order, if they are not specified, default values "
-                         "will be used" << std::endl;
+            "order, if they are not specified, default values "
+            "will be used" << std::endl;
     std::cout << "--show-results Show result at every frame in a popup window"
-                         "." << std::endl;
+            "." << std::endl;
     std::cout << "--save-results path Create a video file and save it to the "
-                         "specified path. (The name is the same as the input "
-                         "video)" << std::endl;
+            "specified path. (The name is the same as the input "
+            "video)" << std::endl;
     std::cout << "--show-torsos Show the torso boxes on the resulting frames"
-                         "." << std::endl;
+            "." << std::endl;
     std::cout << "-s number Set the starting frame to number. (default : 0)" <<
-            std::endl;
+    std::endl;
     std::cout << "-e number Set the ending frame to number. (default : last "
-                         "frame)" << std::endl;
+            "frame)" << std::endl;
     std::cout << "-j size Set the step size. (default : 1)" << std::endl;
     std::cout << "-t count Set the number of threads to use. (default : 1)"
     << std::endl;
     std::cout << "-b rate Set the refresh rate of the player boxes. (default "
-                         ": every frames)" << std::endl;
+            ": every frames)" << std::endl;
 
 }
 
-tmd::cmd_args_t *parse_args(int argc, char *argv[]){
+tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
     tmd::cmd_args_t *args = new tmd::cmd_args_t;
-    if (argc < 3){
+    if (argc < 3) {
         std::cout << "Error, expected at least 2 arguments." << std::endl;
         delete args;
         return NULL;
@@ -197,75 +213,75 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]){
     args->video_folder = argv[1];
     args->camera_index = static_cast<int> (strtol(argv[2], NULL, 10));
 
-    for (int i = 3 ; i < argc ; i ++){
-        if (!strcmp(argv[i], "--show-results")){
+    for (int i = 3; i < argc; i++) {
+        if (!strcmp(argv[i], "--show-results")) {
             args->show_results = true;
         }
-        else if (!strcmp(argv[i], "--save-results")){
+        else if (!strcmp(argv[i], "--save-results")) {
             args->save_results = true;
-            i ++;
-            if (i == argc){
+            i++;
+            if (i == argc) {
                 std::cout << "Error, expected save folder." << std::endl;
                 return NULL;
             }
             else args->save_folder = argv[i];
         }
-        else if (!strcmp(argv[i], "--show-torsos")){
+        else if (!strcmp(argv[i], "--show-torsos")) {
             args->show_torsos = true;
         }
-        else if (!strcmp(argv[i], "-s")){
-            if (i == argc - 1){
+        else if (!strcmp(argv[i], "-s")) {
+            if (i == argc - 1) {
                 std::cout << "Error, expected starting frame." << std::endl;
                 return NULL;
             }
-            else{
-                i ++;
+            else {
+                i++;
                 args->s = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
-        else if (!strcmp(argv[i], "-e")){
-            if (i == argc - 1){
+        else if (!strcmp(argv[i], "-e")) {
+            if (i == argc - 1) {
                 std::cout << "Error, expected ending frame." << std::endl;
                 return NULL;
             }
-            else{
-                i ++;
+            else {
+                i++;
                 args->e = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
-        else if (!strcmp(argv[i], "-j")){
-            if (i == argc - 1){
+        else if (!strcmp(argv[i], "-j")) {
+            if (i == argc - 1) {
                 std::cout << "Error, expected step size." << std::endl;
                 return NULL;
             }
-            else{
-                i ++;
+            else {
+                i++;
                 args->j = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
-        else if (!strcmp(argv[i], "-t")){
-            if (i == argc - 1){
+        else if (!strcmp(argv[i], "-t")) {
+            if (i == argc - 1) {
                 std::cout << "Error, expected thread count." << std::endl;
                 return NULL;
             }
-            else{
-                i ++;
+            else {
+                i++;
                 args->t = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
-        else if (!strcmp(argv[i], "-b")){
-            if (i == argc - 1){
+        else if (!strcmp(argv[i], "-b")) {
+            if (i == argc - 1) {
                 std::cout << "Error, expected box refresh rate." << std::endl;
                 return NULL;
             }
-            else{
-                i ++;
+            else {
+                i++;
                 args->b = static_cast<int>(strtol(argv[i], NULL, 10));
             }
         }
-        else{
+        else {
             std::cout << "Error, unknown argument : " << argv[i] <<
-                    std::endl;
+            std::endl;
             delete args;
             return NULL;
         }
@@ -273,56 +289,56 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]){
     return args;
 }
 
-void params_benchmark(){
+void params_benchmark() {
     std::string folder = "./res/params_benchmark/";
-    tmd::SimplePipeline* pipeline = NULL;
+    tmd::SimplePipeline *pipeline = NULL;
     /*for (tmd::Config::bgs_blob_threshold_count = 1 ;
          tmd::Config::bgs_blob_threshold_count <= 24 ;
          tmd::Config::bgs_blob_threshold_count ++){*/
 
-        for (tmd::Config::dpm_extractor_score_threshold = -5.f ;
-             tmd::Config::dpm_extractor_score_threshold <= 5.f ;
-             tmd::Config::dpm_extractor_score_threshold += 0.5f){
+    for (tmd::Config::dpm_extractor_score_threshold = -5.f;
+         tmd::Config::dpm_extractor_score_threshold <= 5.f;
+         tmd::Config::dpm_extractor_score_threshold += 0.5f) {
 
-            for (tmd::Config::dpm_extractor_overlapping_threshold = 0.0 ;
-                 tmd::Config::dpm_extractor_overlapping_threshold <= 1.0 ;
-                 tmd::Config::dpm_extractor_overlapping_threshold += 0.1){
+        for (tmd::Config::dpm_extractor_overlapping_threshold = 0.0;
+             tmd::Config::dpm_extractor_overlapping_threshold <= 1.0;
+             tmd::Config::dpm_extractor_overlapping_threshold += 0.1) {
 
-                pipeline = new tmd::SimplePipeline(
-                                   "./res/videos/uni-hockey/", 0, 49, 51, 1);
-                tmd::frame_t* frame = pipeline->next_frame();
-                cv::Mat result = tmd::draw_player_on_frame(0, frame, true,
-                                                           true, false,
-                                                           false, true);
-                std::string file_name = folder + "btc_" + std::to_string
-                  (tmd::Config::bgs_blob_threshold_count) + "__dst_" +
-                std::to_string(tmd::Config::dpm_extractor_score_threshold) +
-                "__dot_" + std::to_string
-                   (tmd::Config::dpm_extractor_overlapping_threshold) + ".jpg";
-                std::cout << "Save : " << file_name << std::endl;
-                cv::imwrite(file_name, result);
-                tmd::free_frame(frame);
-                delete pipeline;
-            }
+            pipeline = new tmd::SimplePipeline(
+                    "./res/videos/uni-hockey/", 0, 49, 51, 1);
+            tmd::frame_t *frame = pipeline->next_frame();
+            cv::Mat result = tmd::draw_player_on_frame(0, frame, true,
+                                                       true, false,
+                                                       false, true);
+            std::string file_name = folder + "btc_" + std::to_string
+                    (tmd::Config::bgs_blob_threshold_count) + "__dst_" +
+                                    std::to_string(tmd::Config::dpm_extractor_score_threshold) +
+                                    "__dot_" + std::to_string
+                                            (tmd::Config::dpm_extractor_overlapping_threshold) + ".jpg";
+            std::cout << "Save : " << file_name << std::endl;
+            cv::imwrite(file_name, result);
+            tmd::free_frame(frame);
+            delete pipeline;
         }
+    }
     //}
 }
 
-void bgs_benchmark(){
+void bgs_benchmark() {
     std::string folder = "./res/bgs_benchmark/";
     tmd::BGSubstractor *bgs;
     tmd::BlobPlayerExtractor *pe = new tmd::BlobPlayerExtractor();
 
-    for (tmd::Config::bgs_blob_buffer_size = 4 ;
-            tmd::Config::bgs_blob_buffer_size <= 6 ;
-         tmd::Config::bgs_blob_buffer_size ++){
+    for (tmd::Config::bgs_blob_buffer_size = 4;
+         tmd::Config::bgs_blob_buffer_size <= 6;
+         tmd::Config::bgs_blob_buffer_size++) {
 
-        int max = (2*tmd::Config::bgs_blob_buffer_size + 1) *
-                (2*tmd::Config::bgs_blob_buffer_size + 1);
+        int max = (2 * tmd::Config::bgs_blob_buffer_size + 1) *
+                  (2 * tmd::Config::bgs_blob_buffer_size + 1);
 
-        for (tmd::Config::bgs_blob_threshold_count = 1 ;
-             tmd::Config::bgs_blob_threshold_count <= max ;
-             tmd::Config::bgs_blob_threshold_count ++){
+        for (tmd::Config::bgs_blob_threshold_count = 1;
+             tmd::Config::bgs_blob_threshold_count <= max;
+             tmd::Config::bgs_blob_threshold_count++) {
 
             bgs = new tmd::BGSubstractor("./res/videos/uni-hockey/", 0, 49,
                                          51, 1);
@@ -334,8 +350,8 @@ void bgs_benchmark(){
                                                        false, false, true,
                                                        false);
             std::string file_name = folder + "bbs_" + std::to_string
-              (tmd::Config::bgs_blob_buffer_size) + "__btc_" +
-                std::to_string(tmd::Config::bgs_blob_threshold_count) + ".jpg";
+                    (tmd::Config::bgs_blob_buffer_size) + "__btc_" +
+                                    std::to_string(tmd::Config::bgs_blob_threshold_count) + ".jpg";
             std::cout << "Save : " << file_name << std::endl;
             cv::imwrite(file_name, result);
             tmd::free_frame(frame);
@@ -347,25 +363,25 @@ void bgs_benchmark(){
 void create_training_set(void) {
     tmd::Config::load_config();
 
-    tmd::TrainingSetCreator *trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0,
-                                                                   "./res/xmls/person.xml", 0, 300, 1);
+    tmd::TrainingSetCreator *trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, 0, 1200, 1);
     tmd::frame_t *frame = trainer->next_frame();
 
-    int count = 0;
-    int max_frames = 10;
-
     while (frame != NULL) {
-        std::string frame_index = std::to_string(count);
+        std::string frame_index = std::to_string(frame->frame_index);
         std::cout << "Finished frame " << frame_index << std::endl;
+
+        /*
+        if (frame->frame_index != 0 && frame->frame_index % 100 == 0) {
+            trainer->write_centers(frame->frame_index);
+        }*/
+
         tmd::free_frame(frame);
         frame = trainer->next_frame();
-        count++;
-        if (count == max_frames) {
-            break;
-        }
     }
+
     tmd::free_frame(frame);
     trainer->write_centers();
+
     delete trainer;
 }
 
