@@ -28,8 +28,6 @@ set(SOURCE_FILES sources/main.cpp
         headers/data_structures/features_t.h
         headers/tools/manual_player_extractor.h
         sources/tools/manual_player_extractor.cpp
-        headers/players_extraction/dpm_based_extraction/dpm_detector.h
-        sources/players_extraction/dpm_based_extraction/dpm_detector.cpp
         headers/features_comparison/feature_comparator.h
         sources/features_comparison/feature_comparator.cpp
         headers/openCV/_latentsvm.h
@@ -43,8 +41,6 @@ set(SOURCE_FILES sources/main.cpp
         headers/test_cases/bgsubstractor_tests.h
         sources/test_cases/bgsubstractor_tests.cpp
         headers/test_cases/test_suite.h sources/test_cases/test_suite.cpp
-        headers/test_cases/dpm_detector_tests.h
-        sources/test_cases/dpm_detector_tests.cpp
         headers/test_cases/features_extractor_tests.h
         sources/test_cases/features_extractor_tests.cpp
         headers/test_cases/feature_comparator_tests.h
@@ -72,8 +68,9 @@ set(SOURCE_FILES sources/main.cpp
         headers/misc/config.h sources/misc/config.cpp
         headers/features_extraction/dpm.h
         sources/features_extraction/dpm.cpp
-        headers/pipelines/real_time_pipeline.h
-        sources/pipelines/real_time_pipeline.cpp)
+        headers/pipelines/approximative_pipeline.h
+        sources/pipelines/approximative_pipeline.cpp
+        headers/data_structures/cmd_args_t.h)
 
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBRARIES}

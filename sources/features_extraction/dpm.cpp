@@ -1,4 +1,5 @@
 #include "../../headers/features_extraction/dpm.h"
+#include "../../headers/data_structures/frame_t.h"
 
 #ifndef max
 #define max(a, b)            (((a) > (b)) ? (a) : (b))
@@ -20,7 +21,13 @@ namespace tmd {
 
     std::vector<tmd::player_t *> DPM::extract_players_and_body_parts(
             tmd::frame_t *frame) {
-        IplImage blobImage = frame->original_frame;
+        IplImage blobImage;
+        if (tmd::Config::use_colored_mask_in_dpm){
+            blobImage = frame->colored_mask_frame;
+        }
+        else{
+            blobImage = frame->original_frame;
+        }
         CvMemStorage *memStorage = cvCreateMemStorage(0);
 
         this->cvLatentSvmDetectObjects(&blobImage, m_detector, memStorage,

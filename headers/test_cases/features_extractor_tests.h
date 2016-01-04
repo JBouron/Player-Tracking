@@ -9,7 +9,7 @@ namespace tmd{
     /** Test Class for the FeaturesExtractor **/
     class FeaturesExtractorTest : public CppUnit::TestFixture{
         CPPUNIT_TEST_SUITE(FeaturesExtractorTest);
-        CPPUNIT_TEST(testExtractBodyPartsCorrectNumberOfParts);
+//        CPPUNIT_TEST(testExtractBodyPartsCorrectNumberOfParts);
         CPPUNIT_TEST(testHSVConversionIsCorrectForHue);
         CPPUNIT_TEST(testHSVConversionIsCorrectForSaturation);
         CPPUNIT_TEST(testHSVConversionIsCorrectForValue);
