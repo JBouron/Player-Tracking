@@ -82,6 +82,11 @@ namespace tmd {
         void writeCentersToFile(int frame_index);
 
         /**
+         * Writes the cluster's centers to a file "clusterCenters<frame_index>.txt".
+         */
+        void writeCentersToFile();
+
+        /**
          * Reads the cluster's centers from a file "clusterCenters.txt".
          */
         static cv::Mat readCentersFromFile();

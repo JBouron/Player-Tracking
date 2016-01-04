@@ -48,6 +48,11 @@ namespace tmd {
         m_featuresComparator->writeCentersToFile(frame_index);
     }
 
+    void TrainingSetCreator::write_centers() {
+        m_featuresComparator->runClustering();
+        m_featuresComparator->writeCentersToFile();
+    }
+
     void TrainingSetCreator::extract_players_from_frame(tmd::frame_t *frame) {
         tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
         std::vector<tmd::player_t *> players = m_playerExtractor->extract_player_from_frame(frame);

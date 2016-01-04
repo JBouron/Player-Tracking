@@ -59,8 +59,8 @@ void params_benchmark();
 void bgs_benchmark();
 
 int main(int argc, char *argv[]) {
-    //create_training_set();
-    //return 0;
+    create_training_set();
+    return 0;
     tmd::Config::load_config();
     /*params_benchmark();
     return 0;*/
@@ -179,16 +179,18 @@ void create_training_set(void) {
         std::string frame_index = std::to_string(frame->frame_index);
         std::cout << "Finished frame " << frame_index << std::endl;
 
+        /*
         if (frame->frame_index != 0 && frame->frame_index % 100 == 0) {
             trainer->write_centers(frame->frame_index);
-        }
+        }*/
 
         tmd::free_frame(frame);
         frame = trainer->next_frame();
     }
 
     tmd::free_frame(frame);
-    trainer->write_centers(999);
+    trainer->write_centers();
+
     delete trainer;
 }
 
