@@ -5,7 +5,8 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "../data_structures/player_t.h"
-#include "../players_extraction/dpm_based_extraction/dpm_detector.h"
+#include "../misc/debug.h"
+#include "../misc/config.h"
 
 /** Defines of the different threshold values used to create colors
  * histograms for the players.
@@ -40,15 +41,6 @@ namespace tmd {
         void createHistogram(player_t *p);
 
     private:
-        tmd::DPMDetector m_detector;
-
-        /**
-         * Helper method to extract the body part of a player.
-         * Inputs :
-         *      - p : The player to extract body parts from.
-         */
-        void extractBodyParts(player_t *p);
-
         /**
          * Convert the torso image field of a player from the RGB color
          * space to the HSV color space.

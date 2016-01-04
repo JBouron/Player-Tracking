@@ -85,6 +85,7 @@ namespace tmd {
     int Config::bgs_blob_buffer_size = 2;
     int Config::bgs_blob_threshold_count = 5;
     std::string Config::bgs_empty_room_background = "./res/room_background/";
+    bool Config::use_bgs = true;
 
     /**********************************************************************/
     /* Calibration tool                                                   */
@@ -97,11 +98,13 @@ namespace tmd {
     int Config::dpm_detector_numthread = 4;
 
     /**********************************************************************/
-    /* DPM Player Extractor                                               */
+    /* DPM                                                                */
     /**********************************************************************/
     float Config::dpm_extractor_score_threshold = -1.f;
     float Config::dpm_extractor_overlapping_threshold = 0.2;
     float Config::dpm_extractor_duplicate_area_threshold = 0.7;
+    bool Config::use_dpm_player_extractor = false;
+    bool Config::use_colored_mask_in_dpm = true;
 
     /**********************************************************************/
     /* Features Comparator                                                */

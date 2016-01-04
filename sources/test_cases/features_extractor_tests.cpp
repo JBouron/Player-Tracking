@@ -24,12 +24,6 @@ namespace tmd{
         delete m_player;
     }
 
-    void FeaturesExtractorTest::testExtractBodyPartsCorrectNumberOfParts() {
-        tmd::DPMDetector d;
-        d.extractBodyParts(m_player);
-        CPPUNIT_ASSERT(m_player->features.body_parts.size() == 6);
-    }
-
     void FeaturesExtractorTest::testHSVConversionIsCorrectForHue() {
         player_t* p = new player_t;
         p->features.torso = m_hue_120_image;

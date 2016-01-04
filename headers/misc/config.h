@@ -38,6 +38,7 @@ namespace tmd{
         static int bgs_blob_buffer_size;
         static int bgs_blob_threshold_count;
         static std::string bgs_empty_room_background;
+        static bool use_bgs;
 
         /**********************************************************************/
         /* Calibration tool                                                   */
@@ -50,11 +51,13 @@ namespace tmd{
         static int dpm_detector_numthread;
 
         /**********************************************************************/
-        /* DPM Player Extractor                                               */
+        /* DPM                                                                */
         /**********************************************************************/
         static float dpm_extractor_score_threshold;
         static float dpm_extractor_overlapping_threshold;
         static float dpm_extractor_duplicate_area_threshold;
+        static bool use_dpm_player_extractor;
+        static bool use_colored_mask_in_dpm;
 
         /**********************************************************************/
         /* Features Comparator                                                */

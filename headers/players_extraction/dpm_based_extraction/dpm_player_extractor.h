@@ -6,6 +6,7 @@
 #include <iostream>
 #include "../../misc/debug.h"
 #include "../../misc/config.h"
+#include "../../features_extraction/dpm.h"
 
 
 namespace tmd{
@@ -42,10 +43,8 @@ namespace tmd{
         float get_score_threshold();
 
     private:
-
-        cv::LatentSvmDetector* m_detector;
-        float m_overlap_threshold;
-        float m_score_threshold;
+        void recreate_detector();
+        tmd::DPM* m_detector;
     };
 }
 
