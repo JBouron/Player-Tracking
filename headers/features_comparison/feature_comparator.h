@@ -77,9 +77,9 @@ namespace tmd {
         cv::Mat getData();
 
         /**
-         * Writes the cluster's centers to a file "clusterCenters.txt".
+         * Writes the cluster's centers to a file "clusterCenters<frame_index>.txt".
          */
-        void writeCentersToFile();
+        void writeCentersToFile(int frame_index);
 
         /**
          * Reads the cluster's centers from a file "clusterCenters.txt".
@@ -139,6 +139,7 @@ namespace tmd {
          * Returns the index of the closest center in m_centers.
          */
         int getClosestCenter(player_t *player);
+
     };
 }
 

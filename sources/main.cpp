@@ -6,6 +6,7 @@
 #include "../headers/pipelines/multithreaded_pipeline.h"
 #include "../headers/tools/training_set_creator.h"
 #include "../headers/pipelines/real_time_pipeline.h"
+#include "../headers/data_structures/player_t.h"
 
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
@@ -27,8 +28,8 @@ void memleak_video_capture(void) {
     std::string file = "./res/videos/alone-green-no-ball/ace_0.mp4";
     cv::VideoCapture capture(file);
     int c = 1;
-    while (c < 10){
-        capture.set(CV_CAP_PROP_POS_FRAMES, 100*c);
+    while (c < 10) {
+        capture.set(CV_CAP_PROP_POS_FRAMES, 100 * c);
         c++;
         cv::Mat frame;
         capture.read(frame);
@@ -54,34 +55,41 @@ void test_fast_dpm(void) {
 }
 
 void params_benchmark();
+
 void bgs_benchmark();
 
 int main(int argc, char *argv[]) {
+    //create_training_set();
+    //return 0;
     tmd::Config::load_config();
     /*params_benchmark();
     return 0;*/
-    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline(
-                        "./res/videos/uni-hockey/", 0, 4, 0, 600, 10);
+    tmd::Pipeline *pipeline = new tmd::MultithreadedPipeline("./res/videos/uni-hockey/", 0, 4, 0, 1200, 10);
     tmd::frame_t *frame = pipeline->next_frame();
     //SDL_Window* window = tmd::SDLBinds::create_sdl_window("Frame");
     double t1 = cv::getTickCount();
-    int count = 0;
-    int max_frames = -1;
-    std::string folder = "./res/pipeline_results/complete_pipeline/uni/with "
-            "blob separator/";
 
-    while (frame != NULL) {
-        std::string frame_index = std::to_string(frame->frame_index);
-        std::string file_name = folder + "/frame" + frame_index + ".jpg";
-        std::cout << "Save frame " << frame_index << std::endl;
-        cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true,
-                                                 true, true, false, true));
-        tmd::free_frame(frame);
-        frame = pipeline->next_frame();
-        count++;
-        if (count == max_frames) {
-            break;
+    std::string folder = "./res/pipeline_results/complete_pipeline/uni/1100frames/";
+
+    std::ofstream outputFile(folder + "output1100.out");
+
+    if (outputFile.is_open()) {
+
+        while (frame != NULL) {
+            outputFile << "Frame " << frame->frame_index << std::endl;
+            for(tmd::player_t* player : frame->players){
+                outputFile << player->team << std::endl;
+            }
+
+            std::string frame_index = std::to_string(frame->frame_index);
+            std::string file_name = folder + "/frame" + frame_index + ".jpg";
+            std::cout << "Save frame " << frame_index << std::endl;
+            cv::imwrite(file_name, tmd::draw_player_on_frame(0, frame, true, true, false, false, true));
+            tmd::free_frame(frame);
+            frame = pipeline->next_frame();
         }
+        outputFile.flush();
+        outputFile.close();
     }
 
     delete pipeline;
@@ -90,56 +98,56 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-void params_benchmark(){
+void params_benchmark() {
     std::string folder = "./res/params_benchmark/";
-    tmd::SimplePipeline* pipeline = NULL;
+    tmd::SimplePipeline *pipeline = NULL;
     /*for (tmd::Config::bgs_blob_threshold_count = 1 ;
          tmd::Config::bgs_blob_threshold_count <= 24 ;
          tmd::Config::bgs_blob_threshold_count ++){*/
 
-        for (tmd::Config::dpm_extractor_score_threshold = -5.f ;
-             tmd::Config::dpm_extractor_score_threshold <= 5.f ;
-             tmd::Config::dpm_extractor_score_threshold += 0.5f){
+    for (tmd::Config::dpm_extractor_score_threshold = -5.f;
+         tmd::Config::dpm_extractor_score_threshold <= 5.f;
+         tmd::Config::dpm_extractor_score_threshold += 0.5f) {
 
-            for (tmd::Config::dpm_extractor_overlapping_threshold = 0.0 ;
-                 tmd::Config::dpm_extractor_overlapping_threshold <= 1.0 ;
-                 tmd::Config::dpm_extractor_overlapping_threshold += 0.1){
+        for (tmd::Config::dpm_extractor_overlapping_threshold = 0.0;
+             tmd::Config::dpm_extractor_overlapping_threshold <= 1.0;
+             tmd::Config::dpm_extractor_overlapping_threshold += 0.1) {
 
-                pipeline = new tmd::SimplePipeline(
-                                   "./res/videos/uni-hockey/", 0, 49, 51, 1);
-                tmd::frame_t* frame = pipeline->next_frame();
-                cv::Mat result = tmd::draw_player_on_frame(0, frame, true,
-                                                           true, false,
-                                                           false, true);
-                std::string file_name = folder + "btc_" + std::to_string
-                  (tmd::Config::bgs_blob_threshold_count) + "__dst_" +
-                std::to_string(tmd::Config::dpm_extractor_score_threshold) +
-                "__dot_" + std::to_string
-                   (tmd::Config::dpm_extractor_overlapping_threshold) + ".jpg";
-                std::cout << "Save : " << file_name << std::endl;
-                cv::imwrite(file_name, result);
-                tmd::free_frame(frame);
-                delete pipeline;
-            }
+            pipeline = new tmd::SimplePipeline(
+                    "./res/videos/uni-hockey/", 0, 49, 51, 1);
+            tmd::frame_t *frame = pipeline->next_frame();
+            cv::Mat result = tmd::draw_player_on_frame(0, frame, true,
+                                                       true, false,
+                                                       false, true);
+            std::string file_name = folder + "btc_" + std::to_string
+                    (tmd::Config::bgs_blob_threshold_count) + "__dst_" +
+                                    std::to_string(tmd::Config::dpm_extractor_score_threshold) +
+                                    "__dot_" + std::to_string
+                                            (tmd::Config::dpm_extractor_overlapping_threshold) + ".jpg";
+            std::cout << "Save : " << file_name << std::endl;
+            cv::imwrite(file_name, result);
+            tmd::free_frame(frame);
+            delete pipeline;
         }
+    }
     //}
 }
 
-void bgs_benchmark(){
+void bgs_benchmark() {
     std::string folder = "./res/bgs_benchmark/";
     tmd::BGSubstractor *bgs;
     tmd::BlobPlayerExtractor *pe = new tmd::BlobPlayerExtractor();
 
-    for (tmd::Config::bgs_blob_buffer_size = 4 ;
-            tmd::Config::bgs_blob_buffer_size <= 6 ;
-         tmd::Config::bgs_blob_buffer_size ++){
+    for (tmd::Config::bgs_blob_buffer_size = 4;
+         tmd::Config::bgs_blob_buffer_size <= 6;
+         tmd::Config::bgs_blob_buffer_size++) {
 
-        int max = (2*tmd::Config::bgs_blob_buffer_size + 1) *
-                (2*tmd::Config::bgs_blob_buffer_size + 1);
+        int max = (2 * tmd::Config::bgs_blob_buffer_size + 1) *
+                  (2 * tmd::Config::bgs_blob_buffer_size + 1);
 
-        for (tmd::Config::bgs_blob_threshold_count = 1 ;
-             tmd::Config::bgs_blob_threshold_count <= max ;
-             tmd::Config::bgs_blob_threshold_count ++){
+        for (tmd::Config::bgs_blob_threshold_count = 1;
+             tmd::Config::bgs_blob_threshold_count <= max;
+             tmd::Config::bgs_blob_threshold_count++) {
 
             bgs = new tmd::BGSubstractor("./res/videos/uni-hockey/", 0, 49,
                                          51, 1);
@@ -151,8 +159,8 @@ void bgs_benchmark(){
                                                        false, false, true,
                                                        false);
             std::string file_name = folder + "bbs_" + std::to_string
-              (tmd::Config::bgs_blob_buffer_size) + "__btc_" +
-                std::to_string(tmd::Config::bgs_blob_threshold_count) + ".jpg";
+                    (tmd::Config::bgs_blob_buffer_size) + "__btc_" +
+                                    std::to_string(tmd::Config::bgs_blob_threshold_count) + ".jpg";
             std::cout << "Save : " << file_name << std::endl;
             cv::imwrite(file_name, result);
             tmd::free_frame(frame);
@@ -164,25 +172,23 @@ void bgs_benchmark(){
 void create_training_set(void) {
     tmd::Config::load_config();
 
-    tmd::TrainingSetCreator *trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0,
-                                                                   "./res/xmls/person.xml", 0, 300, 1);
+    tmd::TrainingSetCreator *trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, 0, 1200, 1);
     tmd::frame_t *frame = trainer->next_frame();
 
-    int count = 0;
-    int max_frames = 10;
-
     while (frame != NULL) {
-        std::string frame_index = std::to_string(count);
+        std::string frame_index = std::to_string(frame->frame_index);
         std::cout << "Finished frame " << frame_index << std::endl;
+
+        if (frame->frame_index != 0 && frame->frame_index % 100 == 0) {
+            trainer->write_centers(frame->frame_index);
+        }
+
         tmd::free_frame(frame);
         frame = trainer->next_frame();
-        count++;
-        if (count == max_frames) {
-            break;
-        }
     }
+
     tmd::free_frame(frame);
-    trainer->write_centers();
+    trainer->write_centers(999);
     delete trainer;
 }
 
