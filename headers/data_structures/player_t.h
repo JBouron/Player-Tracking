@@ -10,19 +10,21 @@ namespace tmd{
     /* Structure representing a player. */
 
     typedef struct{
-        cv::Mat original_image;     // The original image of the player (when cropped from the frame).
-        cv::Mat mask_image;         // The result of applying BGS on the original image. I gives us the important pixels.
-        double frame_index;         // Frame indice from which this player has been extracted.
+        cv::Mat original_image;     // The original image of the player
+        cv::Mat mask_image;         // Resulting mask from the BGS. White
+        // pixels are forground whereas black are from the background.
+        int frame_index;            // Frame index containing this player.
         cv::Rect pos_frame;         // Position of the player on the frame.
-        tmd::team_t team;           // Team of the player (TBD by the TeamDecider).
-        float likelihood;           // Likelihood of the team membership.
-        features_t features;
+        tmd::team_t team;           // Team of the player.
+        float likelihood;           // Likelihood of the player detection.
+                                    // (= DPM Score).
+        features_t features;        // Features of the player.
     }player_t;
 
+    /**
+     * Helper function to release the memory taken by a player_t*.
+     */
     inline void free_player(player_t* player){
-        /*player->original_image.release();
-        player->mask_image.release();*/
-        //free_features(&player->features);
         if (player != NULL){
             delete player;
         }

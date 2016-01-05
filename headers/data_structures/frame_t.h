@@ -13,26 +13,28 @@
 namespace tmd {
 
     /* Structure frame_t.
-     * The role of the frame_t structure is to hold relevant information of a frame
-     * taken from the input video.
-    */
+     * The role of the frame_t structure is to hold relevant information of a
+     * frame taken from the input video.
+     */
 
     typedef struct {
         cv::Mat original_frame;         // Original frame taken from the video.
-        int frame_index;             // Index of the frame in the video.
-        cv::Mat mask_frame;             // Frame after applying background subtraction.
-        cv::Mat colored_mask_frame;     // Colored mask frame taken from the video.
-        int camera_index;     // Index of the camera which took the frame.
-        std::vector<tmd::player_t *> players; // Players on the frame.
-        std::vector<cv::Rect> blobs; // The blobs on the the frame.
+        int frame_index;                // Index of the frame in the video.
+        cv::Mat mask_frame;             // Frame after applying BGS.
+        cv::Mat colored_mask_frame;     // Colored mask of the frame.
+        int camera_index;               // Index of the source camera.
+        std::vector<tmd::player_t *> players;   // Players on the frame.
+        std::vector<cv::Rect> blobs;    // The blobs on the the frame.
     } frame_t;
 
+    /**
+     * Helper function to release the memory taken by a frame_t*.
+     */
     inline void free_frame(frame_t *frame) {
         if (frame != NULL){
             for (size_t i = 0; i < frame->players.size(); i++) {
                 free_player(frame->players[i]);
             }
-
             delete frame;
         }
     }
@@ -41,7 +43,7 @@ namespace tmd {
      * Create a 'colored mask' ie all pixel belonging to the foreground
      * are in color whereas pixels from the background are black.
      */
-    inline cv::Mat get_colored_mask_for_frame(tmd::frame_t *frame) {
+    inline cv::Mat get_colored_mask_for_frame(const tmd::frame_t* const frame) {
         cv::Mat resulting_image;
         frame->original_frame.copyTo(resulting_image);
         cv::Vec3b black;
@@ -124,10 +126,6 @@ namespace tmd {
             }
 
             if (draw_player) {
-                /*cv::putText(result, std::to_string(p->likelihood), cv::Point
-                                    (p->pos_frame.x, p->pos_frame.y-5),
-                            cv::FONT_HERSHEY_SIMPLEX,
-                            0.55, torso_color );*/
                 cv::Scalar color;
                 if (draw_player_color) {
                     color = tmd::get_team_color(p->team);
