@@ -8,6 +8,8 @@
 #include "../headers/pipelines/approximative_pipeline.h"
 #include "../headers/data_structures/cmd_args_t.h"
 
+#include <boost/lockfree/queue.hpp>
+
 void show_body_parts(cv::Mat image, tmd::player_t *p);
 
 void extract_player_image(void);
@@ -54,6 +56,21 @@ void test_fast_dpm(void) {
     std::cout << "end" << std::endl;
 }
 
+void test_lock_free_queues(void){
+    boost::lockfree::queue<int> queue(0);
+    std::cout << queue.is_lock_free() << std::endl;
+
+    for (int i = 0 ; i < 100 ; i ++){
+        while (!queue.push(i));
+    }
+
+    for (int i = 0 ; i < 100 ; i ++){
+        int val;
+        while(!queue.pop(val));
+        std::cout << val << std::endl;
+    }
+}
+
 
 void show_help();
 
@@ -69,9 +86,9 @@ tmd::cmd_args_t *get_debug_args() {
     args->show_torsos = false;
     args->s = 0;
     args->e = std::numeric_limits<int>::max();
-    args->j = 10;
+    args->j = 1;
     args->t = 4;
-    args->b = 15;
+    args->b = 8;
     return args;
 }
 
@@ -81,7 +98,8 @@ void bgs_benchmark();
 
 
 int main(int argc, char *argv[]) {
-
+    test_lock_free_queues();
+    return 0;
     // TODO : Normally use parse_args function.
     tmd::cmd_args_t *args = get_debug_args();
     if (args == NULL) {
@@ -152,6 +170,7 @@ int main(int argc, char *argv[]) {
             std::cout << "Save frame " << frame->frame_index << std::endl;
             cv::imwrite(file_name, result);
         }
+
         if (!use_approximate_pipeline) {
             free_frame(frame);
         }
