@@ -16,16 +16,16 @@ namespace tmd{
         m_frame_delay = 1.0 / fps;
         std::cout << m_frame_delay << std::endl;
 
-        if (thread_count == 1){
+        /*if (thread_count == 1){
             m_pipeline = new tmd::SimplePipeline(video_folder, camera_index,
                                              start_frame, end_frame, box_step);
         }
-        else{
+        else{*/
             m_pipeline = new tmd::MultithreadedPipeline(video_folder,
                                                         camera_index,
                                                         thread_count, start_frame,
                                                 end_frame, m_box_step);
-        }
+        //}
     }
 
     ApproximativePipeline::~ApproximativePipeline(){
@@ -52,9 +52,9 @@ namespace tmd{
         /*std::this_thread::sleep_for(std::chrono::duration<double>
                                             (m_frame_delay -
              (cv::getTickCount() - time_start) / cv::getTickFrequency()));*/
-        /*while ((cv::getTickCount() - m_last_frame_time) /
+        while ((cv::getTickCount() - m_last_frame_time) /
                         cv::getTickFrequency() <
-                m_frame_delay);*/
+                m_frame_delay);
         m_last_frame_time = cv::getTickCount();
         return m_last_frame_computed;
     }
