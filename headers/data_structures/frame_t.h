@@ -124,10 +124,10 @@ namespace tmd {
             }
 
             if (draw_player) {
-                cv::putText(result, std::to_string(p->likelihood), cv::Point
+                /*cv::putText(result, std::to_string(p->likelihood), cv::Point
                                     (p->pos_frame.x, p->pos_frame.y-5),
                             cv::FONT_HERSHEY_SIMPLEX,
-                            0.55, torso_color );
+                            0.55, torso_color );*/
                 cv::Scalar color;
                 if (draw_player_color) {
                     color = tmd::get_team_color(p->team);

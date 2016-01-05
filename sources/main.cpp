@@ -61,17 +61,17 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 
 tmd::cmd_args_t *get_debug_args() {
     tmd::cmd_args_t *args = new tmd::cmd_args_t;
-    args->video_folder = "./res/videos/uni-hockey/";
+    args->video_folder = "./res/videos/alone-red-ball/";
     args->camera_index = 0;
     args->show_results = true;
     args->save_results = false;
     args->save_folder = "./res/pipeline_results/complete_pipeline/uni/with blob separator/";
-    args->show_torsos = true;
+    args->show_torsos = false;
     args->s = 0;
     args->e = std::numeric_limits<int>::max();
     args->j = 10;
     args->t = 4;
-    args->b = 1;
+    args->b = 8;
     return args;
 }
 
