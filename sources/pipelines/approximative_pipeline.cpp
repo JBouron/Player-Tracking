@@ -14,6 +14,7 @@ namespace tmd{
 
         double fps = m_video->get(CV_CAP_PROP_FPS);
         m_frame_delay = 1.0 / fps;
+        std::cout << m_frame_delay << std::endl;
 
         if (thread_count == 1){
             m_pipeline = new tmd::SimplePipeline(video_folder, camera_index,
@@ -27,8 +28,12 @@ namespace tmd{
         }
     }
 
+    ApproximativePipeline::~ApproximativePipeline(){
+        delete m_pipeline;
+        free_frame(m_last_frame_computed);
+    }
+
     frame_t* ApproximativePipeline::next_frame(){
-        double time_start = cv::getTickCount();
         cv::Mat video_frame;
         if (!m_video->read(video_frame)){
             return NULL;
@@ -46,9 +51,11 @@ namespace tmd{
         m_frame_pos += m_step;
         /*std::this_thread::sleep_for(std::chrono::duration<double>
                                             (m_frame_delay -
-                 (cv::getTickCount() - time_start) / cv::getTickFrequency()));
-        /*while ((cv::getTickCount() - time_start) / cv::getTickFrequency() <
+             (cv::getTickCount() - time_start) / cv::getTickFrequency()));*/
+        /*while ((cv::getTickCount() - m_last_frame_time) /
+                        cv::getTickFrequency() <
                 m_frame_delay);*/
+        m_last_frame_time = cv::getTickCount();
         return m_last_frame_computed;
     }
 

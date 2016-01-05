@@ -71,7 +71,7 @@ tmd::cmd_args_t *get_debug_args() {
     args->e = std::numeric_limits<int>::max();
     args->j = 10;
     args->t = 4;
-    args->b = 8;
+    args->b = 15;
     return args;
 }
 
@@ -156,6 +156,9 @@ int main(int argc, char *argv[]) {
             free_frame(frame);
         }
         frame = pipeline->next_frame();
+        std::cout << "Frame time = " << (cv::getTickCount() - t1) /
+                                                cv::getTickFrequency() <<
+                std::endl;
     }
 
     outputFile.flush();

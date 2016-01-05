@@ -17,6 +17,8 @@ namespace tmd{
                          int thread_count, int start_frame, int end_frame,
                          int box_step);
 
+        ~ApproximativePipeline();
+
         frame_t* next_frame();
 
     private:
@@ -28,6 +30,7 @@ namespace tmd{
         tmd::frame_t *m_last_frame_computed;
 
         double m_frame_delay; // minimum time between to frames.
+        double m_last_frame_time;
     };
 }
 
