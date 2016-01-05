@@ -4,7 +4,8 @@
 using namespace cv;
 
 namespace tmd {
-    std::vector<player_t *> BlobPlayerExtractor::extract_player_from_frame(tmd::frame_t *frame) {
+    std::vector<player_t *> BlobPlayerExtractor::extract_player_from_frame(
+            tmd::frame_t *frame) {
 
         Mat maskImage;
         frame->mask_frame.copyTo(maskImage);
