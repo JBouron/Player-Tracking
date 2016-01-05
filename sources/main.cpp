@@ -87,7 +87,7 @@ tmd::cmd_args_t *get_debug_args() {
     args->s = 0;
     args->e = std::numeric_limits<int>::max();
     args->j = 1;
-    args->t = 4;
+    args->t = 2;
     args->b = 8;
     return args;
 }
@@ -98,8 +98,8 @@ void bgs_benchmark();
 
 
 int main(int argc, char *argv[]) {
-    test_lock_free_queues();
-    return 0;
+    /*test_lock_free_queues();
+    return 0;*/
     // TODO : Normally use parse_args function.
     tmd::cmd_args_t *args = get_debug_args();
     if (args == NULL) {
