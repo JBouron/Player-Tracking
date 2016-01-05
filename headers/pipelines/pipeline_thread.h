@@ -7,6 +7,7 @@
 #include <mutex>
 #include <thread>
 #include <atomic>
+#include <boost/lockfree/queue.hpp>
 #include "../data_structures/player_t.h"
 #include "pipeline.h"
 #include "../misc/debug.h"
@@ -56,7 +57,8 @@ namespace tmd{
 
         tmd::Pipeline *m_pipeline;
         std::thread m_worker;
-        std::deque<tmd::frame_t* > m_buffer;
+        //std::deque<tmd::frame_t* > m_buffer;
+        boost::lockfree::queue<tmd::frame_t*> m_buffer;
         std::mutex m_buffer_lock;
         int m_starting_frame;
         int m_ending_frame;
