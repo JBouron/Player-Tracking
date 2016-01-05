@@ -10,24 +10,23 @@
 #include "../misc/config.h"
 
 namespace tmd {
-    /* Class responsible of applying a BG substraction on a given video.
-     * The BGS works as an iterator over the input video. You can extract
-     * frames from the video one by one and apply a background substraction
-     * on them.
-     */
 
+    /**
+     * Wrapper of the background subtractor class from openCV.
+     * This class take an input video and the user can retrieve each frame by
+     * calling the next_frame method.
+     * This can be seen as an iterator over the video, performing the
+     * background subtraction over the returned frames.
+     */
     class BGSubstractor {
     public:
         /**
          * Constructor of the Background Substractor.
          * input_video : The video to operate on.
-         * static_mask : The static to use.
          * camera_index : The index of the camera.
-         * threshold : Threshold for the color distance to use during
-         *              computation.
-         * history : Size of the history to keep for the background.
-         * learning_rate : Learning rate of the algorithm, ie. how does the
-         * background model changes over time.
+         * starting_frame : The index of the first frame.
+         * ending_frame : The index of the last frame.
+         * step_size : The step size between to frame returned by next_frame().
          */
         BGSubstractor(std::string video_folder, int camera_index,
                       int starting_frame = 0, int ending_frame = -1, int
@@ -39,8 +38,12 @@ namespace tmd {
         ~BGSubstractor();
 
         /**
-         * Extract the next frame from the input_video.
-         * Return NULL if there is no frame left in the input stream.
+         * Extract the next image from the input_video, apply BGS on it and
+         * return a frame_t* containing the original image, the background
+         * mask and the colored mask.
+         *
+         * Return NULL if there is no frame left in the input stream or if
+         * the ending_frame has been reached.
          */
         frame_t *next_frame();
 
@@ -70,8 +73,6 @@ namespace tmd {
         int get_current_frame_index();
 
     private:
-        void step();
-
         cv::Ptr<cv::BackgroundSubtractorMOG2> m_bgs;
         cv::VideoCapture m_input_video;
         std::string m_input_video_path;
@@ -85,6 +86,7 @@ namespace tmd {
         int m_ending_frame;
         int m_step_size;
 
+        void step();
         int count_neighbours_in_fg(cv::Mat frame, int x, int y, int buffer_size);
     };
 }
