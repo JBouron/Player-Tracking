@@ -7,8 +7,17 @@
 #include "../../pipelines/pipeline.h"
 
 namespace tmd{
+
+    /**
+     * Class allowing us to separate the blobs containing multiple players.
+     */
     class BlobSeparator{
     public:
+
+        /**
+         *  Separates the blobs (represented by players). And returns the new
+         *  vector containing this time the players of the original frame.
+         */
         static std::vector<tmd::player_t*> separate_blobs
                 (std::vector<tmd::player_t*> players);
     };

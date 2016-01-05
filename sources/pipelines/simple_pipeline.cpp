@@ -2,12 +2,13 @@
 #include "../../headers/data_structures/frame_t.h"
 
 namespace tmd {
-    SimplePipeline::SimplePipeline(std::string video_folder, int camera_index, int start_frame, int end_frame,
-                                   int step_size) : Pipeline(video_folder, camera_index, start_frame,
-                                                             end_frame, step_size) {
+    SimplePipeline::SimplePipeline(std::string video_folder, int camera_index,
+                int start_frame, int end_frame, int step_size)
+                : Pipeline(video_folder, camera_index, start_frame, end_frame,
+                step_size) {
 
         m_bgSubstractor = new BGSubstractor(video_folder, camera_index,
-                                                start_frame, end_frame, step_size);
+                                            start_frame, end_frame, step_size);
 
         if (tmd::Config::use_dpm_player_extractor){
             m_playerExtractor = new DPMPlayerExtractor();
@@ -52,7 +53,8 @@ namespace tmd {
         return frame;
     }
 
-    void SimplePipeline::set_bgs_properties(float threshold, int history_size, float learning_rate) {
+    void SimplePipeline::set_bgs_properties(float threshold, int history_size,
+                                            float learning_rate) {
         m_bgSubstractor->set_threshold_value(threshold);
         m_bgSubstractor->set_history_size(history_size);
         m_bgSubstractor->set_learning_rate(learning_rate);
@@ -63,8 +65,8 @@ namespace tmd {
         std::vector<tmd::player_t *> players =
                 m_playerExtractor->extract_player_from_frame(frame);
 
-        tmd::debug("SimplePipeline", "next_frame", std::to_string(players.size()) +
-                                                   " players/blobs extracted.");
+        tmd::debug("SimplePipeline", "next_frame",std::to_string(players.size())
+                                              + " players/blobs extracted.");
 
         if (!tmd::Config::use_dpm_player_extractor && tmd::Config::use_bgs){
             tmd::debug("SimplePipeline", "next_frame", "Separate blobs.");

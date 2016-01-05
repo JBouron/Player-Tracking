@@ -2,6 +2,10 @@
 
 using namespace std;
 
+/**
+ * The standard library does not define the std::to_string(std::string)
+ * method, so we made our own.
+ */
 string to_string(string str){
     return str;
 }
@@ -10,8 +14,9 @@ string to_string(string str){
     do{ \
         config.lookupValue(#name, name); \
             tmd::debug("Config", "load_config","" #name " = " + \
-to_string(name)); \
-    }while(0)
+            to_string(name)); \
+    }while(0) // The while (0) is an old trick to make the semi colon
+                //mandatory after calling the macro.
 
 namespace tmd {
 
@@ -126,7 +131,8 @@ namespace tmd {
     int Config::features_comparator_sample_cols = 180;
     int Config::features_comparator_centers_file_rows = 2;
     int Config::features_comparator_centers_file_cols = 180;
-    std::string Config::features_comparator_centers_file_name = "./res/cluster/cluster.kfc";
+    std::string Config::features_comparator_centers_file_name =
+            "./res/cluster/cluster.kfc";
 
     /**********************************************************************/
     /* Features Extractor                                                 */

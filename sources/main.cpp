@@ -65,7 +65,8 @@ tmd::cmd_args_t *get_debug_args() {
     args->camera_index = 0;
     args->show_results = true;
     args->save_results = false;
-    args->save_folder = "./res/pipeline_results/complete_pipeline/uni/with blob separator/";
+    args->save_folder = "./res/pipeline_results/complete_pipeline/uni/"
+            "with blob separator/";
     args->show_torsos = false;
     args->s = 0;
     args->e = std::numeric_limits<int>::max();
@@ -171,7 +172,6 @@ int main(int argc, char *argv[]) {
 }
 
 void show_help() {
-    //tmd ./videos camera-index --show-result -s 0 -e 120 -j 10 -t 4 --save-result --show-torsos -b 5
     std::cout << "###############################################" << std::endl;
     std::cout << "#             Bachelor project                #" << std::endl;
     std::cout << "###############################################" << std::endl;
@@ -315,9 +315,9 @@ void params_benchmark() {
                                                        false, true);
             std::string file_name = folder + "btc_" + std::to_string
                     (tmd::Config::bgs_blob_threshold_count) + "__dst_" +
-                                    std::to_string(tmd::Config::dpm_extractor_score_threshold) +
-                                    "__dot_" + std::to_string
-                                            (tmd::Config::dpm_extractor_overlapping_threshold) + ".jpg";
+            std::to_string(tmd::Config::dpm_extractor_score_threshold) +
+            "__dot_" + std::to_string
+                    (tmd::Config::dpm_extractor_overlapping_threshold) + ".jpg";
             std::cout << "Save : " << file_name << std::endl;
             cv::imwrite(file_name, result);
             tmd::free_frame(frame);
@@ -354,7 +354,7 @@ void bgs_benchmark() {
                                                        false);
             std::string file_name = folder + "bbs_" + std::to_string
                     (tmd::Config::bgs_blob_buffer_size) + "__btc_" +
-                                    std::to_string(tmd::Config::bgs_blob_threshold_count) + ".jpg";
+                std::to_string(tmd::Config::bgs_blob_threshold_count) + ".jpg";
             std::cout << "Save : " << file_name << std::endl;
             cv::imwrite(file_name, result);
             tmd::free_frame(frame);
@@ -366,7 +366,8 @@ void bgs_benchmark() {
 void create_training_set(void) {
     tmd::Config::load_config();
 
-    tmd::TrainingSetCreator *trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, 0, 1200, 1);
+    tmd::TrainingSetCreator *trainer =
+        new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, 0, 1200, 1);
     tmd::frame_t *frame = trainer->next_frame();
 
     while (frame != NULL) {
@@ -399,7 +400,7 @@ void test_blob_separation(void) {
     std::vector<tmd::player_t *> players;
     players.push_back(player);
 
-    std::vector<tmd::player_t *> new_players = tmd::BlobSeparator::separate_blobs
+    std::vector<tmd::player_t *> new_players =tmd::BlobSeparator::separate_blobs
             (players);
 
     std::cout << "new_player size = " << new_players.size() << std::endl;

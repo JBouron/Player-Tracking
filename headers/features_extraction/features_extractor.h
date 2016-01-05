@@ -23,6 +23,7 @@ namespace tmd {
          * class to make testing easier and keep helper methods private.
          */
         friend class FeaturesExtractorTest;
+
     public:
         /**
          * Extract the features from a list of players by updating their

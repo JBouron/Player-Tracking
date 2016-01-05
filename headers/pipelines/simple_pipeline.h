@@ -11,11 +11,25 @@ namespace tmd{
     class SimplePipeline : public Pipeline{
 
     public:
+        /**
+         * Constructor of the Simple Pipeline
+         * video_folder : Folder containing the video.
+         * camera_index : The camera index.
+         * start_frame : The index of the first frame to begin.
+         * end_frame : The index of the last frame to compute.
+         * step_size : The "distance" between to consecutive frames.
+         */
         SimplePipeline(std::string video_folder, int camera_index,
                        int start_frame, int end_frame, int step_size);
 
+        /**
+         * Destructor of the Simple pipeline.
+         */
         ~SimplePipeline();
 
+        /**
+         * Returns the next frame after computing it.
+         */
         frame_t* next_frame();
 
         /**

@@ -9,6 +9,14 @@
 namespace tmd{
     /**
      * Class representing the config of the program.
+     * This is the memory representation of the configuration file config.cfg.
+     *
+     * Every member of this class can be redefined in the configuration file
+     * using the same name.
+     *
+     * All members have a default value. When a member is found in the
+     * configuration file, its value is overwritten by the one found in the
+     * file.
      */
     class Config{
     public:

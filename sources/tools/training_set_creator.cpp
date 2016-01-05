@@ -1,9 +1,10 @@
 #include "../../headers/tools/training_set_creator.h"
 
 namespace tmd {
-    TrainingSetCreator::TrainingSetCreator(std::string video_folder, int camera_index, int start_frame,
-                                           int end_frame, int step_size) {
-        m_bgSubstractor = new BGSubstractor(video_folder, camera_index, start_frame, end_frame, step_size);
+    TrainingSetCreator::TrainingSetCreator(std::string video_folder,
+           int camera_index, int start_frame, int end_frame, int step_size) {
+        m_bgSubstractor = new BGSubstractor(video_folder, camera_index,
+                                            start_frame, end_frame, step_size);
         m_playerExtractor = new BlobPlayerExtractor();
         cv::Mat centers;
         m_featuresComparator = new FeatureComparator(2, 180, centers);
@@ -55,8 +56,11 @@ namespace tmd {
 
     void TrainingSetCreator::extract_players_from_frame(tmd::frame_t *frame) {
         tmd::debug("SimplePipeline", "next_frame", "Extracting players.");
-        std::vector<tmd::player_t *> players = m_playerExtractor->extract_player_from_frame(frame);
-        tmd::debug("SimplePipeline", "next_frame", std::to_string(players.size()) + " players/blobs extracted.");
+        std::vector<tmd::player_t *> players = m_playerExtractor->
+                extract_player_from_frame(frame);
+
+        tmd::debug("SimplePipeline", "next_frame",
+                   std::to_string(players.size()) +" players/blobs extracted.");
 
         cv::Mat coloredMask = get_colored_mask_for_frame(frame);
         frame->original_frame.release();
@@ -67,8 +71,8 @@ namespace tmd {
         tmd::debug("SimplePipeline", "next_frame", "Done");
 
         tmd::debug("SimplePipeline", "next_frame", "Frame " +
-                                                   std::to_string(m_bgSubstractor->get_current_frame_index()) + " : " +
-                                                   std::to_string(players.size()) + " players detected");
+           std::to_string(m_bgSubstractor->get_current_frame_index()) + " : " +
+           std::to_string(players.size()) + " players detected");
 
         m_featuresExtractor->extractFeaturesFromPlayers(players);
 

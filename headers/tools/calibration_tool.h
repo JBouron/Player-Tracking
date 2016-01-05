@@ -8,11 +8,13 @@
 
 namespace tmd{
     /* Class allowing the user to calibrate the BGS for each camera. */
-        typedef enum {THRESHOLD_IDX = 0, HISTORY_SIZE_IDX = 1, LEARNING_RATE_IDX = 2};
+    typedef enum {THRESHOLD_IDX=0, HISTORY_SIZE_IDX=1, LEARNING_RATE_IDX=2};
     class CalibrationTool{
     public:
 
-        CalibrationTool(std::string video_folder_path, std::string mask_folder_path);
+        CalibrationTool(std::string video_folder_path,
+                        std::string mask_folder_path);
+
         ~CalibrationTool();
 
         void calibrate();

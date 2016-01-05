@@ -10,7 +10,7 @@ namespace tmd {
         m_frame_idx = m_starting_frame;
         m_ending_frame = ending_frame;
         m_pipeline = new tmd::SimplePipeline(video_folder, camera_index,
-                                             starting_frame, ending_frame, step_size);
+                                     starting_frame, ending_frame, step_size);
         m_stop_request = false;
 
         m_done = false;
@@ -50,13 +50,13 @@ namespace tmd {
     void PipelineThread::extract_from_pipeline() {
         while (!m_stop_request && m_frame_idx <= m_ending_frame) {
             tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
-                                                                  std::to_string(m_id) + " calling next_players()");
+                              std::to_string(m_id) + " calling next_players()");
             tmd::frame_t *next_buffer_entry = m_pipeline->next_frame();
             if (next_buffer_entry == NULL) {
                 break;
             }
             tmd::debug("PipelineThread", "extract_from_pipeline", "Thread " +
-                                                                  std::to_string(m_id) + " : Done");
+                                              std::to_string(m_id) + " : Done");
             this->push_buffer(next_buffer_entry);
             m_frame_idx += m_step_size;
         }
@@ -68,7 +68,7 @@ namespace tmd {
     void PipelineThread::push_buffer(tmd::frame_t *frame) {
         std::lock_guard<std::mutex> lock(m_buffer_lock);
         tmd::debug("PipelineThread", "push_buffer", "Thread " +
-                                                    std::to_string(m_id) + " push entry in buffer");
+                                std::to_string(m_id) + " push entry in buffer");
         m_buffer.push_back(frame);
     }
 }

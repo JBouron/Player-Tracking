@@ -12,19 +12,22 @@
 namespace tmd{
 
     /**
-     * The most important class. Link everything together. Take a frame in
-     * and output the  same frame with color boxes.
+     * The most important class. Link everything together. Take a frame
+     * from the input video, apply the whole algorithm on it and then returns
+     * the frames with its players, blobs, etc ...
+     *
+     * This class is abstract so that we can define multiple different
+     * pipelines.
      */
     class Pipeline {
     public:
         /**
          * Constructor of the pipeline:
-         * _ video_path : the path to the video on which we will run the
-         * pipeline
-         * _ static_mask_path : the path to the static mask used for the
-         * background subtraction
-         * _ camera_index : The index of the camera.
-         * _ model_file : Path to the file containing the model of the person.
+         * video_folder : Folder containing the video.
+         * camera_index : The camera index.
+         * start_frame : The index of the first frame to begin.
+         * end_frame : The index of the last frame to compute.
+         * step_size : The "distance" between to consecutive frames.
          */
          Pipeline(std::string video_folder, int camera_index, int start_frame,
                   int end_frame, int step_size);

@@ -12,7 +12,8 @@ namespace tmd {
     class TrainingSetCreator {
     public:
 
-        TrainingSetCreator(std::string video_folder, int camera_index, int start_frame, int end_frame, int step_size);
+        TrainingSetCreator(std::string video_folder, int camera_index,
+                           int start_frame, int end_frame, int step_size);
 
         ~TrainingSetCreator();
 
