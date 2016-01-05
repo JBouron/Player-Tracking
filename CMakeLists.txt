@@ -5,14 +5,18 @@ project(Bachelor_Project)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++14 -D VALGRIND=ON -I  /home/jbouron/Downloads/boost_1_60_0/")
 #SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 #SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
+set(BUILD_SHARED_LIBS OFF)
 set(OpenCV_FOUND TRUE)
 find_package(OpenCV REQUIRED)
 
 
-INCLUDE(FindPkgConfig)
+#INCLUDE(FindPkgConfig)
 
-PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
+#PKG_SEARCH_MODULE(SDL2 REQUIRED sdl2)
 
+#INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "/home/jbouron/EPFL/BA5/PlayfulVision/Bachelor-Project/cmake/")
+find_package(SDL2 REQUIRED)
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS})
 
 set(SOURCE_FILES sources/main.cpp
@@ -74,6 +78,6 @@ set(SOURCE_FILES sources/main.cpp
         headers/data_structures/cmd_args_t.h)
 
 add_executable(Bachelor_Project ${SOURCE_FILES})
-target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBRARIES}
+target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBS}
         config++
         cppunit)

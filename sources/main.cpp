@@ -71,6 +71,17 @@ void test_lock_free_queues(void){
     }
 }
 
+void show_red_square(void){
+    cv::Mat m(180, 180, CV_8UC3);
+    for (int i = 0 ; i < 180 ; i ++){
+        for (int j = 0 ; j < 180 ; j ++){
+            m.at<cv::Vec3i>(i, j) = cv::Vec3i(0, 0, 255);
+        }
+    }
+    cv::imshow("Test", m);
+    cv::waitKey(0);
+}
+
 
 void show_help();
 
@@ -98,6 +109,8 @@ void bgs_benchmark();
 
 
 int main(int argc, char *argv[]) {
+    /*show_red_square();
+    return 0;*/
     /*test_lock_free_queues();
     return 0;*/
     // TODO : Normally use parse_args function.
