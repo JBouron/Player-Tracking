@@ -41,6 +41,17 @@ namespace tmd{
         static int static_boxes_thickness;
 
         /**********************************************************************/
+        /* Results display                                                    */
+        /**********************************************************************/
+        static bool show_results;
+        static bool save_results;
+        static bool show_torsos;
+        static bool show_body_parts;
+        static bool show_players;
+        static bool show_blobs;
+        static bool show_player_team;
+
+        /**********************************************************************/
         /* BGS                                                                */
         /**********************************************************************/
         static bool bgs_detect_shadows;

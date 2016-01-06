@@ -74,6 +74,13 @@ namespace tmd {
         load_value(static_boxes_width);
         load_value(static_boxes_height);
         load_value(static_boxes_thickness);
+        load_value(show_torsos);
+        load_value(show_body_parts);
+        load_value(show_players);
+        load_value(show_results);
+        load_value(save_results);
+        load_value(show_blobs);
+        load_value(show_player_team);
 
         tmd::debug("Config", "load_config", "Config file loaded.");
     }
@@ -91,6 +98,17 @@ namespace tmd {
     int Config::static_boxes_width = 30;
     int Config::static_boxes_height = 120;
     int Config::static_boxes_thickness = 2;
+
+    /**********************************************************************/
+    /* Results display                                                    */
+    /**********************************************************************/
+    bool Config::show_results = false;
+    bool Config::save_results = true;
+    bool Config::show_torsos = false;
+    bool Config::show_body_parts = false;
+    bool Config::show_players = true;
+    bool Config::show_blobs = false;
+    bool Config::show_player_team = true;
 
     /**********************************************************************/
     /* BGS                                                                */
