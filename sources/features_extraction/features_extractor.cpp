@@ -8,8 +8,6 @@ namespace tmd {
         size_t size = players.size();
         size_t i = 0;
         for (i = 0; i < players.size(); i++) {
-            cv::imwrite("./res/debug/last_player_feature_extraction.jpg",
-                        players[i]->original_image);
             extractFeatures(players[i]);
             if (players[i]->features.body_parts.size() == 0) {
                 tmd::debug("FeaturesExtractor", "extractFeaturesFromPlayers",
