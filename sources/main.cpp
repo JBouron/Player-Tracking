@@ -15,7 +15,7 @@ tmd::cmd_args_t *get_debug_args() {
     tmd::cmd_args_t *args = new tmd::cmd_args_t;
     args->video_folder = "./res/videos/alone-red-ball/";
     args->camera_index = 2;
-    args->s = 0;
+    args->s = 1200;
     args->e = std::numeric_limits<int>::max();
     args->j = 10;
     args->t = 4;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
             writer_fps = fps / args->j;
         }
 
-        writer = new cv::VideoWriter(video_path, CV_FOURCC('M', 'J', 'P', 'G')
+        writer = new cv::VideoWriter(video_path, CV_FOURCC('M', 'P', '4', 'V')
                 , writer_fps, size, true);
     }
 
