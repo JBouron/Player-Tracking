@@ -54,6 +54,7 @@ namespace tmd{
     }
 
     void SDLBinds::imshow(SDL_Window* window, cv::Mat frame){
+        SDL_SetWindowSize(window, frame.cols, frame.rows);
         SDL_Surface* screen = SDL_GetWindowSurface(window);
         SDL_Surface* image = get_sdl_surface_from_mat(frame);
         SDL_BlitSurface(image, NULL, screen, NULL); // blit it to the screen

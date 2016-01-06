@@ -7,9 +7,12 @@
 #include "../data_structures/frame_t.h"
 
 namespace tmd{
+    /**
+     * Manual PlayerExtractor, Used to test some functionalities.
+     */
     class ManualPlayerExtractor : public PlayerExtractor{
     public:
-        virtual std::vector<player_t*> extract_player_from_frame(frame_t* frame);
+        virtual std::vector<player_t*> extract_player_from_frame(frame_t* fr);
 
         static bool mBoxComplete;
         static bool mFirstClick;

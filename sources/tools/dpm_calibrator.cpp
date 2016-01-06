@@ -20,7 +20,8 @@ namespace tmd {
         }
     }
 
-    void DPMCalibrator::calibrate_dpm(std::string video_path, std::string mask_path, int start_frame,
+    void DPMCalibrator::calibrate_dpm(std::string video_path,
+                                      std::string mask_path, int start_frame,
                                       int frame_step) {
         cv::VideoCapture capture(video_path);
         if (!capture.isOpened()) {

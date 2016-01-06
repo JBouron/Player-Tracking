@@ -7,7 +7,7 @@ namespace tmd {
                        + ".mp4";
 
         m_video = new cv::VideoCapture;
-        m_video->open(m_video_path); // TODO : Valkyrie reports a memleak here ...
+        m_video->open(m_video_path);
         if (!m_video->isOpened()) {
             throw std::invalid_argument("Error couldn't load the video in the"
                                                 " pipeline.");

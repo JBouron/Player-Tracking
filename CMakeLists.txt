@@ -39,13 +39,6 @@ set(SOURCE_FILES sources/main.cpp
         headers/openCV/_lsvm_routine.h
         headers/openCV/_lsvm_types.h
         sources/features_extraction/features_extractor.cpp
-        headers/test_cases/bgsubstractor_tests.h
-        sources/test_cases/bgsubstractor_tests.cpp
-        headers/test_cases/test_suite.h sources/test_cases/test_suite.cpp
-        headers/test_cases/features_extractor_tests.h
-        sources/test_cases/features_extractor_tests.cpp
-        headers/test_cases/feature_comparator_tests.h
-        sources/test_cases/feature_comprator_tests.cpp
         headers/players_extraction/dpm_based_extraction/dpm_player_extractor.h
         sources/players_extraction/dpm_based_extraction/dpm_player_extractor.cpp
         headers/tools/dpm_calibrator.h

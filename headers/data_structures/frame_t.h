@@ -13,26 +13,28 @@
 namespace tmd {
 
     /* Structure frame_t.
-     * The role of the frame_t structure is to hold relevant information of a frame
-     * taken from the input video.
-    */
+     * The role of the frame_t structure is to hold relevant information of a
+     * frame taken from the input video.
+     */
 
     typedef struct {
         cv::Mat original_frame;         // Original frame taken from the video.
-        int frame_index;             // Index of the frame in the video.
-        cv::Mat mask_frame;             // Frame after applying background subtraction.
-        cv::Mat colored_mask_frame;     // Colored mask frame taken from the video.
-        int camera_index;     // Index of the camera which took the frame.
-        std::vector<tmd::player_t *> players; // Players on the frame.
-        std::vector<cv::Rect> blobs; // The blobs on the the frame.
+        int frame_index;                // Index of the frame in the video.
+        cv::Mat mask_frame;             // Frame after applying BGS.
+        cv::Mat colored_mask_frame;     // Colored mask of the frame.
+        int camera_index;               // Index of the source camera.
+        std::vector<tmd::player_t *> players;   // Players on the frame.
+        std::vector<cv::Rect> blobs;    // The blobs on the the frame.
     } frame_t;
 
+    /**
+     * Helper function to release the memory taken by a frame_t*.
+     */
     inline void free_frame(frame_t *frame) {
         if (frame != NULL){
             for (size_t i = 0; i < frame->players.size(); i++) {
                 free_player(frame->players[i]);
             }
-
             delete frame;
         }
     }
@@ -41,7 +43,7 @@ namespace tmd {
      * Create a 'colored mask' ie all pixel belonging to the foreground
      * are in color whereas pixels from the background are black.
      */
-    inline cv::Mat get_colored_mask_for_frame(tmd::frame_t *frame) {
+    inline cv::Mat get_colored_mask_for_frame(const tmd::frame_t* const frame) {
         cv::Mat resulting_image;
         frame->original_frame.copyTo(resulting_image);
         cv::Vec3b black;
@@ -61,12 +63,7 @@ namespace tmd {
     /**
      * Draw the players of the frame on another image and returns it.
      */
-    inline cv::Mat draw_player_on_frame(int result_flag, tmd::frame_t *frame,
-                                        bool draw_player = true,
-                                        bool draw_torso = false,
-                                        bool draw_parts = false,
-                                        bool draw_blobs = false,
-                                        bool draw_player_color = true) {
+    inline cv::Mat draw_player_on_frame(int result_flag, tmd::frame_t *frame) {
         cv::Mat result;
         if (result_flag == 1) {
             result = frame->colored_mask_frame.clone();
@@ -105,7 +102,7 @@ namespace tmd {
         for (player_t *p : players) {
             // Due to overlapping we draw first the body parts, then the
             // torso and finally th box around the player.
-            if (draw_parts) {
+            if (tmd::Config::show_body_parts) {
                 for (cv::Rect part : p->features.body_parts) {
                     cv::Rect pos = part;
                     pos.x += p->pos_frame.x;
@@ -115,7 +112,7 @@ namespace tmd {
                 }
             }
 
-            if (draw_torso) {
+            if (tmd::Config::show_torsos) {
                 cv::Rect pos = p->features.torso_pos;
                 pos.x += p->pos_frame.x;
                 pos.y += p->pos_frame.y;
@@ -123,13 +120,9 @@ namespace tmd {
                               thickness, line_type, shift);
             }
 
-            if (draw_player) {
-                /*cv::putText(result, std::to_string(p->likelihood), cv::Point
-                                    (p->pos_frame.x, p->pos_frame.y-5),
-                            cv::FONT_HERSHEY_SIMPLEX,
-                            0.55, torso_color );*/
+            if (tmd::Config::show_players) {
                 cv::Scalar color;
-                if (draw_player_color) {
+                if (tmd::Config::show_player_team) {
                     color = tmd::get_team_color(p->team);
                 }
                 else {
@@ -153,7 +146,7 @@ namespace tmd {
             }
             thickness = 1;
         }
-        if (draw_blobs) {
+        if (tmd::Config::show_blobs) {
             for (cv::Rect blob : frame->blobs) {
                 cv::Rect pos = blob;
                 cv::rectangle(result, pos, blob_color,

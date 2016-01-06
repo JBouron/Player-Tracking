@@ -1,11 +1,11 @@
 #include "../../headers/pipelines/multithreaded_pipeline.h"
 
 namespace tmd {
-    MultithreadedPipeline::MultithreadedPipeline(std::string video_folder, int camera_index, int
-    thread_count, int start_frame, int end_frame, int step_size) :
-            Pipeline(video_folder, camera_index, start_frame, end_frame,
-                     step_size) {
-        m_threads_ready = false;
+    MultithreadedPipeline::MultithreadedPipeline(std::string video_folder,
+             int camera_index, int thread_count, int start_frame, int end_frame,
+             int step_size) : Pipeline(video_folder, camera_index, start_frame,
+             end_frame, step_size) {
+
         m_frame_pos = m_start;
         m_thread_count = thread_count;
         if (m_thread_count <= 0) {
@@ -34,11 +34,11 @@ namespace tmd {
     }
 
     void MultithreadedPipeline::schedule_threads(std::string video_folder) {
-/* Create threads */
         tmd::debug("MultithreadedPipeline", "create_threads", "Creating "
                 "threads");
         m_end = m_end - (m_end % m_step);
         int mod = (m_end / m_thread_count) % m_thread_count;
+
         for (int i = 0; i < m_thread_count; i++) {
             int threadId = i;
             int starting_frame = m_start + threadId * m_step;
@@ -51,15 +51,16 @@ namespace tmd {
                                m_thread_count * m_step;
             }
             int step = m_step * m_thread_count;
+
             tmd::debug("MultithreadedPipeline", "create_threads", "Creating "
-                                                                          "thread " + std::to_string(i) +
-                                                                  " starting_frame = " +
-                                                                  std::to_string(starting_frame) + " ending_frame = " +
-                                                                  std::to_string(ending_frame) + " step = " +
-                                                                  std::to_string(step));
+                          "thread " + std::to_string(i) +
+                          " starting_frame = " +
+                          std::to_string(starting_frame) + " ending_frame = " +
+                          std::to_string(ending_frame) + " step = " +
+                          std::to_string(step));
+
             m_pipeline_threads[i] = new PipelineThread(video_folder,
-                                                       m_camera_index,
-                                                       threadId,
+                                                       m_camera_index, threadId,
                                                        starting_frame,
                                                        ending_frame, step);
         }

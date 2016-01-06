@@ -11,8 +11,7 @@
 namespace tmd {
 
     /**
-     * Class responsible for comparing features of player by using a
-     * clustering algorithm.
+     * Class responsible for comparing features of player to cluster centers.
      */
     class FeatureComparator {
     public:
@@ -36,11 +35,17 @@ namespace tmd {
                           cv::TermCriteria criteria, int attempts,
                           int flags, cv::Mat centers);
 
+        /**
+         * Simpler constructor.
+         * clusterCount : The number of clusters.
+         * sampleCols : The number of columns for the sample.
+         * centers : Matrix containing the centers.
+         */
         FeatureComparator(int clusterCount, int sampleCols, cv::Mat centers);
 
         /**
-                 * Destructor for the class.
-                 */
+         * Destructor for the class.
+         */
         ~FeatureComparator();
 
         /**
@@ -77,12 +82,12 @@ namespace tmd {
         cv::Mat getData();
 
         /**
-         * Writes the cluster's centers to a file "clusterCenters<frame_index>.txt".
+         * Writes the cluster's centers into "clusterCenters<frame_index>.txt".
          */
         void writeCentersToFile(int frame_index);
 
         /**
-         * Writes the cluster's centers to a file "clusterCenters<frame_index>.txt".
+         * Writes the cluster's centers into "clusterCenters<frame_index>.txt".
          */
         void writeCentersToFile();
 

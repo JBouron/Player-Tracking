@@ -13,9 +13,7 @@ namespace tmd {
         DPM *dpm = new DPM();
 
         for (size_t i = 0; i < size; i++) {
-            player_t *p = players[i]; // freed
-            cv::imwrite("./res/debug/last_player_image_blob_separator.jpg ",
-                        p->original_image);
+            player_t *p = players[i];
             if (p->original_image.rows < 100 || p->original_image.cols < 50) {
                 free_player(p);
                 continue;
@@ -35,13 +33,13 @@ namespace tmd {
                     dpm->extract_players_and_body_parts(blob_frame);
             // freed
             tmd::debug("BlobSeparator", "separate_blobs", "Done : " +
-                                                          std::to_string(players_in_blob.size()) + " players "
-                                                                  "extracted.");
+                          std::to_string(players_in_blob.size()) + " players "
+                                  "extracted.");
             // Here the blob has multiple players in it.
             for (size_t j = 0; j < players_in_blob.size(); j++) {
                 tmd::debug("BlobSeparator", "separate_blobs", "Player " +
-                                                              std::to_string(j) + " has score " +
-                                                              std::to_string(players_in_blob[j]->likelihood));
+                              std::to_string(j) + " has score " +
+                              std::to_string(players_in_blob[j]->likelihood));
 
                 player_t *pi = players_in_blob[j];
                 pi->pos_frame.x += p->pos_frame.x;

@@ -4,7 +4,8 @@
 using namespace cv;
 
 namespace tmd {
-    std::vector<player_t *> BlobPlayerExtractor::extract_player_from_frame(tmd::frame_t *frame) {
+    std::vector<player_t *> BlobPlayerExtractor::extract_player_from_frame(
+            tmd::frame_t *frame) {
 
         Mat maskImage;
         frame->mask_frame.copyTo(maskImage);
@@ -27,13 +28,27 @@ namespace tmd {
                     std::set<int> neighbours;
                     smallestLabel = maxLabel;
 
-                    for (int bufferCol = -BUFFER_SIZE / 2; bufferCol <= BUFFER_SIZE / 2; bufferCol++) {
-                        for (int bufferRow = -BUFFER_SIZE / 2; bufferRow <= BUFFER_SIZE / 2; bufferRow++) {
-                            if (!clamp(rows, cols, row + bufferRow, col + bufferCol)) {
-                                if (labels.at<int>(row + bufferRow, col + bufferCol) != 0) {
-                                    label = labels.at<int>(row + bufferRow, col + bufferCol);
+                    for (int bufferCol = -BUFFER_SIZE / 2;
+                         bufferCol <= BUFFER_SIZE / 2;
+                         bufferCol++) {
+
+                        for (int bufferRow = -BUFFER_SIZE / 2;
+                             bufferRow <= BUFFER_SIZE / 2;
+                             bufferRow++) {
+
+                            if (!clamp(rows, cols, row + bufferRow,
+                                       col + bufferCol)) {
+
+                                if (labels.at<int>(row + bufferRow,
+                                                   col + bufferCol) != 0) {
+
+                                    label = labels.at<int>(row + bufferRow,
+                                                           col + bufferCol);
+
                                     neighbours.insert(label);
-                                    smallestLabel = label < smallestLabel ? label : smallestLabel;
+
+                                    smallestLabel = label < smallestLabel ?
+                                                    label : smallestLabel;
                                 }
                             }
                         }
@@ -42,7 +57,10 @@ namespace tmd {
                     if (neighbours.empty()) {
                         std::set<int> setTmp;
                         setTmp.insert(currentLabel);
-                        labelMap.insert(std::pair<int, std::set<int>>(currentLabel, setTmp));
+
+                        labelMap.insert(std::pair<int,std::set<int>>
+                                                (currentLabel, setTmp));
+
                         labels.at<int>(row, col) = currentLabel;
                         currentLabel++;
                     } else {
@@ -83,8 +101,10 @@ namespace tmd {
         }
 
         std::vector<player_t *> players;
-        for (std::map<int, int>::iterator iterator = blobSizes.begin(); iterator != blobSizes.end(); iterator++) {
-            if (iterator->second >= Config::blob_player_extractor_min_blob_size) {
+        for (auto iterator = blobSizes.begin(); iterator != blobSizes.end();
+             iterator++) {
+
+            if(iterator->second >= Config::blob_player_extractor_min_blob_size){
                 player_t *player = new player_t;
                 label = iterator->first;
                 int minRow = std::numeric_limits<int>::max();

@@ -9,7 +9,7 @@
 
 namespace tmd{
     /**
-     * Static class for operations inloving SDL.
+     * Static class for operations involving SDL.
      */
     class SDLBinds{
     public:
@@ -25,8 +25,8 @@ namespace tmd{
         static SDL_Surface* get_sdl_surface_from_mat(cv::Mat mat);
 
         static SDL_Window* create_sdl_window(std::string name,
-                                             int w = Config::sdl_binds_default_width,
-                                             int h = Config::sdl_binds_default_height);
+                                     int w = Config::sdl_binds_default_width,
+                                     int h = Config::sdl_binds_default_height);
 
         static void imshow(SDL_Window* window, cv::Mat frame);
 

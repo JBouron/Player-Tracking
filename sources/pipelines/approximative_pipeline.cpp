@@ -2,11 +2,11 @@
 #include "../../headers/data_structures/frame_t.h"
 
 namespace tmd{
-    ApproximativePipeline::ApproximativePipeline(const std::string &video_folder,
-           int camera_index, int thread_count, int start_frame, int end_frame,
-                                       int box_step)
-            : Pipeline(video_folder, camera_index, start_frame, end_frame,
-                       1){
+    ApproximativePipeline::ApproximativePipeline(const std::string &video_folder
+            ,int camera_index, int thread_count, int start_frame, int end_frame,
+             int box_step) : Pipeline(video_folder, camera_index, start_frame,
+                                      end_frame, 1){
+
         m_video->set(CV_CAP_PROP_POS_FRAMES, start_frame);
         m_last_frame_computed = NULL;
         m_frame_pos = start_frame;
@@ -14,18 +14,10 @@ namespace tmd{
 
         double fps = m_video->get(CV_CAP_PROP_FPS);
         m_frame_delay = 1.0 / fps;
-        std::cout << m_frame_delay << std::endl;
 
-        /*if (thread_count == 1){
-            m_pipeline = new tmd::SimplePipeline(video_folder, camera_index,
-                                             start_frame, end_frame, box_step);
-        }
-        else{*/
-            m_pipeline = new tmd::MultithreadedPipeline(video_folder,
-                                                        camera_index,
-                                                        thread_count, start_frame,
-                                                end_frame, m_box_step);
-        //}
+        m_pipeline = new tmd::MultithreadedPipeline(video_folder, camera_index,
+                                                    thread_count, start_frame,
+                                                    end_frame, m_box_step);
     }
 
     ApproximativePipeline::~ApproximativePipeline(){
@@ -33,36 +25,31 @@ namespace tmd{
         free_frame(m_last_frame_computed);
     }
 
-    frame_t* ApproximativePipeline::next_frame(){
+    frame_t* ApproximativePipeline::next_frame() {
         cv::Mat video_frame;
-        if (!m_video->read(video_frame)){
+        if (!m_video->read(video_frame)) {
             return NULL;
         }
-        if ((m_frame_pos - m_start) % m_box_step == 0){
+        if ((m_frame_pos - m_start) % m_box_step == 0) {
             free_frame(m_last_frame_computed);
             m_last_frame_computed = m_pipeline->next_frame();
-            if (m_last_frame_computed == NULL){
+            if (m_last_frame_computed == NULL) {
                 return NULL;
             }
         }
 
-        tmd::frame_t* frame = new frame_t;
         m_last_frame_computed->original_frame = video_frame;
+        m_last_frame_computed->frame_index ++;
         m_frame_pos += m_step;
-        /*std::this_thread::sleep_for(std::chrono::duration<double>
-                                            (m_frame_delay -
-             (cv::getTickCount() - time_start) / cv::getTickFrequency()));*/
-        while ((cv::getTickCount() - m_last_frame_time) /
-                        cv::getTickFrequency() <
-                m_frame_delay);
-        m_last_frame_time = cv::getTickCount();
-        return m_last_frame_computed;
-    }
 
-    void ApproximativePipeline::jump_video_to_next_frame(){
-        cv::Mat dummy;
-        for (int i = 0 ; i < m_step - 1 ; i ++){
-            m_video->read(dummy);
+        if (tmd::Config::show_results) {
+            // We need to wait to output at the same frame rate as the video.
+            while ((cv::getTickCount() - m_last_frame_time) /
+                           cv::getTickFrequency() < m_frame_delay);
         }
+
+        m_last_frame_time = cv::getTickCount();
+
+        return m_last_frame_computed;
     }
 }

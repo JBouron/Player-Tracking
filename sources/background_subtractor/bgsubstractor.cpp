@@ -9,9 +9,7 @@ namespace tmd {
         m_starting_frame = starting_frame;
         m_ending_frame = ending_frame;
         m_step_size = step_size;
-        if (m_bgs == NULL) {
-            throw std::bad_alloc();
-        }
+
 
         m_learning_rate = tmd::Config::bgs_learning_rate;
         tmd::debug("BGSubstractor", "BGSubstractor", "bgs created.");
@@ -23,9 +21,14 @@ namespace tmd {
                                 std::to_string(camera_index) + ".jpg";
         m_static_mask = cv::imread(mask_path, 0);
 
-        /*std::string background_path = tmd::Config::bgs_empty_room_background
-                          + "/ace_" + std::to_string(camera_index) + ".jpg";*/
+        // Take the first frame of the video and take it as the background
+        // model.
         m_input_video.open(m_input_video_path);
+        if (!m_input_video.isOpened()) {
+            throw std::invalid_argument("Error in BGSubstractor constructor, "
+                                                "input video is not valid (NULL or not opened).");
+        }
+
         cv::Mat bg;
         m_input_video.read(bg);
         cv::Mat mask;
@@ -84,7 +87,7 @@ namespace tmd {
             }
         }
 
-        //second pass
+        //second pass : "Reduce" the resolution of the mask image.
         cv::Mat mask_copy(m_static_mask.rows, m_static_mask.cols, CV_8U);
         cv::Mat checked_pixels;
         checked_pixels = cv::Mat::zeros(m_static_mask

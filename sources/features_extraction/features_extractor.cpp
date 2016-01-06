@@ -8,8 +8,6 @@ namespace tmd {
         size_t size = players.size();
         size_t i = 0;
         for (i = 0; i < players.size(); i++) {
-            cv::imwrite("./res/debug/last_player_feature_extraction.jpg",
-                        players[i]->original_image);
             extractFeatures(players[i]);
             if (players[i]->features.body_parts.size() == 0) {
                 tmd::debug("FeaturesExtractor", "extractFeaturesFromPlayers",
@@ -24,10 +22,9 @@ namespace tmd {
             throw std::invalid_argument("Error : Null pointer in "
                                     "FeaturesExtractor::extractFeatures()");
         }
-        //extractBodyParts(player);
+
         if (player->features.body_parts.size() > 0) {
             convertToHSV(player);
-            //updateMaskWithThreshold(player);
             createHistogram(player);
         }
     }
@@ -36,39 +33,6 @@ namespace tmd {
         cv::Mat hsv_tmp;
         cvtColor(p->features.torso, hsv_tmp, CV_BGR2HSV);
         p->features.torso = hsv_tmp;
-    }
-
-    bool FeaturesExtractor::withinThresholds(double h, double s, double v) {
-        float th_red_low = Config::feature_extractor_threshold_red_low;
-        float th_red_high = Config::feature_extractor_threshold_red_high;
-        float th_green_low = Config::feature_extractor_threshold_green_low;
-        float th_green_high = Config::feature_extractor_threshold_green_high;
-        float th_sat_low = Config::feature_extractor_threshold_saturation;
-        float th_val_low = Config::feature_extractor_threshold_value;
-
-        return ((th_red_low < h && h <= 180) || (0 <= h && h <= th_red_high) ||
-                (th_green_low <= h && h <= th_green_high)) &&
-               (th_sat_low <= s) && (th_val_low <= v);
-
-    }
-
-    void FeaturesExtractor::updateMaskWithThreshold(player_t *p) {
-        cv::Mat img = p->features.torso;
-        int cols = img.cols;
-        int rows = img.rows;
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                cv::Vec3b color = img.at<cv::Vec3b>(i, j);
-                bool in_mask = p->features.torso_mask.at<uchar>(i, j) > 127;
-                if (withinThresholds(color[0], color[1], color[2]) && in_mask) {
-                    p->features.torso_mask.at<uchar>(i, j) = 255;
-                }
-                else {
-                    p->features.torso_mask.at<uchar>(i, j) = 0;
-                }
-            }
-        }
     }
 
     void FeaturesExtractor::createHistogram(player_t *p) {

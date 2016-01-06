@@ -18,8 +18,8 @@ namespace tmd{
         /**
          * Launch the calibration on the given video.
          */
-        static void calibrate_dpm(std::string video_path, std::string mask_path, int start_frame,
-                                  int frame_step);
+        static void calibrate_dpm(std::string video_path, std::string mask_path,
+                                  int start_frame, int frame_step);
     };
 }
 

@@ -23,6 +23,7 @@ namespace tmd {
          * class to make testing easier and keep helper methods private.
          */
         friend class FeaturesExtractorTest;
+
     public:
         /**
          * Extract the features from a list of players by updating their
@@ -48,23 +49,6 @@ namespace tmd {
          *      - p : the player.
          */
         void convertToHSV(player_t *p);
-
-        /**
-         * Apply a hue threshold on the player image. The result is an
-         * updated mask in the player given in parameter.
-         */
-        void updateMaskWithThreshold(player_t *p);
-
-        /**
-         * Create the color histogram of the player given in parameter. The
-         * histogram is then stored in the player features field.
-         */
-
-        /**
-         * Returns true if the given color is within the thresholds defined
-         * above. False otherwise.
-         */
-        static bool withinThresholds(double h, double s, double v);
     };
 }
 
