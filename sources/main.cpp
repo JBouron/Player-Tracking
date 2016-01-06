@@ -15,11 +15,6 @@ tmd::cmd_args_t *get_debug_args() {
     tmd::cmd_args_t *args = new tmd::cmd_args_t;
     args->video_folder = "./res/videos/alone-red-ball/";
     args->camera_index = 2;
-    args->show_results = true;
-    args->save_results = false;
-    args->save_folder = "./res/pipeline_results/complete_pipeline/uni/"
-            "with blob separator/";
-    args->show_torsos = false;
     args->s = 0;
     args->e = std::numeric_limits<int>::max();
     args->j = 10;
@@ -69,7 +64,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    if (args->show_results) {
+    if (tmd::Config::show_results) {
         window = tmd::SDLBinds::create_sdl_window("TMD");
     }
 
@@ -77,7 +72,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Begin" << std::endl;
     double t1 = cv::getTickCount();
 
-    std::ofstream outputFile(args->save_folder + "output.out");
+    std::ofstream outputFile("output.out");
 
 
     while (frame != NULL) {
@@ -87,15 +82,14 @@ int main(int argc, char *argv[]) {
             outputFile << player->team << std::endl;
         }
 
-        cv::Mat result = tmd::draw_player_on_frame(0, frame, true,
-                                                   args->show_torsos, false,
-                                                   false, true);
-        if (args->show_results) {
+        cv::Mat result = tmd::draw_player_on_frame(0, frame);
+
+        if (tmd::Config::show_results) {
             tmd::SDLBinds::imshow(window, result);
         }
 
-        if (args->save_results) {
-            std::string file_name = args->save_folder + "/frame" +
+        if (tmd::Config::save_results) {
+            std::string file_name = "frame" +
                                     std::to_string(frame->frame_index) + ".jpg";
             std::cout << "Save frame " << frame->frame_index << std::endl;
             cv::imwrite(file_name, result);
@@ -130,13 +124,6 @@ void show_help() {
     std::cout << "Then any of the following arguments can be added in any "
             "order, if they are not specified, default values "
             "will be used" << std::endl;
-    std::cout << "--show-results Show result at every frame in a popup window"
-            "." << std::endl;
-    std::cout << "--save-results path Create a video file and save it to the "
-            "specified path. (The name is the same as the input "
-            "video)" << std::endl;
-    std::cout << "--show-torsos Show the torso boxes on the resulting frames"
-            "." << std::endl;
     std::cout << "-s number Set the starting frame to number. (default : 0)" <<
     std::endl;
     std::cout << "-e number Set the ending frame to number. (default : last "
@@ -161,22 +148,7 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
     args->camera_index = static_cast<int> (strtol(argv[2], NULL, 10));
 
     for (int i = 3; i < argc; i++) {
-        if (!strcmp(argv[i], "--show-results")) {
-            args->show_results = true;
-        }
-        else if (!strcmp(argv[i], "--save-results")) {
-            args->save_results = true;
-            i++;
-            if (i == argc) {
-                std::cout << "Error, expected save folder." << std::endl;
-                return NULL;
-            }
-            else args->save_folder = argv[i];
-        }
-        else if (!strcmp(argv[i], "--show-torsos")) {
-            args->show_torsos = true;
-        }
-        else if (!strcmp(argv[i], "-s")) {
+        if (!strcmp(argv[i], "-s")) {
             if (i == argc - 1) {
                 std::cout << "Error, expected starting frame." << std::endl;
                 return NULL;
