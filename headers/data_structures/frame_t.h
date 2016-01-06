@@ -63,12 +63,7 @@ namespace tmd {
     /**
      * Draw the players of the frame on another image and returns it.
      */
-    inline cv::Mat draw_player_on_frame(int result_flag, tmd::frame_t *frame,
-                                        bool draw_player = true,
-                                        bool draw_torso = false,
-                                        bool draw_parts = false,
-                                        bool draw_blobs = false,
-                                        bool draw_player_color = true) {
+    inline cv::Mat draw_player_on_frame(int result_flag, tmd::frame_t *frame) {
         cv::Mat result;
         if (result_flag == 1) {
             result = frame->colored_mask_frame.clone();
@@ -107,7 +102,7 @@ namespace tmd {
         for (player_t *p : players) {
             // Due to overlapping we draw first the body parts, then the
             // torso and finally th box around the player.
-            if (draw_parts) {
+            if (tmd::Config::show_body_parts) {
                 for (cv::Rect part : p->features.body_parts) {
                     cv::Rect pos = part;
                     pos.x += p->pos_frame.x;
@@ -117,7 +112,7 @@ namespace tmd {
                 }
             }
 
-            if (draw_torso) {
+            if (tmd::Config::show_torsos) {
                 cv::Rect pos = p->features.torso_pos;
                 pos.x += p->pos_frame.x;
                 pos.y += p->pos_frame.y;
@@ -125,9 +120,9 @@ namespace tmd {
                               thickness, line_type, shift);
             }
 
-            if (draw_player) {
+            if (tmd::Config::show_players) {
                 cv::Scalar color;
-                if (draw_player_color) {
+                if (tmd::Config::show_player_team) {
                     color = tmd::get_team_color(p->team);
                 }
                 else {
@@ -151,7 +146,7 @@ namespace tmd {
             }
             thickness = 1;
         }
-        if (draw_blobs) {
+        if (tmd::Config::show_blobs) {
             for (cv::Rect blob : frame->blobs) {
                 cv::Rect pos = blob;
                 cv::rectangle(result, pos, blob_color,
