@@ -37,7 +37,9 @@ int main(int argc, char *argv[]) {
     /* The pipeline of the algorithm. */
     tmd::Pipeline *pipeline = NULL;
     SDL_Window *window = NULL;
+    cv::VideoWriter *writer = NULL;
     bool use_approximate_pipeline;
+
     if (args->b > 1) {
         pipeline = new tmd::ApproximativePipeline(args->video_folder,
                                                   args->camera_index, args->t,
@@ -68,6 +70,28 @@ int main(int argc, char *argv[]) {
         window = tmd::SDLBinds::create_sdl_window("TMD");
     }
 
+    if (tmd::Config::save_results){
+        cv::VideoCapture original_video(args->video_folder + "/ace_" +
+                            std::to_string(args->camera_index) + ".mp4");
+        double fps = original_video.get(CV_CAP_PROP_FPS);
+
+        cv::Size size((int)(original_video.get(CV_CAP_PROP_FRAME_WIDTH)),
+                      (int)(original_video.get(CV_CAP_PROP_FRAME_HEIGHT)));
+
+        std::string video_path = "result.avi";
+
+        double writer_fps;
+        if (use_approximate_pipeline){
+            writer_fps = fps;
+        }
+        else{
+            writer_fps = fps / args->j;
+        }
+
+        writer = new cv::VideoWriter(video_path, CV_FOURCC('M', 'J', 'P', 'G')
+                , writer_fps, size, true);
+    }
+
     tmd::frame_t *frame = pipeline->next_frame();
     std::cout << "Begin" << std::endl;
     double t1 = cv::getTickCount();
@@ -89,22 +113,34 @@ int main(int argc, char *argv[]) {
         }
 
         if (tmd::Config::save_results) {
-            std::string file_name = "frame" +
+            /*std::string file_name = "frame" +
                                     std::to_string(frame->frame_index) + ".jpg";
+            cv::imwrite(file_name, result);*/
             std::cout << "Save frame " << frame->frame_index << std::endl;
-            cv::imwrite(file_name, result);
+            writer->write(result);
         }
         if (!use_approximate_pipeline) {
             free_frame(frame);
         }
         frame = pipeline->next_frame();
     }
+    double t2 = cv::getTickCount();
 
     outputFile.flush();
     outputFile.close();
-    double t2 = cv::getTickCount();
+
+    if (tmd::Config::show_results) {
+        tmd::SDLBinds::destroy_sdl_window(window);
+        tmd::SDLBinds::quit_sdl();
+    }
+
+    if (tmd::Config::save_results){
+        delete writer;
+    }
+
     std::cout << "Done" << std::endl;
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
+
     delete pipeline;
     return EXIT_SUCCESS;
 }
