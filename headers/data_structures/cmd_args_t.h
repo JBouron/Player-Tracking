@@ -11,10 +11,6 @@ namespace tmd{
     typedef struct{
         std::string video_folder = "./";
         int camera_index = 0;
-        bool show_results = false;
-        bool save_results = false;
-        std::string save_folder = "./";
-        bool show_torsos = false;
         int s = 0;
         int e = std::numeric_limits<int>::max();
         int j = 1;
