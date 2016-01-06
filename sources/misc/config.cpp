@@ -56,12 +56,6 @@ namespace tmd {
         load_value(features_comparator_centers_file_rows);
         load_value(features_comparator_centers_file_cols);
         load_value(features_comparator_centers_file_name);
-        load_value(feature_extractor_threshold_red_low);
-        load_value(feature_extractor_threshold_red_high);
-        load_value(feature_extractor_threshold_green_low);
-        load_value(feature_extractor_threshold_green_high);
-        load_value(feature_extractor_threshold_saturation);
-        load_value(feature_extractor_threshold_value);
         load_value(feature_extractor_histogram_size);
         load_value(sdl_binds_default_width);
         load_value(sdl_binds_default_height);
@@ -157,12 +151,6 @@ namespace tmd {
     /**********************************************************************/
     /* Features Extractor                                                 */
     /**********************************************************************/
-    float Config::feature_extractor_threshold_red_low = 120;
-    float Config::feature_extractor_threshold_red_high = 30;
-    float Config::feature_extractor_threshold_green_low = 30;
-    float Config::feature_extractor_threshold_green_high = 90;
-    float Config::feature_extractor_threshold_saturation = 30;
-    float Config::feature_extractor_threshold_value = 30;
     int Config::feature_extractor_histogram_size = 180;
 
     /**********************************************************************/

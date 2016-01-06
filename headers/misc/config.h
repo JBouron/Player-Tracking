@@ -96,12 +96,6 @@ namespace tmd{
         /**********************************************************************/
         /* Features Extractor                                                 */
         /**********************************************************************/
-        static float feature_extractor_threshold_red_low;
-        static float feature_extractor_threshold_red_high;
-        static float feature_extractor_threshold_green_low;
-        static float feature_extractor_threshold_green_high;
-        static float feature_extractor_threshold_saturation;
-        static float feature_extractor_threshold_value;
         static int feature_extractor_histogram_size;
 
         /**********************************************************************/
