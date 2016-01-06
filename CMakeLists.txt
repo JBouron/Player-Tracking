@@ -2,11 +2,18 @@ cmake_minimum_required(VERSION 3.3)
 project(Bachelor_Project)
 
 # Note : -MM and -H can only build, not run the program.
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++14 -D VALGRIND=ON")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -std=c++14 -D VALGRIND=ON -static-libstdc++ -static-libgcc ")
 #SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
 #SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
+
+set(BUILD_SHARED_LIBS OFF)
 set(OpenCV_FOUND TRUE)
 find_package(OpenCV REQUIRED)
+
+ADD_LIBRARY(libconfig STATIC IMPORTED)
+SET_TARGET_PROPERTIES(libconfig PROPERTIES IMPORTED_LOCATION /usr/local/lib/libconfig++.a)
+
+
 
 INCLUDE(FindPkgConfig)
 
@@ -67,5 +74,5 @@ set(SOURCE_FILES sources/main.cpp
 
 add_executable(Bachelor_Project ${SOURCE_FILES})
 target_link_libraries(Bachelor_Project ${OpenCV_LIBS} ${SDL2_LIBRARIES}
-        config++
-        cppunit)
+        libconfig
+)
