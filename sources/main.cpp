@@ -13,13 +13,13 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 
 tmd::cmd_args_t *get_debug_args() {
     tmd::cmd_args_t *args = new tmd::cmd_args_t;
-    args->video_folder = "./res/videos/alone-red-ball/";
-    args->camera_index = 2;
-    args->s = 1200;
+    args->video_folder = "./res/videos/uni-hockey-2/";
+    args->camera_index = 0;
+    args->s = 0;
     args->e = std::numeric_limits<int>::max();
-    args->j = 10;
+    args->j = 1;
     args->t = 4;
-    args->b = 15;
+    args->b = 1;
     return args;
 }
 
