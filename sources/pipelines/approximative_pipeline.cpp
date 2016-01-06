@@ -14,7 +14,6 @@ namespace tmd{
 
         double fps = m_video->get(CV_CAP_PROP_FPS);
         m_frame_delay = 1.0 / fps;
-        std::cout << m_frame_delay << std::endl;
 
         m_pipeline = new tmd::MultithreadedPipeline(video_folder, camera_index,
                                                     thread_count, start_frame,
