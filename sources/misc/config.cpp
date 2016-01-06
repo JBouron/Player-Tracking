@@ -10,6 +10,9 @@ string to_string(string str){
     return str;
 }
 
+/**
+ * Useful macro allowing us to load each field and display its value.
+ */
 #define load_value(name)\
     do{ \
         config.lookupValue(#name, name); \
@@ -132,7 +135,7 @@ namespace tmd {
     /* DPM                                                                */
     /**********************************************************************/
     float Config::dpm_extractor_score_threshold = -1.f;
-    float Config::dpm_extractor_overlapping_threshold = 0.2;
+    float Config::dpm_extractor_overlapping_threshold = 0.1;
     float Config::dpm_extractor_duplicate_area_threshold = 0.7;
     bool Config::use_dpm_player_extractor = false;
     bool Config::use_colored_mask_in_dpm = true;
@@ -140,7 +143,7 @@ namespace tmd {
     /**********************************************************************/
     /* Features Comparator                                                */
     /**********************************************************************/
-    float Config::features_comparator_correlation_threshold = 0.4;
+    float Config::features_comparator_correlation_threshold = 0.0;
     int Config::features_comparator_center_count = 2;
     int Config::features_comparator_sample_cols = 180;
     int Config::features_comparator_centers_file_rows = 2;
