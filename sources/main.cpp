@@ -11,28 +11,15 @@
 void show_help();
 tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 
-tmd::cmd_args_t *get_debug_args() {
-    tmd::cmd_args_t *args = new tmd::cmd_args_t;
-    args->video_folder = "./res/videos/uni-hockey-2/";
-    args->camera_index = 0;
-    args->s = 0;
-    args->e = std::numeric_limits<int>::max();
-    args->j = 1;
-    args->t = 4;
-    args->b = 1;
-    return args;
-}
-
 int main(int argc, char *argv[]) {
+    tmd::Config::load_config();
 
-    // TODO : Normally use parse_args function.
-    tmd::cmd_args_t *args = get_debug_args();
+    tmd::cmd_args_t *args = parse_args(argc, argv);
     if (args == NULL) {
         show_help();
         return EXIT_FAILURE;
     }
 
-    tmd::Config::load_config();
 
     /* The pipeline of the algorithm. */
     tmd::Pipeline *pipeline = NULL;
@@ -187,7 +174,10 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
     args->camera_index = static_cast<int> (strtol(argv[2], NULL, 10));
 
     for (int i = 3; i < argc; i++) {
-        if (!strcmp(argv[i], "-s")) {
+        if (!strcmp(argv[i], "--show")) {
+            tmd::Config::show_results = true;
+        }
+        else if (!strcmp(argv[i], "-s")) {
             if (i == argc - 1) {
                 std::cout << "Error, expected starting frame." << std::endl;
                 return NULL;
