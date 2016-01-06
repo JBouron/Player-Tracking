@@ -232,8 +232,8 @@ tmd::Config::dpm_extractor_overlapping_threshold,
             if (!is_suppressed[indices[i]]) {
                 for (j = i + 1; j < numBoxes; j++) {
                     if (!is_suppressed[indices[j]]) {
-                        int x1max =
-                                max(points[indices[i]].x, points[indices[j]].x);
+                        int x1max = max(points[indices[i]].x,
+                                        points[indices[j]].x);
 
                         int x2min = min(oppositePoints[indices[i]].x,
                                         oppositePoints[indices[j]].x);
