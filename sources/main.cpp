@@ -93,12 +93,10 @@ int main(int argc, char *argv[]) {
     }
 
     tmd::frame_t *frame = pipeline->next_frame();
-    std::cout << "Begin" << std::endl;
-    double t1 = cv::getTickCount();
-
     std::ofstream outputFile("output.out");
 
-
+    std::cout << "Begin" << std::endl;
+    double t1 = cv::getTickCount();
     while (frame != NULL) {
 
         outputFile << "Frame " << frame->frame_index << std::endl;
@@ -113,12 +111,17 @@ int main(int argc, char *argv[]) {
         }
 
         if (tmd::Config::save_results) {
-            /*std::string file_name = "frame" +
-                                    std::to_string(frame->frame_index) + ".jpg";
-            cv::imwrite(file_name, result);*/
-            std::cout << "Save frame " << frame->frame_index << std::endl;
+            std::cout << "Write frame " << frame->frame_index << std::endl;
             writer->write(result);
         }
+
+        if (tmd::Config::save_all_frames){
+            std::string file_name = "./frames/frame" + std::to_string(
+                                                   frame->frame_index) + ".jpg";
+            std::cout << "Save frame " << frame->frame_index << std::endl;
+            cv::imwrite(file_name, result);
+        }
+
         if (!use_approximate_pipeline) {
             free_frame(frame);
         }

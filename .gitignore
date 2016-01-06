@@ -9,3 +9,4 @@ res/debug/*
 bin/
 result.avi
 output.out
+frames/*

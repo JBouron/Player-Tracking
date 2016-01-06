@@ -50,6 +50,7 @@ namespace tmd{
         static bool show_players;
         static bool show_blobs;
         static bool show_player_team;
+        static bool save_all_frames;
 
         /**********************************************************************/
         /* BGS                                                                */

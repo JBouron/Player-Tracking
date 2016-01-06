@@ -81,6 +81,7 @@ namespace tmd {
         load_value(save_results);
         load_value(show_blobs);
         load_value(show_player_team);
+        load_value(save_all_frames);
 
         tmd::debug("Config", "load_config", "Config file loaded.");
     }
@@ -109,6 +110,7 @@ namespace tmd {
     bool Config::show_players = true;
     bool Config::show_blobs = false;
     bool Config::show_player_team = true;
+    bool Config::save_all_frames = false;
 
     /**********************************************************************/
     /* BGS                                                                */
