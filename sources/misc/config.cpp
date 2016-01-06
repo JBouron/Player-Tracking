@@ -39,15 +39,15 @@ namespace tmd {
             return;
         }
 
-        load_value(mask_folder);
-        load_value(model_file_path);
+        //load_value(mask_folder);
+        //load_value(model_file_path);
         load_value(bgs_detect_shadows);
         load_value(bgs_threshold);
         load_value(bgs_history);
         load_value(bgs_blob_buffer_size);
         load_value(bgs_blob_threshold_count);
         load_value(bgs_learning_rate);
-        load_value(bgs_empty_room_background);
+        //load_value(bgs_empty_room_background);
         //load_value(calibration_tool_escape_char);
         load_value(dpm_detector_numthread);
         load_value(dpm_extractor_score_threshold);
