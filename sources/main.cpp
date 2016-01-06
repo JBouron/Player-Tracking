@@ -62,7 +62,7 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 tmd::cmd_args_t *get_debug_args() {
     tmd::cmd_args_t *args = new tmd::cmd_args_t;
     args->video_folder = "./res/videos/alone-red-ball/";
-    args->camera_index = 0;
+    args->camera_index = 2;
     args->show_results = true;
     args->save_results = false;
     args->save_folder = "./res/pipeline_results/complete_pipeline/uni/"
