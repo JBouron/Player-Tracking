@@ -16,3 +16,7 @@ sudo apt-get -qq install libopencv-dev build-essential checkinstall cmake pkg-co
 # does not seem to be necessary.
 echo Trying to install libxine-dev ...
 sudo apt-get install libxine-dev
+
+echo ###   Installation done                    ###
+echo ###   Running test this may take a while   ###
+bash ./test/test.sh
