@@ -13,8 +13,6 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 void run_test();
 
 int main(int argc, char *argv[]) {
-    tmd::Config::load_config();
-
     tmd::cmd_args_t *args = parse_args(argc, argv);
     if (args == NULL) {
         show_help();
@@ -25,6 +23,8 @@ int main(int argc, char *argv[]) {
         run_test();
         return EXIT_SUCCESS;
     }
+
+    tmd::Config::load_config();
 
     /* The pipeline of the algorithm. */
     tmd::Pipeline *pipeline = NULL;
