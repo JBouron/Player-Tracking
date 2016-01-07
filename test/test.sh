@@ -16,4 +16,4 @@ else
 fi
 
 # Delete the results.
-#rm test_results.out
+rm test_results.out
