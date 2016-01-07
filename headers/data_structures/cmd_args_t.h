@@ -10,6 +10,7 @@ namespace tmd{
      */
     typedef struct{
         bool test_run = false;
+        bool training_set_creator = false;
         std::string video_folder = "./";
         int camera_index = 0;
         int s = 0;
