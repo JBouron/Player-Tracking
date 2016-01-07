@@ -30,7 +30,13 @@ namespace tmd {
         }
 
         cv::Mat bg;
-        m_input_video.read(bg);
+        if (tmd::Config::use_empty_room_images_as_background){
+            bg = cv::imread(tmd::Config::bgs_empty_room_background + "/ace_" +
+                            std::to_string(camera_index) + ".jpg");
+        }
+        else{
+            m_input_video.read(bg);
+        }
         cv::Mat mask;
         m_bgs->operator()(bg, mask, m_learning_rate);
 
