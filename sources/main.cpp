@@ -8,22 +8,31 @@
 #include "../headers/pipelines/approximative_pipeline.h"
 #include "../headers/data_structures/cmd_args_t.h"
 
-void show_help();
 tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 void run_test();
-void create_training_set(void);
+void create_training_set(std::string video_folder,
+             int camera_index, int start_frame, int end_frame, int step_size);
 
 int main(int argc, char *argv[]) {
-    create_training_set();
-    return 0;
     tmd::cmd_args_t *args = parse_args(argc, argv);
     if (args == NULL) {
-        show_help();
         return EXIT_FAILURE;
     }
 
     if (args->test_run){
         run_test();
+        return EXIT_SUCCESS;
+    }
+
+    // If the user forgot the '/' ...
+    if (args->video_folder[args->video_folder.size()-1] != '/'){
+        args->video_folder += '/';
+    }
+
+    if (args->training_set_creator){
+        create_training_set(args->video_folder,
+                            args->camera_index,
+                            args->s, args->e, args->j);
         return EXIT_SUCCESS;
     }
 
@@ -34,11 +43,6 @@ int main(int argc, char *argv[]) {
     SDL_Window *window = NULL;
     cv::VideoWriter *writer = NULL;
     bool use_approximate_pipeline;
-
-    // If the user forgot the '/' ...
-    if (args->video_folder[args->video_folder.size()-1] != '/'){
-        args->video_folder += '/';
-    }
 
     if (args->b > 1) {
         pipeline = new tmd::ApproximativePipeline(args->video_folder,
@@ -122,6 +126,9 @@ int main(int argc, char *argv[]) {
     }
     double t2 = cv::getTickCount();
 
+    std::cout << "Done" << std::endl;
+    std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
+
     if (tmd::Config::show_results) {
         tmd::SDLBinds::destroy_sdl_window(window);
         tmd::SDLBinds::quit_sdl();
@@ -131,39 +138,9 @@ int main(int argc, char *argv[]) {
         delete writer;
     }
 
-    std::cout << "Done" << std::endl;
-    std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
-
     delete args;
     delete pipeline;
     return EXIT_SUCCESS;
-}
-
-void show_help() {
-    std::cout << "###############################################" << std::endl;
-    std::cout << "#             Bachelor project                #" << std::endl;
-    std::cout << "###############################################" << std::endl;
-
-    std::cout << "  HELP :                                             " <<
-    std::endl;
-    std::cout << "The first argument should be the folder containing the "
-            "videos." << std::endl;
-    std::cout << "The second argument is the camera index on which the "
-            "algorithm will run. This index is between 0 and 7 "
-            "included." << std::endl;
-    std::cout << "Then any of the following arguments can be added in any "
-            "order, if they are not specified, default values "
-            "will be used" << std::endl;
-    std::cout << "-s number Set the starting frame to number. (default : 0)" <<
-    std::endl;
-    std::cout << "-e number Set the ending frame to number. (default : last "
-            "frame)" << std::endl;
-    std::cout << "-j size Set the step size. (default : 1)" << std::endl;
-    std::cout << "-t count Set the number of threads to use. (default : 1)"
-    << std::endl;
-    std::cout << "-b rate Set the refresh rate of the player boxes. (default "
-            ": every frames)" << std::endl;
-
 }
 
 tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
@@ -190,6 +167,9 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
     for (int i = 3; i < argc; i++) {
         if (!strcmp(argv[i], "--show")) {
             tmd::Config::show_results = true;
+        }
+        else if (!strcmp(argv[i], "--train")) {
+            args->training_set_creator = true;
         }
         else if (!strcmp(argv[i], "-s")) {
             if (i == argc - 1) {
@@ -251,11 +231,13 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
     return args;
 }
 
-void create_training_set(void) {
+void create_training_set(std::string video_folder,
+             int camera_index, int start_frame, int end_frame, int step_size) {
     tmd::Config::load_config();
 
     tmd::TrainingSetCreator *trainer =
-            new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, 0, 8, 1);
+            new tmd::TrainingSetCreator(video_folder, camera_index, start_frame,
+                                                        end_frame, step_size);
     tmd::frame_t *frame = trainer->next_frame();
 
     while (frame != NULL) {
