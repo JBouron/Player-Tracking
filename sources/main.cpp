@@ -10,6 +10,7 @@
 
 void show_help();
 tmd::cmd_args_t *parse_args(int argc, char *argv[]);
+void run_test();
 
 int main(int argc, char *argv[]) {
     tmd::Config::load_config();
@@ -20,6 +21,10 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE;
     }
 
+    if (args->test_run){
+        run_test();
+        return EXIT_SUCCESS;
+    }
 
     /* The pipeline of the algorithm. */
     tmd::Pipeline *pipeline = NULL;
@@ -80,17 +85,10 @@ int main(int argc, char *argv[]) {
     }
 
     tmd::frame_t *frame = pipeline->next_frame();
-    std::ofstream outputFile("output.out");
 
     std::cout << "Begin" << std::endl;
     double t1 = cv::getTickCount();
     while (frame != NULL) {
-
-        outputFile << "Frame " << frame->frame_index << std::endl;
-        for (tmd::player_t *player : frame->players) {
-            outputFile << player->team << std::endl;
-        }
-
         cv::Mat result = tmd::draw_player_on_frame(0, frame);
 
         if (tmd::Config::show_results) {
@@ -116,9 +114,6 @@ int main(int argc, char *argv[]) {
     }
     double t2 = cv::getTickCount();
 
-    outputFile.flush();
-    outputFile.close();
-
     if (tmd::Config::show_results) {
         tmd::SDLBinds::destroy_sdl_window(window);
         tmd::SDLBinds::quit_sdl();
@@ -131,6 +126,7 @@ int main(int argc, char *argv[]) {
     std::cout << "Done" << std::endl;
     std::cout << "Time = " << (t2 - t1) / cv::getTickFrequency() << std::endl;
 
+    delete args;
     delete pipeline;
     return EXIT_SUCCESS;
 }
@@ -164,6 +160,16 @@ void show_help() {
 
 tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
     tmd::cmd_args_t *args = new tmd::cmd_args_t;
+    if (argc < 2) {
+        std::cout << "Error, expected at least 2 arguments." << std::endl;
+        delete args;
+        return NULL;
+    }
+    else if (!strcmp(argv[1], "--test")){
+        args->test_run = true;
+        return args;
+    }
+
     if (argc < 3) {
         std::cout << "Error, expected at least 2 arguments." << std::endl;
         delete args;
@@ -235,4 +241,19 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
         }
     }
     return args;
+}
+
+void run_test(){
+    tmd::SimplePipeline pipeline("./test/", 0, 0,
+                                            std::numeric_limits<int>::max(), 1);
+    tmd::frame_t *frame = pipeline.next_frame();
+    while (frame != NULL) {
+
+        std::cout << "Frame " << frame->frame_index << std::endl;
+        for (tmd::player_t *player : frame->players) {
+            std::cout << player->team << std::endl;
+        }
+        free_frame(frame);
+        frame = pipeline.next_frame();
+    }
 }
