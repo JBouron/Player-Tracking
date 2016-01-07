@@ -32,6 +32,11 @@ int main(int argc, char *argv[]) {
     cv::VideoWriter *writer = NULL;
     bool use_approximate_pipeline;
 
+    // If the user forgot the '/' ...
+    if (args->video_folder[args->video_folder.size()-1] != '/'){
+        args->video_folder += '/';
+    }
+
     if (args->b > 1) {
         pipeline = new tmd::ApproximativePipeline(args->video_folder,
                                                   args->camera_index, args->t,
