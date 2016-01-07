@@ -122,6 +122,7 @@ int main(int argc, char *argv[]) {
         if (!use_approximate_pipeline) {
             free_frame(frame);
         }
+        std::cout << "Frame " << frame->frame_index << " done" << std::endl;
         frame = pipeline->next_frame();
     }
     double t2 = cv::getTickCount();
