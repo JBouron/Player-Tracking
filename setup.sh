@@ -18,5 +18,3 @@ echo Trying to install libxine-dev ...
 sudo apt-get install libxine-dev
 
 echo ###   Installation done                    ###
-echo ###   Running test this may take a while   ###
-bash ./test/test.sh
