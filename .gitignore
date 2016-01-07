@@ -1,4 +1,3 @@
-*.mp4
 .idea/*
 misc/*
 res/videos/*
@@ -8,5 +7,4 @@ Bachelor_project
 res/debug/*
 bin/
 result.avi
-output.out
 frames/*

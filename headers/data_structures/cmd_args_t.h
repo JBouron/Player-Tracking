@@ -9,6 +9,7 @@ namespace tmd{
      * Structure holding the command line arguments given to the program.
      */
     typedef struct{
+        bool test_run = false;
         std::string video_folder = "./";
         int camera_index = 0;
         int s = 0;

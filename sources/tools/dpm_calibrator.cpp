@@ -1,5 +1,11 @@
 #include "../../headers/tools/dpm_calibrator.h"
 
+/**
+ * Tool used during development. Not accessible by the user.
+ * May even be a little outdated.
+ */
+
+
 namespace tmd {
 
     void apply_mask_on_frame(frame_t *frame) {

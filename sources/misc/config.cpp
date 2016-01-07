@@ -74,11 +74,12 @@ namespace tmd {
         load_value(show_torsos);
         load_value(show_body_parts);
         load_value(show_players);
-        load_value(show_results);
+        //load_value(show_results);
         load_value(save_results);
         load_value(show_blobs);
         load_value(show_player_team);
         load_value(save_all_frames);
+        load_value(use_empty_room_images_as_background);
 
         tmd::debug("Config", "load_config", "Config file loaded.");
     }
@@ -119,6 +120,7 @@ namespace tmd {
     int Config::bgs_blob_buffer_size = 2;
     int Config::bgs_blob_threshold_count = 5;
     std::string Config::bgs_empty_room_background = "./res/room_background/";
+    bool Config::use_empty_room_images_as_background = false;
     bool Config::use_bgs = true;
 
     /**********************************************************************/

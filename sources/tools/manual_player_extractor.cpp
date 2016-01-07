@@ -1,5 +1,11 @@
 #include "../../headers/tools/manual_player_extractor.h"
 
+/**
+ * Tool used during development. Not accessible by the user.
+ * May even be a little outdated.
+ */
+
+
 namespace tmd {
     bool ManualPlayerExtractor::mFirstClick = true;
     bool ManualPlayerExtractor::mBoxComplete = false;

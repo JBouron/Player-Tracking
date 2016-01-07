@@ -1,5 +1,10 @@
 #include "../../headers/tools/calibration_tool.h"
 
+/**
+ * Tool used during development. Not accessible by the user.
+ * May even be a little outdated.
+ */
+
 namespace tmd {
     CalibrationTool::CalibrationTool(std::string video_folder_path,
                                      std::string mask_foler_path) {

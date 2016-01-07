@@ -5,7 +5,6 @@ namespace tmd {
                                    int thread_id, int starting_frame,
                                    int ending_frame, int step_size) :
             m_buffer(1000){
-        std::cout << m_buffer.is_lock_free() << std::endl;
         m_id = thread_id;
         m_step_size = step_size;
         m_starting_frame = starting_frame;
@@ -37,18 +36,9 @@ namespace tmd {
         }
         tmd::frame_t *head = NULL;
         while (true) {
-            {
-                //std::lock_guard<std::mutex> lock(m_buffer_lock);
-                //if (m_buffer.size() > 0) {
-                    //head = m_buffer[0];
-                    //m_buffer.pop_front();
-                    while (!m_buffer.pop(head)){
-                        std::cout << "Fail to pop" << std::endl;
-                    }
-                    m_done = (head == NULL);
-                    return head;
-                //}
-            }
+            while (!m_buffer.pop(head));
+            m_done = (head == NULL);
+            return head;
         }
     }
 
@@ -71,10 +61,7 @@ namespace tmd {
 
     void PipelineThread::push_buffer(tmd::frame_t *frame) {
         tmd::debug("PipelineThread", "push_buffer", "Thread " +
-                                                    std::to_string(m_id) + " push entry in buffer");
-        //m_buffer.push_back(frame);
-        while (!m_buffer.push(frame)){
-            std::cout << "Fail to push" << std::endl;
-        }
+                                std::to_string(m_id) + " push entry in buffer");
+        while (!m_buffer.push(frame));
     }
 }
