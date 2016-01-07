@@ -74,7 +74,7 @@ namespace tmd {
         load_value(show_torsos);
         load_value(show_body_parts);
         load_value(show_players);
-        load_value(show_results);
+        //load_value(show_results);
         load_value(save_results);
         load_value(show_blobs);
         load_value(show_player_team);
