@@ -11,8 +11,11 @@
 void show_help();
 tmd::cmd_args_t *parse_args(int argc, char *argv[]);
 void run_test();
+void create_training_set(void);
 
 int main(int argc, char *argv[]) {
+    create_training_set();
+    return 0;
     tmd::cmd_args_t *args = parse_args(argc, argv);
     if (args == NULL) {
         show_help();
@@ -246,6 +249,27 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
         }
     }
     return args;
+}
+
+void create_training_set(void) {
+    tmd::Config::load_config();
+
+    tmd::TrainingSetCreator *trainer =
+            new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, 0, 8, 1);
+    tmd::frame_t *frame = trainer->next_frame();
+
+    while (frame != NULL) {
+        std::string frame_index = std::to_string(frame->frame_index);
+        std::cout << "Finished frame " << frame_index << std::endl;
+
+        tmd::free_frame(frame);
+        frame = trainer->next_frame();
+    }
+
+    tmd::free_frame(frame);
+    trainer->write_centers();
+
+    delete trainer;
 }
 
 void run_test(){
