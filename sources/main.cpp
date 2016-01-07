@@ -254,7 +254,8 @@ tmd::cmd_args_t *parse_args(int argc, char *argv[]) {
 void create_training_set(void) {
     tmd::Config::load_config();
 
-    tmd::TrainingSetCreator *trainer = new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, 0, 8, 1);
+    tmd::TrainingSetCreator *trainer =
+            new tmd::TrainingSetCreator("./res/videos/uni-hockey/", 0, 0, 8, 1);
     tmd::frame_t *frame = trainer->next_frame();
 
     while (frame != NULL) {
