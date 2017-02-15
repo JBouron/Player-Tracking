@@ -22,8 +22,8 @@ The image below links to a YouTube video, illustrating the final results achieve
 ### Abstract
 Below you'll find the original abstract from the report of this project. The full report can be found in the `report.pdf` file.
 
- 
-*"This project is done within the context of our Bachelor’s project at the Computer Vision Laboratory of the “École Polytechnique Fédérale de Lausanne” and its spin­off company PlayfulVision which specializes in real­time video tracking in sports environments. The goal of the project is to identify the team membership of players in a team­based sport by using the colors of their uniforms. This is performed on videos captured within the setting provided by the Sports Center of the “Université de Lausanne” and PlayfulVision. A single camera view is used at a time and the performance being aimed for is real­time, or as close as possible.
+
+"This project is done within the context of our Bachelor’s project at the Computer Vision Laboratory of the “École Polytechnique Fédérale de Lausanne” and its spin­off company PlayfulVision which specializes in real­time video tracking in sports environments. The goal of the project is to identify the team membership of players in a team­based sport by using the colors of their uniforms. This is performed on videos captured within the setting provided by the Sports Center of the “Université de Lausanne” and PlayfulVision. A single camera view is used at a time and the performance being aimed for is real­time, or as close as possible.
 
 First a literature review was done to assess existing work which could be applied for this project. The conclusion of this review was that our work would be focused around the use of an object detection algorithm which locates a specified object and its parts on an image. More specifically the Deformable Part Models [10] algorithm, abbreviated DPM. In the context of our project it is used to find the players and their respective torso which contains the necessary information to establish their team­membership. Using only such an algorithm unfortunately does not yield the best results, therefore part of our project relies upon optimizing the use of the algorithm. These optimisations take the form of a background subtraction combined with a blob extraction. They allow us to run the DPM algorithm only on regions which are players. This results in a significant speed and correctness improvement.
 
@@ -35,4 +35,4 @@ The results of this implementation are extremely satisfactory when there is litt
 
 For future work, it would be interesting to evaluate the results when using multiple camera views to overcome the occlusion and position issues. Another interesting aspect would be to see the impact of using a DPM model trained specifically for different postures.
 
-This report ends with acknowledgments and a synopsis of our personal experience."*
+This report ends with acknowledgments and a synopsis of our personal experience."
