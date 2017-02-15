@@ -1,14 +1,14 @@
-# Tracking and Identifying People in Real­Time:
+# Tracking and Identifying People in Real­-Time:
 ## Classifying team membership based on team uniform’s color
 
 ### Table of Contents
 **[Short description](#short-description)**  
 **[Installation, configuration and running](#installation-configuration-running)**  
 **[Results](#results)**  
-**[Abstract](#Abstract)**  
+**[Abstract](#abstract)**  
 
 ### Short description
-As part of a semester project at [EPFL](www.epfl.ch),
+This repository contains all the code and documentation of a semester project at [EPFL](www.epfl.ch). The goal was to achieve real-time people tracking and identification in sports. All the code and documentation is available under [this](LICENCE) license.
 
 
 ### Installation configuration running
