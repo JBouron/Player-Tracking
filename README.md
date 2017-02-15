@@ -8,7 +8,7 @@
 **[Abstract](#abstract)**  
 
 ### Short description
-This repository contains all the code and documentation of a semester project at [EPFL](www.epfl.ch). The goal was to achieve real-time people tracking and identification in sports. All the code and documentation is available under [this](LICENCE) license.
+This repository contains all the code and documentation of a semester project at [EPFL](www.epfl.ch). The goal was to achieve real-time people tracking and identification in sports. All the code and documentation is available under [this](LICENSE) license.
 
 
 ### Installation configuration running
